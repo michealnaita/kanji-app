@@ -5,6 +5,7 @@ import './index.css';
 import 'tailwindcss/tailwind.css';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import Home from './pages';
+import { AppProvider } from './context/app';
 
 const router = createBrowserRouter([
   {
@@ -14,6 +15,8 @@ const router = createBrowserRouter([
 ]);
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <React.StrictMode>
-    <RouterProvider router={router} />
+    <AppProvider>
+      <RouterProvider router={router} />
+    </AppProvider>
   </React.StrictMode>
 );
