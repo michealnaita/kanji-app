@@ -32,14 +32,17 @@ export default function SearchList({ data }: { data: Household }) {
         </div>
       </div>
       {show && (
-        <ul>
-          {Object.keys(details).map((key, i) => (
-            <li className="flex justify-between text-skin-off-white" key={i}>
-              <span>{key}</span>
-              <span>{details[key as 'Price']}</span>
-            </li>
-          ))}
-        </ul>
+        <>
+          <ul>
+            {Object.keys(details).map((key, i) => (
+              <li className="flex justify-between text-skin-off-white" key={i}>
+                <span>{key}</span>
+                <span>{details[key as 'Price']}</span>
+              </li>
+            ))}
+          </ul>
+          <button className="primary">Join House</button>
+        </>
       )}
       <div className="self-end">
         {show ? (

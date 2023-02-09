@@ -4,7 +4,7 @@ module.exports = {
   theme: {
     extend: {
       backgroundColor: {
-        skin: { primary: '#17191B', secondary: '#1E2022' },
+        skin: { primary: '#17191B', secondary: '#1E2022', lime: '#75B975' },
       },
       textColor: {
         skin: {
