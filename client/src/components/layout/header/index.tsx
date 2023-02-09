@@ -1,5 +1,6 @@
 import React from 'react';
 import { BsPlus } from 'react-icons/bs';
+import { Link } from 'react-router-dom';
 import Logo from '../../../assets/logo.svg';
 type headerType = {
   username: string;
@@ -12,9 +13,9 @@ export default function Header({ username, amount }: headerType) {
   return (
     <div className="px-6 py-4 container ">
       <div className=" items-center pb-2 flex justify-between border-b-2 border-neutral-800">
-        <div>
+        <Link to="/">
           <img src={Logo} alt="logo" width={35} />
-        </div>
+        </Link>
         <div className="flex flex-col items-end">
           <p className="font-semibold text-skin-cyan text-lg">{username}</p>
           <p className="flex items-center space-x-2 text-base">

@@ -12,7 +12,7 @@ export default function Card({
   children,
 }: CardProps) {
   return (
-    <div className=" flex flex-col shadow-lg bg-skin-secondary rounded-2xl p-7 space-y-4">
+    <div className=" flex flex-col card space-y-4">
       <h1 className="text-2xl text-skin-off-white font-semibold">{heading}</h1>
       <div>{children}</div>
       <button

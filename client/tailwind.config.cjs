@@ -15,6 +15,7 @@ module.exports = {
           secondary: '#828282',
           gary: '#828282',
           lime: '#75B975',
+          red: '#EB434D',
         },
       },
       borderColor: {
