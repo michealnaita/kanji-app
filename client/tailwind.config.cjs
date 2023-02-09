@@ -22,6 +22,10 @@ module.exports = {
           primary: '#F6955C',
         },
       },
+      fontFamily: {
+        'patrick-hand':
+          "'Patrick Hand SC', Inter, system-ui, Avenir, Helvetica, Arial, sans-serif",
+      },
     },
   },
   plugins: [],

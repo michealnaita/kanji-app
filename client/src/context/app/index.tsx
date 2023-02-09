@@ -19,7 +19,10 @@ const initialState: IApp = {
   username: 'janedoe',
   id: '09uijwrksfli9w49worepf',
   current_amount: 12000,
-  households: [],
+  households: [
+    { id: '12345678', name: 'The lules', service: 'netflix' },
+    { id: '12345678', name: 'The kamyas', service: 'spotify' },
+  ],
 };
 
 function appReducer(state: IApp, action: ActionsType): IApp {
