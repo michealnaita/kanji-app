@@ -18,6 +18,13 @@
 html,body,#root{
   height:100vh;
 }
+input,
+textarea,
+button,
+select,
+a {
+    -webkit-tap-highlight-color: transparent;
+}
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -33,7 +40,11 @@ html,body,#root{
     @apply relative after:bg-gradient-to-t after:from-[#17191B] after:via-[#17191B]  after:bottom-0 after:z-10 after:w-full after:h-8 after:absolute;
     @apply  before:bg-gradient-to-b before:from-[#17191B] before:via-[#17191B]  before:top-0 before:z-10 before:w-full before:h-8 before:absolute;
   }
+
   button.primary {
-    @apply bg-skin-lime text-white rounded-2xl font-semibold py-4
+    @apply bg-skin-lime w-full max-w-xs  text-white rounded-2xl font-semibold py-4
+  }
+  button.danger {
+    @apply bg-skin-red w-full max-w-xs text-white rounded-2xl font-semibold py-4
   }
 }

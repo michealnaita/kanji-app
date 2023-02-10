@@ -3,6 +3,7 @@ import { Household } from '../../utils/types';
 import { FaAngleUp, FaAngleDown } from 'react-icons/fa';
 import spotify from '../../assets/spotify.svg';
 import netflix from '../../assets/netflix.svg';
+import { Link } from 'react-router-dom';
 export default function SearchList({ data }: { data: Household }) {
   const [show, setShow] = React.useState(false);
   const services = {
@@ -41,7 +42,9 @@ export default function SearchList({ data }: { data: Household }) {
               </li>
             ))}
           </ul>
-          <button className="primary">Join House</button>
+          <Link to={'/house/' + data.id}>
+            <button className="primary">Join House</button>
+          </Link>
         </>
       )}
       <div className="self-end">

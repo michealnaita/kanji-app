@@ -1,10 +1,10 @@
 import React, { Children } from 'react';
 import ContentLoader from 'react-content-loader';
 
-const Loader: React.FC<{ children: JSX.Element[]; [key: string]: any }> = ({
-  children,
-  ...props
-}) => {
+const Loader: React.FC<{
+  children: JSX.Element[] | JSX.Element;
+  [key: string]: any;
+}> = ({ children, ...props }) => {
   return (
     <ContentLoader
       backgroundColor="#ffffff"

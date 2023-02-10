@@ -4,7 +4,12 @@ module.exports = {
   theme: {
     extend: {
       backgroundColor: {
-        skin: { primary: '#17191B', secondary: '#1E2022', lime: '#75B975' },
+        skin: {
+          primary: '#17191B',
+          secondary: '#1E2022',
+          lime: '#75B975',
+          red: '#EB434D',
+        },
       },
       textColor: {
         skin: {
