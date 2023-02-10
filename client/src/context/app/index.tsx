@@ -1,11 +1,12 @@
 import React from 'react';
-import { Household } from '../../utils/types';
+import { HouseholdSlim } from '../../utils/types';
 
 interface IApp {
   username: string;
   id: string;
   current_amount: number;
-  households: Household[];
+  households: HouseholdSlim[];
+  isAuthenticated: boolean;
 }
 export enum Actions {
   LOAD = 'LOAD',
@@ -18,6 +19,7 @@ type ActionsType = {
 const initialState: IApp = {
   username: 'janedoe',
   id: '09uijwrksfli9w49worepf',
+  isAuthenticated: false,
   current_amount: 12000,
   households: [
     { id: '12345678', name: 'The lules', service: 'netflix' },
@@ -28,7 +30,7 @@ const initialState: IApp = {
 function appReducer(state: IApp, action: ActionsType): IApp {
   switch (action.type) {
     case Actions.LOAD: {
-      return state;
+      return { ...state, ...action.payload, isAuthenticated: true };
     }
     default:
       return state;

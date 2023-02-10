@@ -3,7 +3,15 @@ export type HouseholdMember = {
   firstname: string;
   phone: number;
 };
-
+export type SignInData = { email: string; password: string };
+export type RegisterData = {
+  email: string;
+  password: string;
+  confirm_password: string;
+  phone: number;
+  firstname: string;
+  lastname: string;
+};
 export interface HouseholdSlim {
   name: string;
   id: string;

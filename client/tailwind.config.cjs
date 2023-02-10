@@ -26,6 +26,12 @@ module.exports = {
       borderColor: {
         skin: {
           primary: '#F6955C',
+          secondary: '#828282',
+        },
+      },
+      ringColor: {
+        skin: {
+          primary: '#F6955C',
         },
       },
       fontFamily: {
@@ -34,5 +40,5 @@ module.exports = {
       },
     },
   },
-  plugins: [],
+  plugins: [require('@tailwindcss/forms')],
 };
