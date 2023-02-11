@@ -14,15 +14,15 @@ export default function Search() {
           {data ? data.length : 0} households
         </h2>
       </div>
-      <div className="flex-1 scroll-view h-full overflow-hidden  ">
-        {isLoading ? (
-          <SearchLoader />
-        ) : isError ? (
-          <ErrorMessage message={(error as Error).message} />
-        ) : (
-          data && <SearchList items={data} />
-        )}
-      </div>
+      {isLoading ? (
+        <SearchLoader />
+      ) : isError ? (
+        <ErrorMessage message={(error as Error).message} />
+      ) : (
+        <div className="flex-1 scroll-view h-full overflow-hidden  ">
+          {data && <SearchList items={data} />}
+        </div>
+      )}
     </div>
   );
 }

@@ -4,6 +4,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 import useRegisterMutation from '../../api/auth/register';
 import { RegisterData } from '../../utils/types';
+
 export default function RegiserForm() {
   const navigate = useNavigate();
   const { mutate, isLoading, error, isError, data } = useRegisterMutation();
@@ -20,7 +21,9 @@ export default function RegiserForm() {
     if (isError) toast.error((error as Error).message);
   }, [isError]);
   React.useEffect(() => {
-    if (data) navigate('/');
+    if (data) {
+      navigate('/');
+    }
   }, [data]);
 
   return (
@@ -36,7 +39,6 @@ export default function RegiserForm() {
         closeOnClick
         theme="light"
       />
-      {/* Same as */}
       <ToastContainer />
       <h1 className="text-center font-semibold text-lg">Create Account</h1>
       <div>
@@ -92,7 +94,12 @@ export default function RegiserForm() {
         )}
       </div>
       <div>
-        <label htmlFor="email">Email</label>
+        <label htmlFor="email">
+          Email{' '}
+          <span className="text-skin-secondary text-sm italic">
+            (same as your spotify email if any)
+          </span>
+        </label>
         <input
           type="text"
           className="form-input"

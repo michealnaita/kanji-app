@@ -4,6 +4,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { toast, ToastContainer } from 'react-toastify';
 import useSignInMutation from '../../api/auth/signin';
 import { SignInData } from '../../utils/types';
+
 export default function SignInForm() {
   const navigate = useNavigate();
   const { mutate, isLoading, error, isError, data } = useSignInMutation();
@@ -48,6 +49,7 @@ export default function SignInForm() {
         <input
           type="text"
           className="form-input"
+          defaultValue={'bob@gmail.com'}
           id="email"
           {...register('email', {
             required: { value: true, message: 'email is required' },
@@ -68,6 +70,7 @@ export default function SignInForm() {
         <input
           type="password"
           className="form-input"
+          defaultValue={'@Bo123'}
           id="password"
           {...register('password', {
             required: { value: true, message: 'password is required' },

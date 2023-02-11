@@ -12,9 +12,9 @@ export default function SearchList({ data }: { data: Household }) {
   };
   const details = React.useMemo(
     () => ({
-      Service: data.service_type,
-      Persons: data.persons + ' persons',
-      Vacancy: 4 - data.persons + ' persons',
+      Service: data.service_membership,
+      Persons: data.members.length + ' persons',
+      Vacancy: 4 - data.members.length + ' persons',
       Price: 'shs.' + data.price,
     }),
     [data]

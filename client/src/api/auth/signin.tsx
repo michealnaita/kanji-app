@@ -1,29 +1,16 @@
 import { useMutation } from 'react-query';
-import { useApp } from '../../context/app';
+import { signInWithEmailAndPassword, onAuthStateChanged } from 'firebase/auth';
 import { SignInData } from '../../utils/types';
+import { auth } from '../../utils/firebase';
+import { formatErrorMessage } from '../../utils/errors';
 
-function handleSignIn(
-  data: SignInData,
-  initialiseApp: (a: any) => void
-): Promise<boolean> {
-  const userData = {
-    firstname: 'Micheal',
-    lastname: 'Naita',
-    email: 'michealnaita@gmail.com',
-    phone: 1234567890,
-    current_amount: 12000,
-    households: [
-      { id: '12345678', name: 'The lules', service: 'netflix' },
-      { id: '12345678', name: 'The kamyas', service: 'spotify' },
-    ],
-  };
-
+function handleSignIn({ email, password }: SignInData): Promise<boolean> {
   return new Promise((resolve, reject) => {
-    initialiseApp({ ...userData, username: 'michealanaita' });
-    setTimeout(() => resolve(true), 5000);
+    signInWithEmailAndPassword(auth, email, password)
+      .then((_) => resolve(true))
+      .catch((e) => reject(new Error(formatErrorMessage(e.code))));
   });
 }
 export default function useSignInMutation() {
-  const { load } = useApp();
-  return useMutation((d: SignInData) => handleSignIn(d, load));
+  return useMutation(handleSignIn);
 }

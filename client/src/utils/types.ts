@@ -8,7 +8,7 @@ export type RegisterData = {
   email: string;
   password: string;
   confirm_password: string;
-  phone: number;
+  phone: string;
   firstname: string;
   lastname: string;
 };
@@ -19,11 +19,19 @@ export interface HouseholdSlim {
 }
 export interface Household extends HouseholdSlim {
   price: number;
-  persons: number;
-  service_type: string;
+  service_membership: string;
   logins?: {
     email: string;
     password: string;
   };
   members: HouseholdMember[];
 }
+export type User = {
+  id?: string;
+  firstname: string;
+  lastname: string;
+  email: string;
+  phone: number;
+  households: Household[];
+  current_amount: number;
+};

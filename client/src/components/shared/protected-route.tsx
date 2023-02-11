@@ -1,15 +1,32 @@
 import React from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { useApp } from '../../context/app';
+import useAuth from '../../utils/useAuth';
+import Logo from '../../assets/logo-white.svg';
 
 export default function ProtectedRoute({ Route }: { Route: React.FC }) {
-  const { isAuthenticated } = useApp();
+  const { isAuth, isLoading, error } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
   React.useEffect(() => {
     const s = new URLSearchParams();
     s.set('from', location.pathname);
-    if (!isAuthenticated) navigate('/signin?' + s.toString());
-  }, [isAuthenticated]);
-  return <>{isAuthenticated && <Route />}</>;
+    if (!isAuth && !isLoading) navigate('/signin?' + s.toString());
+    if (error && !isLoading) navigate('/500');
+  }, [isAuth, isLoading, error]);
+  return (
+    <>
+      {isLoading ? (
+        <div className="w-full h-full flex justify-center items-center">
+          <img
+            src={Logo}
+            alt="logo"
+            width={30}
+            className="animate-bounce animate-ping"
+          />
+        </div>
+      ) : (
+        <>{isAuth && <Route />}</>
+      )}
+    </>
+  );
 }

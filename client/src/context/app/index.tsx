@@ -10,11 +10,16 @@ interface IApp {
 }
 export enum Actions {
   LOAD = 'LOAD',
+  AUTHENTICATE = 'AUTHENTICATE',
 }
-type ActionsType = {
-  type: Actions.LOAD;
-  payload: any;
-};
+type ActionsType =
+  | {
+      type: Actions.LOAD;
+      payload: any;
+    }
+  | {
+      type: Actions.AUTHENTICATE;
+    };
 
 const initialState: IApp = {
   username: 'janedoe',
@@ -30,7 +35,10 @@ const initialState: IApp = {
 function appReducer(state: IApp, action: ActionsType): IApp {
   switch (action.type) {
     case Actions.LOAD: {
-      return { ...state, ...action.payload, isAuthenticated: true };
+      return { ...state, ...action.payload };
+    }
+    case Actions.AUTHENTICATE: {
+      return { ...state, isAuthenticated: true };
     }
     default:
       return state;
@@ -52,6 +60,7 @@ export function AppProvider({ children }: { children: JSX.Element }) {
     () => ({
       ...state,
       load: (payload: any) => dispatch({ type: Actions.LOAD, payload }),
+      authenticate: () => dispatch({ type: Actions.AUTHENTICATE }),
     }),
     [state]
   );
