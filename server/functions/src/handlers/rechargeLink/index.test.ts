@@ -1,13 +1,14 @@
 import axios from 'axios';
 import dotenv from 'dotenv';
-import test from 'firebase-functions-test';
+import functions from 'firebase-functions-test';
 import generateRechargeLink, {
   PaymentRequestData,
   FlutterwaveResponse,
 } from './index';
 dotenv.config();
-
+const testEnv = functions();
 jest.mock('axios');
+jest.mock('firebase-admin');
 const resolvedValue: { data: FlutterwaveResponse } = {
   data: {
     status: 'success',
@@ -19,8 +20,11 @@ const resolvedValue: { data: FlutterwaveResponse } = {
 };
 axios.post = jest.fn().mockResolvedValue(resolvedValue);
 
-const wrapped = test().wrap(generateRechargeLink);
+const wrapped = testEnv.wrap(generateRechargeLink);
 describe('Generate Payment Link', () => {
+  afterAll(() => {
+    testEnv.cleanup();
+  });
   it('Should generate payment link', async () => {
     const data: PaymentRequestData = {
       amount: '5000',
