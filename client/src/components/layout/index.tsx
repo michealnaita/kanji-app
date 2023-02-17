@@ -1,4 +1,5 @@
 import React from 'react';
+import { ToastContainer } from 'react-toastify';
 import { useApp } from '../../context/app';
 import Header from './header';
 
@@ -10,15 +11,25 @@ export default function Layout({ children }: { children: any }) {
   //   }, 1000);
   // }, []);
   return (
-    <div className="bg-skin-primary w-screen overflow-y-scroll h-full border-b-4 border-skin-primary flex flex-col">
-      <Header
-        amount={current_amount}
-        username={username}
-        isAuthenticated={isAuthenticated}
+    <>
+      <ToastContainer
+        position="top-right"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        theme="light"
       />
-      <div className="p-6  flex  flex-col container space-y-6 flex-1 overflow-y-scroll">
-        {children}
+      <div className="bg-skin-primary w-screen overflow-y-scroll h-full border-b-4 border-skin-primary flex flex-col">
+        <Header
+          amount={current_amount}
+          username={username}
+          isAuthenticated={isAuthenticated}
+        />
+        <div className="p-6  flex  flex-col container space-y-6 flex-1 overflow-y-scroll">
+          {children}
+        </div>
       </div>
-    </div>
+    </>
   );
 }

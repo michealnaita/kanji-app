@@ -1,12 +1,14 @@
 import React from 'react';
+import { Navigate, useNavigate } from 'react-router-dom';
 import { useApp } from '../../context/app';
 import { Card } from '../shared';
 export default function WalletCard() {
+  const navigate = useNavigate();
   const { current_amount } = useApp();
   return (
     <Card
-      heading="Wallet"
-      onClick={() => console.log('clicked')}
+      heading="Your Balance"
+      onClick={() => navigate('/recharge')}
       button="recharge"
     >
       <p className="text-4xl text-skin-secondary font-semibold">

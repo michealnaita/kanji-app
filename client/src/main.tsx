@@ -11,8 +11,10 @@ import HouseholdPage from './pages/household';
 import SignInPage from './pages/signin';
 import RegisterPage from './pages/register';
 import ErrorPage from './pages/500';
+import NotFoundErrorPage from './pages/404';
 import ProtectedRoute from './components/shared/protected-route';
 import 'react-toastify/dist/ReactToastify.css';
+import RechargePage from './pages/recharge';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -25,6 +27,7 @@ const router = createBrowserRouter([
   {
     path: '/',
     element: <ProtectedRoute Route={Home} />,
+    errorElement: <NotFoundErrorPage />,
   },
   { path: '/search', element: <ProtectedRoute Route={Search} /> },
   {
@@ -33,7 +36,9 @@ const router = createBrowserRouter([
   },
   { path: '/signin', element: <SignInPage /> },
   { path: '/register', element: <RegisterPage /> },
+  { path: '/recharge', element: <RechargePage /> },
   { path: '/500', element: <ErrorPage /> },
+  { path: '/404', element: <NotFoundErrorPage /> },
 ]);
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <React.StrictMode>

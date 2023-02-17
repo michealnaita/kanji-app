@@ -5,9 +5,9 @@ import netflix from '../../assets/netflix.svg';
 import { useApp } from '../../context/app';
 import { useHouseholdQuery } from '../../api/getHousehold';
 import { useNavigate } from 'react-router-dom';
-import { TfiAngleLeft } from 'react-icons/tfi';
 import HouseholdLoader from './household-loader';
 import { NotFoundError } from '../../utils/errors';
+import Card from '../shared/cards/card-two';
 
 export default function Household({ id }: { id: string }) {
   const navigate = useNavigate();
@@ -44,16 +44,16 @@ export default function Household({ id }: { id: string }) {
         <HouseholdLoader />
       ) : (
         data && (
-          <div className="card flex flex-col space-y-6">
-            <button
-              onClick={() => navigate(-1)}
-              className="flex space-x-4 items-center"
-            >
-              <TfiAngleLeft color="#828282" size={25} />{' '}
-              <p className="font-patrick-hand text-skin-secondary font-semibold text-3xl">
-                {data!.name}
-              </p>
-            </button>
+          <Card
+            title={data.name}
+            button={
+              data!.members.filter((m) => m.id === userId).length ? (
+                <button className="danger self-center">Leave House</button>
+              ) : (
+                <button className="primary self-center">Join House</button>
+              )
+            }
+          >
             <div className="flex justify-between items-center">
               <img
                 src={services[data!.service as 'netflix' | 'spotify']}
@@ -112,12 +112,7 @@ export default function Household({ id }: { id: string }) {
               note: your subscription will begin when house is full with 4
               memebers and the logins will be reveiled
             </p>
-            {data!.members.filter((m) => m.id === userId).length ? (
-              <button className="danger self-center">Leave House</button>
-            ) : (
-              <button className="primary self-center">Join House</button>
-            )}
-          </div>
+          </Card>
         )
       )}
     </>
