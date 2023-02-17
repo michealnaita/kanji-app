@@ -22,6 +22,12 @@ const paymentHook = functions.https.onRequest(async (req, res) => {
     // Check if transaction ref exists
     const txDoc = await db.doc('transactions/' + tx_ref).get();
     if (!txDoc.exists) throw new BadRequestError('invalid-tx_ref');
+    const {
+      user_uid,
+      amount: tx_amount,
+      fulfilled,
+    } = txDoc.data() as Transaction;
+    if (fulfilled) throw new BadRequestError('transaction-already-fulfilled');
 
     // check that transaction is valid
     const tx = await flw.Transaction.verify({ id: transaction_id });
@@ -30,7 +36,6 @@ const paymentHook = functions.https.onRequest(async (req, res) => {
 
     if (tx.data && tx.data.status === 'successful') {
       const { amount } = await flw.Transaction.find({ ref: req.query.tx_ref });
-      const { user_uid, amount: tx_amount } = txDoc.data() as Transaction;
       if (!(amount == tx_amount))
         throw new InternalServerError('different-transaction-amounts');
       const userDoc = await db.doc('users/' + user_uid).get();
@@ -38,6 +43,9 @@ const paymentHook = functions.https.onRequest(async (req, res) => {
       const newAmount = parseFloat(current_amount as any) + parseFloat(amount);
       await db.doc('users/' + user_uid).update({
         current_amount: newAmount,
+      });
+      await db.doc('transactions/' + tx_ref).update({
+        fulfilled: true,
       });
       return res.redirect(APP_URL + '/recharge?status=success');
     }

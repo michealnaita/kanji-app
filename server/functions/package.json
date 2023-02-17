@@ -9,7 +9,7 @@
     "start": "npm run shell",
     "deploy": "firebase deploy --only functions",
     "logs": "firebase functions:log",
-    "test": "jest --detectOpenHandles"
+    "test": "NODE_ENV=testing jest --detectOpenHandles"
   },
   "engines": {
     "node": "16"
@@ -21,7 +21,7 @@
     "firebase-admin": "^11.5.0",
     "firebase-functions": "^4.2.1",
     "flutterwave-node-v3": "^1.0.12",
-    "uuidv4": "^6.2.13"
+    "uuid": "^9.0.0"
   },
   "devDependencies": {
     "@types/flutterwave-node": "^1.0.1",

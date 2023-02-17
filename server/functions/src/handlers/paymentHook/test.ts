@@ -1,9 +1,9 @@
-import { User } from './../../utils/types';
+import { Transaction, User } from './../../utils/types';
 import functions from 'firebase-functions-test';
 import * as admin from 'firebase-admin';
 import paymentHook from '.';
 import dotenv from 'dotenv';
-// import { BadRequestError } from '../../utils/errors';
+
 dotenv.config();
 const testEnv = functions(
   {
@@ -23,16 +23,6 @@ async function getRediractUrl(req) {
     await paymentHook(req as any, res as any);
   });
 }
-// jest.mock('./../../utils/errors', () => ({
-//   BadRequestError: jest
-//     .fn()
-//     .mockImplementation(
-//       () =>
-//         new (jest.requireActual('./../../utils/errors').BadRequestError as any)(
-//           'error'
-//         )
-//     ),
-// }));
 
 const mockVerify = jest.fn();
 const mockFind = jest.fn();
@@ -48,14 +38,24 @@ jest.mock('flutterwave-node-v3', () => {
 describe('Rechargeb Hook', () => {
   jest.setTimeout(30000);
   const userData = { current_amount: 1000 };
-  const txData = { user_uid: 'user_uid', amount: 1000 };
+  const txData: Transaction = {
+    user_uid: 'user_uid',
+    amount: 1000,
+    fulfilled: false,
+  };
   beforeAll(async () => {
     await createDoc(userData, 'users/user_uid');
+    await createDoc({ ...txData, fulfilled: true }, 'transactions/tx_ref_2');
+  });
+  beforeEach(async () => {
     await createDoc(txData, 'transactions/tx_ref_1');
+  });
+  afterEach(async () => {
+    await db.doc('transactions/tx_ref_1').delete();
   });
   afterAll(async () => {
     await db.doc('users/user_uid').delete();
-    await db.doc('transactions/tx_ref_1').delete();
+    await db.doc('transactions/tx_ref_2').delete();
     testEnv.cleanup();
   });
   it('should fail with BadRequest page when invalid tx ref', async () => {
@@ -79,7 +79,18 @@ describe('Rechargeb Hook', () => {
     const url = await getRediractUrl(req);
     expect(url).toMatch(/recharge\?status=fail/);
   });
-  it('should update users current amount if transactions is successful', async () => {
+  it('should return transacton return BadRequest if transaction is already fulfilled', async () => {
+    mockVerify.mockResolvedValue({ status: 'error' });
+    const req = {
+      query: {
+        tx_ref: 'tx_ref_2',
+        transaction_id: 'tx_id',
+      },
+    };
+    const url = await getRediractUrl(req);
+    expect(url).toMatch(/400\?code=transaction-already-fulfilled/);
+  });
+  it('should update users current amount and trasnaction fulfilment if transactions is successful', async () => {
     mockVerify.mockResolvedValue({
       status: '',
       data: { status: 'successful' },
@@ -94,7 +105,9 @@ describe('Rechargeb Hook', () => {
     };
     await paymentHook(req as any, { redirect: () => {} } as any);
     const userDoc = await db.doc('users/user_uid').get();
+    const txDoc = await db.doc('transactions/tx_ref_1').get();
     expect((userDoc.data() as User).current_amount).toEqual(2000);
+    expect((txDoc.data() as Transaction).fulfilled).toBe(true);
   });
   it('should redirect user to success page if transaction is successful', async () => {
     mockVerify.mockResolvedValue({

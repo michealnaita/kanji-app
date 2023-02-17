@@ -30,4 +30,20 @@ export type User = {
 export type Transaction = {
   user_uid: string;
   amount: number;
+  fulfilled: boolean;
+};
+
+export type PaymentRequestData = {
+  amount?: string;
+  name?: string;
+  email?: string;
+  phone?: string;
+};
+
+export type FlutterwaveResponse = {
+  status: string;
+  message: string;
+  data: {
+    link: string;
+  };
 };

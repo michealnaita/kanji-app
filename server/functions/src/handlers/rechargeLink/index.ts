@@ -1,25 +1,19 @@
 import * as functions from 'firebase-functions';
 import * as admin from 'firebase-admin';
 import axios from 'axios';
+import {
+  FlutterwaveResponse,
+  PaymentRequestData,
+  Transaction,
+} from '../../utils/types';
+import { v4 } from 'uuid';
 
 admin.initializeApp();
+const db = admin.firestore();
 
-export type PaymentRequestData = {
-  amount?: string;
-  name?: string;
-  email?: string;
-  phone?: string;
-};
-
-export type FlutterwaveResponse = {
-  status: string;
-  message: string;
-  data: {
-    link: string;
-  };
-};
 const generateRechargeLink = functions.https.onCall(
   async ({ phone, amount, email, name }: PaymentRequestData, context) => {
+    const { APP_URL, PAYMENT_WEBHOOK, NODE_ENV } = process.env;
     // Check for user auth
     if (context.auth) {
       if (!context.auth.uid)
@@ -38,41 +32,49 @@ const generateRechargeLink = functions.https.onCall(
         'failed-precondition',
         'provide all user details'
       );
-
+    const tx_ref = NODE_ENV === 'testing' ? 'tx_ref' : v4();
     const config = {
       headers: {
         Authorization: `Bearer ${process.env.FLUTTERWAVE_SECRET_KEY}`,
       },
     };
+    const payload = {
+      tx_ref,
+      amount,
+      currency: 'UGX',
+      redirect_url: PAYMENT_WEBHOOK,
+      customer: {
+        email,
+        phonenumber: '256' + phone,
+        name,
+      },
+      customizations: {
+        title: 'Kanji App',
+        logo: APP_URL + '/images/logo.svg',
+      },
+    };
     try {
-      const payload = {
-        tx_ref: 'hooli-tx-1920bbtytty',
-        amount,
-        currency: 'UGX',
-        redirect_url: 'http://localhost:5173',
-        meta: {
-          consumer_id: 23,
-          consumer_mac: '92a3-912ba-1192a',
-        },
-        customer: {
-          email,
-          phonenumber: '256' + phone,
-          name,
-        },
-        customizations: {
-          title: 'Kanji',
-          logo: 'https://www.kanji-app.com/images/logo.svg',
-        },
-      };
-
       const { data }: { data: FlutterwaveResponse } = await axios.post(
         process.env.FLUTTERWAVE_URL as string,
         payload,
         config
       );
+      if (data.status !== 'success')
+        throw new functions.https.HttpsError(
+          'cancelled',
+          'couldnt generate recharge link'
+        );
+      const txData: Transaction = {
+        user_uid: context.auth.uid,
+        amount: parseInt(amount as any),
+        fulfilled: false,
+      };
+      await db.doc('transactions/' + tx_ref).create(txData);
       return data;
     } catch (e: any) {
-      throw new functions.https.HttpsError('unknown', e.message);
+      if (e! instanceof functions.https.HttpsError)
+        throw new functions.https.HttpsError('unknown', e.message);
+      throw e;
     }
   }
 );
