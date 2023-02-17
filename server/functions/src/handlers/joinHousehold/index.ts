@@ -1,4 +1,9 @@
-import { Household, User, HouseholdSlim, HouseholdMember } from './../../types';
+import {
+  Household,
+  User,
+  HouseholdSlim,
+  HouseholdMember,
+} from '../../utils/types';
 import * as functions from 'firebase-functions';
 import * as admin from 'firebase-admin';
 

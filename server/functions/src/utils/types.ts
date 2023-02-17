@@ -26,3 +26,8 @@ export type User = {
   households: HouseholdSlim[];
   current_amount: number;
 };
+
+export type Transaction = {
+  user_uid: string;
+  amount: number;
+};

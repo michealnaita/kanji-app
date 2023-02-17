@@ -7,8 +7,9 @@
     "sourceMap": true,
     "strict": true,
     "target": "es2017",
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "noImplicitAny": false
   },
   "compileOnSave": true,
-  "include": ["src"]
+  "include": ["src", "src/handlers/paymentHook/.d.ts"]
 }
