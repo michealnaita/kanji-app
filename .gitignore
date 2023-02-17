@@ -6,10 +6,23 @@ yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
+server/logs
+server/*.log
+server/npm-debug.log*
+server/yarnn-debug.log*
+server/yarn-error.log*
+server/firebase-debug.log*
+server/firebase-debug.*.log*
+
+# cache
+server/.firebase/
 
 client/node_modules
+server/node_modules
 client/dist
 client/dist-ssr
+server/data
+
 *.local
 
 # Editor directories and files
@@ -22,3 +35,20 @@ client/dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Coverage directory used by tools like istanbul
+server/functions/src/coverage
+
+# dotenv environment variables file
+server/functions/.env
+
+#/server
+# Compiled JavaScript files
+server/functions/lib/
+
+# TypeScript v1 declaration files
+server/functions/typings/
+
+# Node.js dependency directory
+server/functions/node_modules/
+server/functions/service-account.json
