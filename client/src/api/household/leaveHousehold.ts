@@ -1,25 +1,37 @@
-import { User } from '../../utils/types';
+import { HouseholdSlim } from './../../../../server/functions/src/utils/types';
+import { FunctionResponse, User } from '../../utils/types';
 import { useMutation } from 'react-query';
-import { db } from '../../utils/firebase';
+import { functions } from '../../utils/firebase';
 import { formatErrorMessage } from '../../utils/errors';
-import { doc, getDoc, setDoc } from 'firebase/firestore';
+import { useApp } from '../../context/app';
+import { httpsCallable } from 'firebase/functions';
 
-type RequestData = { uid: string; household: string };
-function leaveHouse({ uid, household }: RequestData) {
+type RequestData = { household: string };
+function leaveHouse(
+  data: RequestData,
+  updateHouseholds: (d: HouseholdSlim[]) => void
+) {
   return new Promise(async (resolve, reject) => {
-    try {
-      const userDocRef = doc(db, 'users', uid);
-      const userDoc = await getDoc(userDocRef);
-      if (!userDoc.exists()) throw new Error('User doesnt exist');
-      let { households } = userDoc.data() as User;
-      households = households.filter((h) => h.id !== household);
-      await setDoc(userDocRef, { ...userDoc.data(), households });
-      resolve(true);
-    } catch (e: any) {
-      reject(new Error(formatErrorMessage(e.message)));
-    }
+    const leave = httpsCallable<RequestData, FunctionResponse>(
+      functions,
+      'leaveHousehold'
+    );
+    leave(data)
+      .then(({ data }) => {
+        if (data.status == 'success') {
+          updateHouseholds(data.data?.households);
+          resolve(true);
+        }
+        if (data.status === 'fail') {
+          throw new Error(data.error?.message);
+        }
+      })
+      .catch((e) => {
+        reject(new Error(formatErrorMessage(e.message)));
+      });
   });
 }
 export default function useLeaveHouseholdMutation() {
-  return useMutation(leaveHouse);
+  const { updateHouseholds } = useApp();
+  return useMutation((data: RequestData) => leaveHouse(data, updateHouseholds));
 }

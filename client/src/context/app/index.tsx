@@ -2,15 +2,21 @@ import React from 'react';
 import { HouseholdSlim } from '../../utils/types';
 
 interface IApp {
+  firstname: string;
+  lastname: string;
+  email: string;
+  phone: number;
   username: string;
   id: string;
   current_amount: number;
   households: HouseholdSlim[];
   isAuthenticated: boolean;
 }
+
 export enum Actions {
   LOAD = 'LOAD',
   AUTHENTICATE = 'AUTHENTICATE',
+  UPDATE_HOUSEHOLDS = 'UPDATE_HOUSEHOLDS',
 }
 type ActionsType =
   | {
@@ -19,17 +25,19 @@ type ActionsType =
     }
   | {
       type: Actions.AUTHENTICATE;
-    };
+    }
+  | { type: Actions.UPDATE_HOUSEHOLDS; payload: HouseholdSlim[] };
 
 const initialState: IApp = {
-  username: 'janedoe',
-  id: '09uijwrksfli9w49worepf',
+  username: '',
+  id: '',
   isAuthenticated: false,
-  current_amount: 12000,
-  households: [
-    { id: '12345678', name: 'The lules', service: 'netflix' },
-    { id: '12345678', name: 'The kamyas', service: 'spotify' },
-  ],
+  current_amount: 0,
+  households: [],
+  firstname: '',
+  lastname: '',
+  phone: 0,
+  email: '',
 };
 
 function appReducer(state: IApp, action: ActionsType): IApp {
@@ -40,11 +48,20 @@ function appReducer(state: IApp, action: ActionsType): IApp {
     case Actions.AUTHENTICATE: {
       return { ...state, isAuthenticated: true };
     }
+    case Actions.UPDATE_HOUSEHOLDS: {
+      return { ...state, households: action.payload };
+    }
     default:
       return state;
   }
 }
-const AppContext = React.createContext<any>(null);
+
+type ActionCreators = {
+  authenticate: () => void;
+  updateHouseholds: (d: HouseholdSlim[]) => void;
+};
+
+const AppContext = React.createContext<(IApp & ActionCreators) | null>(null);
 
 // App Hook
 export function useApp() {
@@ -61,6 +78,8 @@ export function AppProvider({ children }: { children: JSX.Element }) {
       ...state,
       load: (payload: any) => dispatch({ type: Actions.LOAD, payload }),
       authenticate: () => dispatch({ type: Actions.AUTHENTICATE }),
+      updateHouseholds: (payload: HouseholdSlim[]) =>
+        dispatch({ type: Actions.UPDATE_HOUSEHOLDS, payload }),
     }),
     [state]
   );

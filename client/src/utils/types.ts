@@ -35,3 +35,15 @@ export type User = {
   households: Household[];
   current_amount: number;
 };
+
+export type FunctionResponse = {
+  status: 'fail' | 'success';
+  data?: {
+    message: string;
+    [key: string]: any;
+  };
+  error?: {
+    message: string;
+    code: string;
+  };
+};

@@ -15,6 +15,7 @@ import NotFoundErrorPage from './pages/404';
 import ProtectedRoute from './components/shared/protected-route';
 import 'react-toastify/dist/ReactToastify.css';
 import RechargePage from './pages/recharge';
+import PromoPage from './pages/promo';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -37,6 +38,7 @@ const router = createBrowserRouter([
   { path: '/signin', element: <SignInPage /> },
   { path: '/register', element: <RegisterPage /> },
   { path: '/recharge', element: <ProtectedRoute Route={RechargePage} /> },
+  { path: '/promo', element: <ProtectedRoute Route={PromoPage} /> },
   { path: '/500', element: <ErrorPage /> },
   { path: '/404', element: <NotFoundErrorPage /> },
 ]);

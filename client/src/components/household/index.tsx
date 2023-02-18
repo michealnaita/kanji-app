@@ -62,7 +62,7 @@ export default function Household({ id }: { id: string }) {
   const handlers = React.useMemo(
     () => ({
       leave: () => {
-        l.mutate({ uid: userId, household: id });
+        l.mutate({ household: id });
       },
       join: () => {
         setOpen(false);
