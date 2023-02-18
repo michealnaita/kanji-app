@@ -4,7 +4,6 @@ import * as admin from 'firebase-admin';
 import Flutterwave from 'flutterwave-node-v3';
 import { Transaction, User } from '../../utils/types';
 
-admin.initializeApp();
 const db = admin.firestore();
 
 const paymentHook = functions.https.onRequest(async (req, res) => {
@@ -30,17 +29,25 @@ const paymentHook = functions.https.onRequest(async (req, res) => {
     if (fulfilled) throw new BadRequestError('transaction-already-fulfilled');
 
     // check that transaction is valid
+    // TODO: REVERT THIS
+    // const tx = await Promise.resolve({
+    //   status: 'success',
+    //   data: { status: 'successful' },
+    // });
     const tx = await flw.Transaction.verify({ id: transaction_id });
     if (tx.status === 'error' || !(tx.data && tx.data.status === 'successful'))
       return res.redirect(APP_URL + '/recharge?status=fail');
 
     if (tx.data && tx.data.status === 'successful') {
+      // TODO: REVERT THIS
+      // const { amount } = await Promise.resolve({ amount: 5000 });
       const { amount } = await flw.Transaction.find({ ref: req.query.tx_ref });
       if (!(amount == tx_amount))
         throw new InternalServerError('different-transaction-amounts');
       const userDoc = await db.doc('users/' + user_uid).get();
       const { current_amount } = userDoc.data() as User;
-      const newAmount = parseFloat(current_amount as any) + parseFloat(amount);
+      const newAmount =
+        parseFloat(current_amount as any) + parseFloat(amount as any);
       await db.doc('users/' + user_uid).update({
         current_amount: newAmount,
       });

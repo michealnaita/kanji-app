@@ -8,7 +8,6 @@ import {
 } from '../../utils/types';
 import { v4 } from 'uuid';
 
-admin.initializeApp();
 const db = admin.firestore();
 
 const generateRechargeLink = functions.https.onCall(
@@ -35,7 +34,7 @@ const generateRechargeLink = functions.https.onCall(
     const tx_ref = NODE_ENV === 'testing' ? 'tx_ref' : v4();
     const config = {
       headers: {
-        Authorization: `Bearer ${process.env.FLUTTERWAVE_SECRET_KEY}`,
+        Authorization: `Bearer ${process.env.FLW_SECRET_KEY}`,
       },
     };
     const payload = {
