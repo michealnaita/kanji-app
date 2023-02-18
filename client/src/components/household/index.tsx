@@ -11,6 +11,7 @@ import Card from '../shared/cards/card-two';
 import useLeaveHouseholdMutation from '../../api/household/leaveHousehold';
 import useJoinHouseholdMutation from '../../api/household/joinHousehold';
 import { toast } from 'react-toastify';
+import DialogPrompt from './dialog';
 
 export default function Household({ id }: { id: string }) {
   const navigate = useNavigate();
@@ -19,7 +20,9 @@ export default function Household({ id }: { id: string }) {
   const l = useLeaveHouseholdMutation();
   const j = useJoinHouseholdMutation();
   const { id: userId } = useApp();
-  const [isMember, setMember] = React.useState(false);
+  const [isMember, setMember] = React.useState<boolean>(false);
+  const [isOpen, setOpen] = React.useState<boolean>(false);
+  const [action, setAction] = React.useState<'leave' | 'join'>('leave');
   const services = {
     spotify,
     netflix,
@@ -49,21 +52,33 @@ export default function Household({ id }: { id: string }) {
   }, [isError, l.isError, j.isError]);
   React.useEffect(() => {
     if (data && userId) {
-      setMember(!!data.members.filter((m) => m.id === id).length);
+      setMember(!!data.members.filter((m) => m.id === userId).length);
     }
   }, [data]);
   React.useEffect(() => {
     if (j.data) setMember(true);
     if (l.data) setMember(false);
   }, [j.data, l.data]);
-  function handleLeaveHousehold() {
-    l.mutate({ uid: userId, household: id });
-  }
-  function handleJoinHousehold() {
-    j.mutate({ household: id });
-  }
+  const handlers = React.useMemo(
+    () => ({
+      leave: () => {
+        l.mutate({ uid: userId, household: id });
+      },
+      join: () => {
+        setOpen(false);
+        j.mutate({ household: id });
+      },
+    }),
+    []
+  );
   return (
     <>
+      <DialogPrompt
+        isOpen={isOpen}
+        proceed={handlers[action]}
+        closeModal={() => setOpen(false)}
+        action={action}
+      />
       {isLoading ? (
         <HouseholdLoader />
       ) : (
@@ -74,14 +89,21 @@ export default function Household({ id }: { id: string }) {
               isMember ? (
                 <button
                   className="danger self-center"
-                  onClick={handleLeaveHousehold}
+                  onClick={() => {
+                    setAction('leave');
+                    setOpen(true);
+                  }}
+                  disabled={l.isLoading || j.isLoading || isLoading}
                 >
                   Leave House
                 </button>
               ) : (
                 <button
                   className="primary self-center"
-                  onClick={handleJoinHousehold}
+                  onClick={() => {
+                    setAction('join');
+                    setOpen(true);
+                  }}
                   disabled={l.isLoading || j.isLoading || isLoading}
                 >
                   Join House
