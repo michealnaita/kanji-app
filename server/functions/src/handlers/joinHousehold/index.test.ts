@@ -9,7 +9,6 @@ const testEnv = functions(
   },
   './service-account.json'
 );
-
 let wrapped: any;
 describe('Add User to Household', () => {
   jest.setTimeout(30000);
@@ -56,14 +55,17 @@ describe('Add User to Household', () => {
       { households: [{ service: 'my_service' }] },
       'users/user_uid'
     );
-    await createDoc({ service: 'my_service' }, 'households/household_id');
+    await createDoc(
+      { service: 'my_service', members: [] },
+      'households/household_id'
+    );
 
     expect(
       await wrapped(
         { household: 'household_id' },
         { auth: { uid: 'user_uid' } }
       )
-    ).toEqual({ status: 'fail', code: 'ALREADY_HAS_SERVICE' });
+    ).toEqual({ status: 'fail', error: { code: 'ALREADY_HAS_SERVICE' } });
   });
   it('should return failed when user trys to join household with insufficient balance', async () => {
     await createDoc(
@@ -71,7 +73,7 @@ describe('Add User to Household', () => {
       'users/user_uid'
     );
     await createDoc(
-      { service: 'my_other_service', price: 1000 },
+      { service: 'my_other_service', price: 1000, members: [] },
       'households/household_id'
     );
     expect(
@@ -79,7 +81,27 @@ describe('Add User to Household', () => {
         { household: 'household_id' },
         { auth: { uid: 'user_uid' } }
       )
-    ).toEqual({ status: 'fail', code: 'INSUFFICIENT_BALANCE' });
+    ).toEqual({ status: 'fail', error: { code: 'INSUFFICIENT_BALANCE' } });
+  });
+  it('should return failed when user trys to join household while already member', async () => {
+    await createDoc(
+      { households: [{ service: 'my_service' }], current_amount: 9999 },
+      'users/user_uid'
+    );
+    await createDoc(
+      {
+        service: 'my_other_service',
+        price: 1000,
+        members: [{ id: 'user_uid' }],
+      },
+      'households/household_id'
+    );
+    expect(
+      await wrapped(
+        { household: 'household_id' },
+        { auth: { uid: 'user_uid' } }
+      )
+    ).toEqual({ status: 'fail', error: { code: 'ALREADY_MEMBER' } });
   });
   it('should add user to household', async () => {
     await createDoc(
@@ -90,6 +112,8 @@ describe('Add User to Household', () => {
         households: [
           {
             service: 'my_service',
+            name: 'household 2',
+            id: 'household_id-2',
           },
         ],
       },
@@ -119,6 +143,7 @@ describe('Add User to Household', () => {
       service: 'my_other_service',
       name: 'household 1',
     });
+    expect((userDoc.data() as User).reserved).toEqual(1000);
     expect((householdDoc.data() as Household).members[0]).toEqual({
       id: 'user_uid',
       phone: 7825462,
@@ -127,9 +152,18 @@ describe('Add User to Household', () => {
     expect(res).toEqual({
       status: 'success',
       data: {
-        id: 'household_id',
-        service: 'my_other_service',
-        name: 'household 1',
+        households: [
+          {
+            id: 'household_id-2',
+            service: 'my_service',
+            name: 'household 2',
+          },
+          {
+            id: 'household_id',
+            service: 'my_other_service',
+            name: 'household 1',
+          },
+        ],
       },
     });
   });

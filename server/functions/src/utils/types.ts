@@ -25,6 +25,7 @@ export type User = {
   phone: number;
   households: HouseholdSlim[];
   current_amount: number;
+  reserved?: number;
 };
 
 export type Transaction = {
@@ -45,5 +46,16 @@ export type FlutterwaveResponse = {
   message: string;
   data: {
     link: string;
+  };
+};
+
+export type FunctionResponse = {
+  status: 'fail' | 'success';
+  data?: {
+    [key: string]: any;
+  };
+  error?: {
+    message?: string;
+    code: string;
   };
 };
