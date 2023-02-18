@@ -36,7 +36,7 @@ const router = createBrowserRouter([
   },
   { path: '/signin', element: <SignInPage /> },
   { path: '/register', element: <RegisterPage /> },
-  { path: '/recharge', element: <RechargePage /> },
+  { path: '/recharge', element: <ProtectedRoute Route={RechargePage} /> },
   { path: '/500', element: <ErrorPage /> },
   { path: '/404', element: <NotFoundErrorPage /> },
 ]);

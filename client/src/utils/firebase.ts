@@ -1,5 +1,6 @@
 import { getAuth, connectAuthEmulator } from 'firebase/auth';
 import { getFirestore, connectFirestoreEmulator } from 'firebase/firestore';
+import { getFunctions, connectFunctionsEmulator } from 'firebase/functions';
 import { initializeApp } from 'firebase/app';
 
 const firebaseConfig = {
@@ -18,14 +19,17 @@ const app = initializeApp(firebaseConfig);
 // Initialize Firestore
 export const db = getFirestore(app);
 
+export const functions = getFunctions(app);
 // Initialize Firebase Authentication
 export const auth = getAuth(app);
 if (/localhost|192\.168\.0\.115/.test(window.location.host)) {
-  connectAuthEmulator(auth, 'http://192.168.0.115:9099');
-  connectFirestoreEmulator(db, '192.168.0.115', 8080);
+  connectAuthEmulator(auth, 'http://localhost:9099');
+  connectFirestoreEmulator(db, 'localhost', 8080);
+  connectFunctionsEmulator(functions, 'localhost', 5001);
 }
 if (/41\.190\.133\.177/.test(window.location.host)) {
   connectAuthEmulator(auth, 'http://41.190.133.177:9099');
   connectFirestoreEmulator(db, '41.190.133.177', 8080);
+  connectFunctionsEmulator(functions, '41.190.133.177', 5001);
 }
 export default app;

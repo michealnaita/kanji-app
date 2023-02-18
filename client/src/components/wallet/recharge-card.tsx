@@ -7,7 +7,7 @@ import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
 export default function RechargeCard() {
   const navigate = useNavigate();
-  const { current_amount } = useApp();
+  const { current_amount, firstname, lastname, email, phone } = useApp();
   const {
     register,
     handleSubmit,
@@ -15,7 +15,13 @@ export default function RechargeCard() {
   } = useForm<{ amount: string }>();
   const { isLoading, isError, error, data, mutate } = useRechargeMutation();
   function onSubmit({ amount }: { amount: string }) {
-    mutate(parseInt(amount));
+    const reqData = {
+      name: `${firstname} ${lastname}`,
+      amount: parseFloat(amount),
+      email,
+      phone,
+    };
+    mutate(reqData);
   }
   React.useEffect(() => {
     if (isError) toast.error((error as Error).message);

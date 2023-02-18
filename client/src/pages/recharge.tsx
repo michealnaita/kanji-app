@@ -6,14 +6,10 @@ import TransactionMessage from '../components/wallet/transaction-message';
 
 export default function RechargePage() {
   let [searchParams, setSearchParams] = useSearchParams();
-  const transaction = searchParams.get('transaction');
+  const status = searchParams.get('status');
   return (
     <Layout>
-      {transaction ? (
-        <TransactionMessage status={transaction} />
-      ) : (
-        <RechargeCard />
-      )}
+      {status ? <TransactionMessage status={status} /> : <RechargeCard />}
     </Layout>
   );
 }
