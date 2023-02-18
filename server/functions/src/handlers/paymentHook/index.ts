@@ -4,6 +4,7 @@ import * as admin from 'firebase-admin';
 import Flutterwave from 'flutterwave-node-v3';
 import { Transaction, User } from '../../utils/types';
 
+process.env.NODE_ENV === 'testing' && admin.initializeApp();
 const db = admin.firestore();
 
 const paymentHook = functions.https.onRequest(async (req, res) => {

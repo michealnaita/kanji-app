@@ -16,6 +16,7 @@ const testEnv = functions(
   },
   './service-account.json'
 );
+
 const db = admin.firestore();
 
 jest.mock('axios');

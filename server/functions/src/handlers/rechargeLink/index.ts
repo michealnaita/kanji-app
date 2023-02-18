@@ -7,7 +7,7 @@ import {
   Transaction,
 } from '../../utils/types';
 import { v4 } from 'uuid';
-
+process.env.NODE_ENV === 'testing' && admin.initializeApp();
 const db = admin.firestore();
 
 const generateRechargeLink = functions.https.onCall(

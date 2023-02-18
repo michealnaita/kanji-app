@@ -16,6 +16,7 @@ export interface Household extends HouseholdSlim {
     password: string;
   };
   members: HouseholdMember[];
+  status: 'active' | 'inactive';
 }
 export type User = {
   id?: string;
