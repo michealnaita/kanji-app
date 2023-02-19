@@ -32,25 +32,24 @@ const joinHousehold = functions.https.onCall(
     // order of check affects the tests
     if (!userDoc.exists)
       throw new functions.https.HttpsError('not-found', 'user not found');
+    const { current_amount, households, firstname, phone, reserved } =
+      userDoc.data() as User;
+
     const householdDoc = await db.doc('households/' + household).get();
     if (!householdDoc.exists)
       throw new functions.https.HttpsError('not-found', 'household not found');
 
     const { price, service, name, members } = householdDoc.data() as Household;
-    const { current_amount, households, firstname, phone, reserved } =
-      userDoc.data() as User;
-
     // Check if user is already in a household with the same service
-    const hasService = households.length
-      ? !!households.filter((h) => h.service === service).length
-      : false;
+    const hasService =
+      households.length &&
+      !!households.filter((h) => h.service === service).length;
     if (hasService) {
       return {
         status: 'fail',
         error: { code: 'ALREADY_HAS_SERVICE' },
       };
     }
-
     // Check if User is Already Member of household
     const isMember = !!members.filter((m) => m.id === uid).length;
     if (isMember) {
@@ -89,15 +88,15 @@ const joinHousehold = functions.https.onCall(
         phone,
       },
     ];
-
     const newReserved = reserved
       ? parseFloat(reserved as any) + parseFloat(price as any)
       : parseFloat(price as any);
-
     await db
       .doc('users/' + uid)
       .update({ households: updatedHouseholds, reserved: newReserved });
+
     await db.doc('households/' + household).update({ members: updatedMembers });
+
     return {
       status: 'success',
       data: {
