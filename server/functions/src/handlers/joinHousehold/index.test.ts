@@ -2,6 +2,7 @@ import { User, Household, FunctionResponse } from '../../utils/types';
 import functions from 'firebase-functions-test';
 import * as admin from 'firebase-admin';
 import joinHousehold from '.';
+import alertAdmin from '../../utils/alertAdmin';
 
 const testEnv = functions(
   {
@@ -13,6 +14,8 @@ let wrapped: any;
 const db = admin.firestore();
 let user: { uid: string; data: any; path: string };
 let household: { id: string; data: any; path: string };
+
+jest.mock('../../utils/alertAdmin');
 describe('Add User to Household', () => {
   jest.setTimeout(30000);
   beforeAll(() => {
@@ -123,9 +126,59 @@ describe('Add User to Household', () => {
         ).error.code
       ).toMatch(/ALREADY_MEMBER/);
     });
+    it('should return failed when user trys to join household that is already full and active', async () => {
+      user = {
+        uid: 'user_1',
+        path: 'users/user_1',
+        data: { households: [] },
+      };
+      household = {
+        id: 'household_id',
+        path: 'households/household_id',
+        data: {
+          service: 'my_service',
+          members: [],
+          status: 'active',
+        },
+      };
+      await createDoc(user.data, user.path);
+      await createDoc(household.data, household.path);
+
+      expect(
+        (
+          await wrapped(
+            { household: household.id },
+            { auth: { uid: user.uid } }
+          )
+        ).error.code
+      ).toMatch(/HOUSEHOLD_ALREADY_FULL/);
+    });
+    it('should return failed when user trys to join promotion household', async () => {
+      user = {
+        uid: 'user_1',
+        path: 'users/user_1',
+        data: { households: [] },
+      };
+      household = {
+        id: 'household_id',
+        path: 'households/household_id',
+        data: { service: 'my_service', members: [], promo: true },
+      };
+      await createDoc(user.data, user.path);
+      await createDoc(household.data, household.path);
+
+      expect(
+        (
+          await wrapped(
+            { household: household.id },
+            { auth: { uid: user.uid } }
+          )
+        ).error.code
+      ).toMatch(/IS_PROMO_HOUSEHOLD/);
+    });
   });
 
-  describe('Succesfull add user to Household', () => {
+  describe.only('Succesfull add user to Household', () => {
     let res: FunctionResponse;
     beforeAll(async () => {
       user = {
@@ -148,10 +201,10 @@ describe('Add User to Household', () => {
         id: 'household_1',
         path: 'households/household_1',
         data: {
-          service: 'my_other_service',
+          service: 'netflix',
           price: 1000,
           name: 'household 1',
-          members: [],
+          members: [{ id: '9' }, { id: '8' }],
         },
       };
       await createDoc(user.data, user.path);
@@ -164,6 +217,7 @@ describe('Add User to Household', () => {
     afterAll(async () => {
       await db.recursiveDelete(db.collection('users'));
       await db.recursiveDelete(db.collection('households'));
+      await db.recursiveDelete(db.collection('reviews'));
     });
     it('should update user households with new household and increase reserved balance', async () => {
       const u = await db.doc(user.path).get();
@@ -191,6 +245,19 @@ describe('Add User to Household', () => {
         service: household.data.service,
         name: household.data.name,
       });
+    });
+
+    // TODO: Make this test better by breaking it up
+    it.only('should set household status to active, create review and alert admin', async () => {
+      const user_2 = { ...user, uid: 'user_2' };
+      await db.doc('users/' + user_2.uid).create(user_2.data);
+      await wrapped({ household: household.id }, { auth: { uid: user_2.uid } });
+      const h = await db.doc(household.path).get();
+      const r = await db.doc('reviews/' + household.id).get();
+      const { status } = h.data() as Household;
+      expect(status).toEqual('active');
+      expect(r.exists).toBe(true);
+      expect(alertAdmin).toBeCalled();
     });
   });
 });
