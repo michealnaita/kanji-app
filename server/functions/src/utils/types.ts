@@ -7,6 +7,7 @@ export interface HouseholdSlim {
   name: string;
   id: string;
   service: string;
+  promo?: boolean;
 }
 export interface Household extends HouseholdSlim {
   price: number;
@@ -49,7 +50,12 @@ export type FlutterwaveResponse = {
     link: string;
   };
 };
-
+export type Promo = {
+  slots: number;
+  expired: boolean;
+  household: HouseholdSlim;
+  users: string[];
+};
 export type FunctionResponse = {
   status: 'fail' | 'success';
   data?: {
