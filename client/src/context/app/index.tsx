@@ -59,6 +59,7 @@ function appReducer(state: IApp, action: ActionsType): IApp {
 type ActionCreators = {
   authenticate: () => void;
   updateHouseholds: (d: HouseholdSlim[]) => void;
+  load: (d: any) => void;
 };
 
 const AppContext = React.createContext<(IApp & ActionCreators) | null>(null);

@@ -28,12 +28,7 @@ function joinHouse(
           resolve(true);
         }
         if (data.status === 'fail') {
-          if (data.error?.code == errorCodes.ALREADY_HAS_SERVICE)
-            throw new Error('You already have this service');
-          if (data.error?.code == errorCodes.INSUFFICIENT_BALANCE)
-            throw new Error(
-              'Your balnace insufficient to join this service, you can leave a houshold or top up'
-            );
+          throw new Error(data.error?.message);
         }
       })
       .catch((e) => {

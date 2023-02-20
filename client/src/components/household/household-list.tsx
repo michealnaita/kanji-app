@@ -1,12 +1,12 @@
 import React from 'react';
-import { Household } from '../../utils/types';
+import { HouseholdSlim } from '../../utils/types';
 import houseIcon from '../../assets/house.svg';
 import spotify from '../../assets/spotify.svg';
 import netflix from '../../assets/netflix.svg';
 import { Link } from 'react-router-dom';
 
 const Item: React.FC<{
-  data: Household;
+  data: HouseholdSlim;
   hideBorder: boolean;
 }> = ({ data }) => {
   const services = {
@@ -32,7 +32,7 @@ const Item: React.FC<{
   );
 };
 
-export default function HouseholdList({ items }: { items: Household[] }) {
+export default function HouseholdList({ items }: { items: HouseholdSlim[] }) {
   return (
     <ul>
       {items.map((household, i) => (

@@ -9,6 +9,8 @@ function fetchHouseholds(): Promise<Household[]> {
       .then((q) => {
         const docs: Household[] = [];
         q.forEach((d) => docs.push({ id: d.id, ...d.data() } as Household));
+        if (!docs.length)
+          reject(new Error('There arent any households to show'));
         resolve(docs);
       })
       .catch((e) => reject(e));

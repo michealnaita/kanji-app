@@ -24,7 +24,6 @@ const useAuth = () => {
           }
           setLoading(false);
         } catch (e) {
-          // navigate('/500');
           console.log(e);
           setError(e);
           setLoading(false);

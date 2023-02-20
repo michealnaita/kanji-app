@@ -164,6 +164,7 @@ export default function RegiserForm() {
         </span>
       </p>
       <button
+        disabled={isLoading}
         className={
           isLoading
             ? ' primary self-center disabled cursor-not-allowed animate-pulse'
