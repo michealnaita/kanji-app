@@ -55,7 +55,7 @@ export default function RechargeCard() {
                 message: 'please type in amount',
               },
               min: {
-                value: 5000,
+                value: 1000,
                 message: 'amount should be more than shs. 5000',
               },
             })}
