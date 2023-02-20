@@ -7,7 +7,7 @@ import dotenv from 'dotenv';
 dotenv.config();
 const testEnv = functions(
   {
-    projectId: 'kanji-app-a5036',
+    projectId: 'pinocchio-40489',
   },
   './service-account.json'
 );
@@ -25,17 +25,15 @@ async function getRediractUrl(req) {
 }
 
 const mockVerify = jest.fn();
-const mockFind = jest.fn();
 jest.mock('flutterwave-node-v3', () => {
   return jest.fn().mockImplementation(() => ({
     Transaction: {
       verify: mockVerify,
-      find: mockFind,
     },
   }));
 });
 
-describe('Rechargeb Hook', () => {
+describe('Recharge Hook', () => {
   jest.setTimeout(30000);
   const userData = { current_amount: 1000 };
   const txData: Transaction = {
@@ -92,10 +90,9 @@ describe('Rechargeb Hook', () => {
   });
   it('should update users current amount and trasnaction fulfilment if transactions is successful', async () => {
     mockVerify.mockResolvedValue({
-      status: '',
-      data: { status: 'successful' },
+      status: 'success',
+      data: { amount: 1000 },
     });
-    mockFind.mockResolvedValue({ amount: 1000 });
 
     const req = {
       query: {
@@ -111,10 +108,9 @@ describe('Rechargeb Hook', () => {
   });
   it('should redirect user to success page if transaction is successful', async () => {
     mockVerify.mockResolvedValue({
-      status: '',
-      data: { status: 'successful' },
+      status: 'success',
+      data: { amount: 1000 },
     });
-    mockFind.mockResolvedValue({ amount: 1000 });
     const req = {
       query: {
         tx_ref: 'tx_ref_1',

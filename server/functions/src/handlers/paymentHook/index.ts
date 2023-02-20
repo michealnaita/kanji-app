@@ -35,20 +35,21 @@ const paymentHook = functions.https.onRequest(async (req, res) => {
     //   status: 'success',
     //   data: { status: 'successful' },
     // });
-    const tx = await flw.Transaction.verify({ id: transaction_id });
-    if (tx.status === 'error' || !(tx.data && tx.data.status === 'successful'))
+    const { status, data } = await flw.Transaction.verify({
+      id: transaction_id,
+    });
+    if (status !== 'success')
       return res.redirect(APP_URL + '/recharge?status=fail');
 
-    if (tx.data && tx.data.status === 'successful') {
+    if (data.amount && status === 'success') {
       // TODO: REVERT THIS
       // const { amount } = await Promise.resolve({ amount: 5000 });
-      const { amount } = await flw.Transaction.find({ ref: req.query.tx_ref });
-      if (!(amount == tx_amount))
+      if (!(data.amount == tx_amount))
         throw new InternalServerError('different-transaction-amounts');
       const userDoc = await db.doc('users/' + user_uid).get();
       const { current_amount } = userDoc.data() as User;
       const newAmount =
-        parseFloat(current_amount as any) + parseFloat(amount as any);
+        parseFloat(current_amount as any) + parseFloat(data.amount as any);
       await db.doc('users/' + user_uid).update({
         current_amount: newAmount,
       });
@@ -60,12 +61,12 @@ const paymentHook = functions.https.onRequest(async (req, res) => {
     throw new InternalServerError('transaction-neither-fail-nor-success');
   } catch (e: any) {
     const s = new URLSearchParams();
-    s.set('code', e.code);
+    e.code && s.set('code', e.code);
+    e.message && s.set('message', e.message);
     const q = s.toString();
-    if (e instanceof InternalServerError)
-      return res.redirect(APP_URL + '/500?' + q);
     if (e instanceof BadRequestError)
       return res.redirect(APP_URL + '/400?' + q);
+    return res.redirect(APP_URL + '/500?' + q);
   }
 
   //

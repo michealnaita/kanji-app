@@ -5,7 +5,7 @@ import leaveHousehold from '.';
 
 const testEnv = functions(
   {
-    projectId: 'kanji-app-a5036',
+    projectId: 'pinocchio-40489',
   },
   './service-account.json'
 );
