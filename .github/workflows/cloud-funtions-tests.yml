@@ -1,0 +1,20 @@
+name: Cloud Funcitons Tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  Run_Tests:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out source code
+        uses: actions/checkout@v3
+      - name: Install Dependencies
+        run: cd server/functions && npm install
+      - name: Set up service key for tests
+        run: echo ${{ secrets.PINOCCHIO_SERVICE_ACCOUNT }} > server/functions/service-account.json
+      - name: Run Tests
+        run: cd server/functions && npm test
