@@ -49,7 +49,6 @@ export default function SignInForm() {
         <input
           type="text"
           className="form-input"
-          defaultValue={'bob@gmail.com'}
           id="email"
           {...register('email', {
             required: { value: true, message: 'email is required' },
@@ -70,7 +69,6 @@ export default function SignInForm() {
         <input
           type="password"
           className="form-input"
-          defaultValue={'@Bo123'}
           id="password"
           {...register('password', {
             required: { value: true, message: 'password is required' },

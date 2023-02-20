@@ -171,7 +171,7 @@ export default function RegiserForm() {
             : 'primary self-center'
         }
       >
-        {isLoading ? 'Please wait...' : 'Sign In'}
+        {isLoading ? 'Please wait...' : 'Register'}
       </button>
     </form>
   );
