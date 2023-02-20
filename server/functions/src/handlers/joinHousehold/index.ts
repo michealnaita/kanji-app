@@ -147,7 +147,7 @@ const joinHousehold = functions.https.onCall(
         status: 'pending',
       };
       await db.doc('reviews/' + household).create(review);
-      alertAdmin();
+      alertAdmin(household);
     }
     return {
       status: 'success',
