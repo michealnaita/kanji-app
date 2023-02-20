@@ -16,6 +16,7 @@ import ProtectedRoute from './components/shared/protected-route';
 import 'react-toastify/dist/ReactToastify.css';
 import RechargePage from './pages/recharge';
 import PromoPage from './pages/promo';
+import AboutPage from './pages/about';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -41,6 +42,7 @@ const router = createBrowserRouter([
   { path: '/promo', element: <ProtectedRoute Route={PromoPage} /> },
   { path: '/500', element: <ErrorPage /> },
   { path: '/404', element: <NotFoundErrorPage /> },
+  { path: '/about', element: <AboutPage /> },
 ]);
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <React.StrictMode>

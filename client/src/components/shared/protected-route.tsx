@@ -10,7 +10,7 @@ export default function ProtectedRoute({ Route }: { Route: React.FC }) {
   React.useEffect(() => {
     const s = new URLSearchParams();
     s.set('from', location.pathname);
-    if (!isAuth && !isLoading) navigate('/signin?' + s.toString());
+    if (!isAuth && !isLoading) navigate('/about?' + s.toString());
     if (error && !isLoading) navigate('/500');
   }, [isAuth, isLoading, error]);
   return (
