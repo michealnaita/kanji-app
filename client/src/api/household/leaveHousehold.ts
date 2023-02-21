@@ -1,4 +1,4 @@
-import { HouseholdSlim } from './../../../../server/functions/src/utils/types';
+import { HouseholdSlim } from './../../utils/types';
 import { FunctionResponse, User } from '../../utils/types';
 import { useMutation } from 'react-query';
 import { functions } from '../../utils/firebase';

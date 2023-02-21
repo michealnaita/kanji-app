@@ -17,7 +17,8 @@
     "jsx": "react-jsx",
     "paths": {
       "@assets": ["./src/assets"]
-    }
+    },
+    "rootDir": "src"
   },
   "include": ["src"],
   "references": [{ "path": "./tsconfig.node.json" }]

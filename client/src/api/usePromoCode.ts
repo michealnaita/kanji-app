@@ -1,4 +1,4 @@
-import { HouseholdSlim } from './../../../server/functions/src/utils/types';
+import { HouseholdSlim } from './../utils/types';
 import { httpsCallable } from 'firebase/functions';
 import { useMutation } from 'react-query';
 import { useApp } from '../context/app';
