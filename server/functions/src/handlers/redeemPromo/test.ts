@@ -16,6 +16,8 @@ const db = admin.firestore();
 let wrapped: any;
 let user: { uid: string; data: any; path: string };
 let promo: { id: string; data: any; path: string };
+
+jest.mock('../../utils/alertAdmin');
 describe('Redeem Promo', () => {
   jest.setTimeout(30000);
   beforeAll(() => {

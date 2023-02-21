@@ -1,7 +1,12 @@
+import {
+  Household,
+  HouseholdMember,
+} from './../../../../../client/src/utils/types';
 import { User, Promo } from './../../utils/types';
 import * as functions from 'firebase-functions';
 import * as admin from 'firebase-admin';
 import { FunctionResponse } from '../../utils/types';
+import alertAdmin from '../../utils/alertAdmin';
 
 process.env.NODE_ENV === 'testing' && admin.initializeApp();
 const db = admin.firestore();
@@ -54,7 +59,7 @@ const redeemPromo = functions.https.onCall(
     if (!userDoc.exists)
       throw new functions.https.HttpsError('not-found', 'user not found');
 
-    const { households } = userDoc.data() as User;
+    const { households, firstname, phone } = userDoc.data() as User;
 
     const hasService =
       households.length &&
@@ -67,15 +72,51 @@ const redeemPromo = functions.https.onCall(
           message: `you cant use this promo code since you already have a ${household.service} service`,
         },
       };
+
+    const householdDoc = await db.doc('household/' + household.id).get();
+    const { members, service } = householdDoc.data() as Household;
     const updatedHouseholds = [...households, household];
     const updatedSlots = parseInt(slots as any) - 1;
     const isExpired = updatedSlots === 0;
     const updatedUsers = [...users, uid];
 
+    const updatedMembers: HouseholdMember[] = [
+      ...members,
+      {
+        id: uid,
+        phone,
+        firstname,
+      },
+    ];
+
+    // TODO: extract into shared function
+    // Set household to active when it gets full
+    const serviceAllowedCount = {
+      netflix: 4,
+      spotify: 5,
+    };
+    const newStatus =
+      updatedMembers.length === serviceAllowedCount[service]
+        ? 'active'
+        : 'inactive';
+
+    await db
+      .doc('households/' + household.id)
+      .update({ members: updatedMembers, status: newStatus });
     await db.doc('users/' + uid).update({ households: updatedHouseholds });
     await db
       .doc('promos/' + code)
       .update({ slots: updatedSlots, expired: isExpired, users: updatedUsers });
+
+    if (newStatus === 'active') {
+      const review = {
+        household_id: household,
+        status: 'pending',
+      };
+      await db.doc('reviews/' + household).create(review);
+      alertAdmin(household.id);
+    }
+
     return {
       status: 'success',
       data: {
