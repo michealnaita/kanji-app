@@ -1,4 +1,4 @@
-import { Promo, User } from './../../utils/types';
+import { Promo, User, Household } from './../../utils/types';
 import functions from 'firebase-functions-test';
 import * as admin from 'firebase-admin';
 import redeemPromo from '.';
@@ -124,8 +124,15 @@ describe('Redeem Promo', () => {
   });
   describe('Successfull Promo Redeem', () => {
     let res: FunctionResponse;
-
+    let household: any;
     beforeAll(async () => {
+      household = {
+        id: 'household_1',
+        path: 'households/household_1',
+        data: {
+          members: [],
+        },
+      };
       promo = {
         id: 'promo_2',
         path: 'promos/promo_2',
@@ -133,7 +140,7 @@ describe('Redeem Promo', () => {
           slots: 2,
           users: [],
           household: {
-            id: 'household_1',
+            id: household.id,
           },
         },
       };
@@ -142,20 +149,34 @@ describe('Redeem Promo', () => {
         path: 'users/user_1',
         data: {
           households: [],
+          phone: 72572894,
+          firstname: 'Jane',
         },
       };
+
       await db.doc(promo.path).create(promo.data);
       await db.doc(user.path).create(user.data);
+      await db.doc(household.path).create(household.data);
       res = await wrapped({ code: promo.id }, { auth: { uid: user.uid } });
     });
     afterAll(async () => {
       await db.recursiveDelete(db.collection('users'));
       await db.recursiveDelete(db.collection('promos'));
+      await db.recursiveDelete(db.collection('households'));
     });
     it('should upate user with new households', async () => {
       const u = await db.doc(user.path).get();
       const { households } = u.data() as User;
       expect(households).toContainEqual(promo.data.household);
+    });
+    it('should upate household with new member', async () => {
+      const h = await db.doc(household.path).get();
+      const { members } = h.data() as Household;
+      expect(members).toContainEqual({
+        id: user.uid,
+        phone: user.data.phone,
+        firstname: user.data.firstname,
+      });
     });
     it('should upate promo with new users and reduce slot count', async () => {
       const p = await db.doc(promo.path).get();

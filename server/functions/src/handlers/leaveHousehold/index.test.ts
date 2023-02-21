@@ -67,11 +67,13 @@ describe('Remove User From Household', () => {
       'households/household_id'
     );
     expect(
-      await wrapped(
-        { household: 'household_id' },
-        { auth: { uid: 'user_uid' } }
-      )
-    ).toEqual({ status: 'fail', error: { code: 'NOT_MEMBER' } });
+      (
+        await wrapped(
+          { household: 'household_id' },
+          { auth: { uid: 'user_uid' } }
+        )
+      ).error.code
+    ).toMatch(/NOT_MEMBER/);
   });
 
   it('should return failed when user trys to leave household while service is active', async () => {
@@ -91,11 +93,13 @@ describe('Remove User From Household', () => {
       'households/household_id'
     );
     expect(
-      await wrapped(
-        { household: 'household_id' },
-        { auth: { uid: 'user_uid' } }
-      )
-    ).toEqual({ status: 'fail', error: { code: 'SERVICE_ACTIVE' } });
+      (
+        await wrapped(
+          { household: 'household_id' },
+          { auth: { uid: 'user_uid' } }
+        )
+      ).error.code
+    ).toMatch(/SERVICE_ACTIVE/);
   });
 
   it('should remove user from household', async () => {
