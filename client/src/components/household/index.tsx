@@ -160,15 +160,21 @@ export default function Household({ id }: { id: string }) {
             <div>
               <p className="text-skin-secondary font-semibold">Members</p>
               <ul>
-                {data!.members.map((member: HouseholdMember, i) => (
-                  <li
-                    className="flex justify-between text-skin-off-white"
-                    key={i}
-                  >
-                    <p>{userId === member.id ? 'You' : member.firstname}</p>
-                    <p className="text-skin-orange">{member.phone}</p>
+                {data.members.length ? (
+                  data!.members.map((member: HouseholdMember, i) => (
+                    <li
+                      className="flex justify-between text-skin-off-white"
+                      key={i}
+                    >
+                      <p>{userId === member.id ? 'You' : member.firstname}</p>
+                      <p className="text-skin-orange">{member.phone}</p>
+                    </li>
+                  ))
+                ) : (
+                  <li>
+                    <p>no members yet</p>
                   </li>
-                ))}
+                )}
               </ul>
             </div>
             {data!.logins && (
