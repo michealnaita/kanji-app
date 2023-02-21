@@ -11,7 +11,7 @@ process.env.NODE_ENV === 'testing' && admin.initializeApp();
 const db = admin.firestore();
 
 const generateRechargeLink = functions
-  .runWith({ secrets: ['APP_URL', 'PAYMENT_WEBHOOK', 'NODE_ENV'] })
+  .runWith({ secrets: ['APP_URL', 'PAYMENT_WEBHOOK'] })
   .https.onCall(
     async ({ phone, amount, email, name }: PaymentRequestData, context) => {
       const { APP_URL, PAYMENT_WEBHOOK, NODE_ENV } = process.env;

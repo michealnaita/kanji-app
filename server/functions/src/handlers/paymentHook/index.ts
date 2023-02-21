@@ -9,7 +9,7 @@ const db = admin.firestore();
 
 const paymentHook = functions
   .runWith({
-    secrets: ['FLW_PUBLIC_KEY', 'FLW_SECRET_KEY', 'NODE_ENV', 'APP_URL'],
+    secrets: ['FLW_PUBLIC_KEY', 'FLW_SECRET_KEY', 'APP_URL'],
   })
   .https.onRequest(async (req, res) => {
     const { FLW_PUBLIC_KEY, FLW_SECRET_KEY, NODE_ENV, APP_URL } = process.env;
