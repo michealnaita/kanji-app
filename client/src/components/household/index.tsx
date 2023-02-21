@@ -27,13 +27,22 @@ export default function Household({ id }: { id: string }) {
     spotify,
     netflix,
   };
+  const serviceAllowedCount = {
+    netflix: 4,
+    spotify: 5,
+  };
   const details = React.useMemo(
     () =>
       data
         ? {
             Service: data.service_membership,
             Persons: data.members.length + ' persons',
-            Vacancy: 4 - data.members.length + ' persons',
+            Vacancy:
+              serviceAllowedCount[data.service] - data.members.length === 0
+                ? 'full'
+                : serviceAllowedCount[data.service] -
+                  data.members.length +
+                  ' persons',
             Price: 'shs.' + data.price,
           }
         : null,
@@ -56,8 +65,14 @@ export default function Household({ id }: { id: string }) {
     }
   }, [data]);
   React.useEffect(() => {
-    if (j.data) setMember(true);
-    if (l.data) setMember(false);
+    if (j.data) {
+      toast.success('Successfully joined house');
+      setMember(true);
+    }
+    if (l.data) {
+      toast.success('Successfully left house');
+      setMember(false);
+    }
   }, [j.data, l.data]);
   const handlers = React.useMemo(
     () => ({
@@ -89,25 +104,33 @@ export default function Household({ id }: { id: string }) {
             button={
               isMember ? (
                 <button
-                  className="danger self-center"
                   onClick={() => {
                     setAction('leave');
                     setOpen(true);
                   }}
-                  disabled={l.isLoading || j.isLoading || isLoading}
+                  className={
+                    l.isLoading
+                      ? 'danger self-center disabled cursor-not-allowed animate-pulse'
+                      : 'danger self-center'
+                  }
+                  disabled={l.isLoading}
                 >
-                  Leave House
+                  {l.isLoading ? 'please wait...' : 'Leave House'}
                 </button>
               ) : (
                 <button
-                  className="primary self-center"
+                  className={
+                    j.isLoading
+                      ? 'primary self-center disabled cursor-not-allowed animate-pulse'
+                      : 'primary self-center'
+                  }
                   onClick={() => {
                     setAction('join');
                     setOpen(true);
                   }}
-                  disabled={l.isLoading || j.isLoading || isLoading}
+                  disabled={j.isLoading}
                 >
-                  Join House
+                  {j.isLoading ? 'please wait...' : 'Join House'}
                 </button>
               )
             }
@@ -142,7 +165,7 @@ export default function Household({ id }: { id: string }) {
                     className="flex justify-between text-skin-off-white"
                     key={i}
                   >
-                    <p>{isMember ? 'You' : member.firstname}</p>
+                    <p>{userId === member.id ? 'You' : member.firstname}</p>
                     <p className="text-skin-orange">{member.phone}</p>
                   </li>
                 ))}

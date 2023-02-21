@@ -8,7 +8,8 @@
     "strict": true,
     "target": "es2017",
     "esModuleInterop": true,
-    "noImplicitAny": false
+    "noImplicitAny": false,
+    "rootDir": "src"
   },
   "compileOnSave": true,
   "include": ["src", "src/handlers/paymentHook/.d.ts"]

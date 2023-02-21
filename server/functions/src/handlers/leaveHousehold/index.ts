@@ -44,14 +44,20 @@ const leaveHousehold = functions.https.onCall(
     if (!isMember) {
       return {
         status: 'fail',
-        error: { code: 'NOT_MEMBER' },
+        error: {
+          code: 'NOT_MEMBER',
+          message: 'You are not a member of this house',
+        },
       };
     }
     // Check if user has enough money to pay for the service
     if (status === 'active') {
       return {
         status: 'fail',
-        error: { code: 'SERVICE_ACTIVE' },
+        error: {
+          code: 'SERVICE_ACTIVE',
+          message: 'you can not leave household when it is active',
+        },
       };
     }
 

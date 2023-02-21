@@ -15,7 +15,7 @@ export type RegisterData = {
 export interface HouseholdSlim {
   name: string;
   id: string;
-  service: string;
+  service: 'netflix' | 'spotify';
 }
 export interface Household extends HouseholdSlim {
   price: number;

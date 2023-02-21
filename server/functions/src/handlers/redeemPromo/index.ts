@@ -1,7 +1,4 @@
-import {
-  Household,
-  HouseholdMember,
-} from './../../../../../client/src/utils/types';
+import { Household, HouseholdMember } from './../../utils/types';
 import { User, Promo } from './../../utils/types';
 import * as functions from 'firebase-functions';
 import * as admin from 'firebase-admin';
@@ -63,7 +60,8 @@ const redeemPromo = functions.https.onCall(
 
     const hasService =
       households.length &&
-      !!households.filter((h) => h.service == household.service);
+      !!households.filter((h) => h.service === household.service).length;
+
     if (hasService)
       return {
         status: 'fail',
@@ -73,7 +71,7 @@ const redeemPromo = functions.https.onCall(
         },
       };
 
-    const householdDoc = await db.doc('household/' + household.id).get();
+    const householdDoc = await db.doc('households/' + household.id).get();
     const { members, service } = householdDoc.data() as Household;
     const updatedHouseholds = [...households, household];
     const updatedSlots = parseInt(slots as any) - 1;

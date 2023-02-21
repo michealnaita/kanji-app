@@ -10,11 +10,20 @@ export default function SearchList({ data }: { data: Household }) {
     spotify,
     netflix,
   };
+  const serviceAllowedCount = {
+    spotify: 5,
+    netflix: 4,
+  };
   const details = React.useMemo(
     () => ({
       Service: data.service_membership,
       Persons: data.members.length + ' persons',
-      Vacancy: 4 - data.members.length + ' persons',
+      Vacancy:
+        serviceAllowedCount[data.service] - data.members.length === 0
+          ? 'full'
+          : serviceAllowedCount[data.service] -
+            data.members.length +
+            ' persons',
       Price: 'shs.' + data.price,
     }),
     [data]
