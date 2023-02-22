@@ -1,6 +1,5 @@
 import React from 'react';
 import Layout from '../components/layout';
-import logo from '../assets/logo.svg';
 import spotify from '../assets/spotify.svg';
 import netflix from '../assets/netflix.svg';
 import { Link } from 'react-router-dom';
@@ -60,7 +59,7 @@ export default function AboutPage() {
             wait for the logins
           </p>
         </div>
-        <Link to="/signin" className="text-center">
+        <Link to={'/signin' + window.location.search} className="text-center">
           <button className="primary ">Sign In</button>
         </Link>
       </div>

@@ -22,7 +22,12 @@ export default function RegiserForm() {
   }, [isError]);
   React.useEffect(() => {
     if (data) {
-      navigate('/');
+      const from = new URLSearchParams(window.location.search).get('from');
+      if (from) {
+        navigate(from);
+      } else {
+        navigate('/');
+      }
     }
   }, [data]);
 

@@ -52,4 +52,21 @@ a {
   input.form-input{
    @apply w-full text-skin-secondary border-skin-secondary border bg-transparent  rounded-lg focus:border-transparent focus:ring-skin-primary
   }
+  .tool-tip {
+    @apply absolute origin-bottom-right bottom-8 z-50 right-0 bg-[#828282] shadow-lg w-40 p-4 rounded-lg text-xs
+  }
+  .tool-tip::after{
+    content:'';
+    width: 0; 
+    height: 0; 
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    border-top: 10px solid #828282;
+    position:absolute;
+    transform-origin: bottom;
+    bottom: -10px;
+    right: 10%;
+    z-index:10
+  }
 }
+

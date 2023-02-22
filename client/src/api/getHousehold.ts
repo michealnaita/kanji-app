@@ -9,13 +9,15 @@ function fetchHousehold({ queryKey }: { queryKey: any }): Promise<Household> {
     const [_key] = queryKey;
     const docRef = doc(db, 'households', _key);
 
-    getDoc(docRef).then((s) => {
-      if (s.exists()) {
-        resolve(s.data() as Household);
-      } else {
-        reject(new NotFoundError('Household not found'));
-      }
-    });
+    getDoc(docRef)
+      .then((s) => {
+        if (s.exists()) {
+          resolve(s.data() as Household);
+        } else {
+          reject(new NotFoundError('Household not found'));
+        }
+      })
+      .catch((e) => reject(e));
   });
 }
 

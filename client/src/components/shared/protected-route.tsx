@@ -3,14 +3,20 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import useAuth from '../../utils/useAuth';
 import Logo from '../../assets/logo-white.svg';
 
-export default function ProtectedRoute({ Route }: { Route: React.FC }) {
+export default function ProtectedRoute({
+  Route,
+  partial,
+}: {
+  Route: React.FC;
+  partial?: true;
+}) {
   const { isAuth, isLoading, error } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
   React.useEffect(() => {
     const s = new URLSearchParams();
     s.set('from', location.pathname);
-    if (!isAuth && !isLoading) navigate('/about?' + s.toString());
+    if (!isAuth && !isLoading && !partial) navigate('/about?' + s.toString());
     if (error && !isLoading) navigate('/500');
   }, [isAuth, isLoading, error]);
   return (
@@ -25,7 +31,7 @@ export default function ProtectedRoute({ Route }: { Route: React.FC }) {
           />
         </div>
       ) : (
-        <>{isAuth && <Route />}</>
+        <>{(partial || isAuth) && <Route />}</>
       )}
     </>
   );

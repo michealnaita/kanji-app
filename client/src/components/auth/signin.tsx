@@ -83,7 +83,7 @@ export default function SignInForm() {
       <p className="text-skin-secondary italic">
         Don't have account{' '}
         <span className="text-skin-orange">
-          <Link to="/register">Create account</Link>
+          <Link to={'/register' + window.location.search}>Create account</Link>
         </span>
       </p>
       <button

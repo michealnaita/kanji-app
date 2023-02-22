@@ -35,7 +35,7 @@ const router = createBrowserRouter([
   { path: '/search', element: <ProtectedRoute Route={Search} /> },
   {
     path: '/house/:householdId',
-    element: <ProtectedRoute Route={HouseholdPage} />,
+    element: <ProtectedRoute Route={HouseholdPage} partial />,
   },
   { path: '/signin', element: <SignInPage /> },
   { path: '/register', element: <RegisterPage /> },
