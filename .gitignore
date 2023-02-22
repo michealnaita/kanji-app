@@ -35,6 +35,7 @@ server/data
 *.njsproj
 *.sln
 *.sw?
+.firebase
 
 # Coverage directory used by tools like istanbul
 server/functions/src/coverage

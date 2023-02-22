@@ -50,8 +50,8 @@ const generateRechargeLink = functions
           name,
         },
         customizations: {
-          title: 'Kanji App',
-          logo: APP_URL + '/images/logo.svg',
+          title: 'Littleneck',
+          logo: APP_URL + '/logo.svg',
         },
       };
       try {
@@ -73,7 +73,7 @@ const generateRechargeLink = functions
         await db.doc('transactions/' + tx_ref).create(txData);
         return data;
       } catch (e: any) {
-        if (e! instanceof functions.https.HttpsError)
+        if (!(e instanceof functions.https.HttpsError))
           throw new functions.https.HttpsError('unknown', e.message);
         throw e;
       }
