@@ -4,7 +4,7 @@ import Search from '../components/search';
 
 export default function Home() {
   return (
-    <Layout>
+    <Layout title="Browse">
       <Search />
     </Layout>
   );

@@ -6,7 +6,7 @@ import WalletCard from '../components/wallet/wallet-card';
 
 export default function Home() {
   return (
-    <Layout>
+    <Layout title="Dashboard">
       <WalletCard />
       <HouseholdCard />
       <Link to="/search" className="self-center">

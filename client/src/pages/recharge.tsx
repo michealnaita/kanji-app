@@ -8,7 +8,7 @@ export default function RechargePage() {
   let [searchParams, setSearchParams] = useSearchParams();
   const status = searchParams.get('status');
   return (
-    <Layout>
+    <Layout title="Recharge">
       {status ? <TransactionMessage status={status} /> : <RechargeCard />}
     </Layout>
   );

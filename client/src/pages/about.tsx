@@ -7,7 +7,7 @@ import { Link } from 'react-router-dom';
 
 export default function AboutPage() {
   return (
-    <Layout>
+    <Layout title="About">
       <div className="flex flex-col justify-center space-y-8 p-8">
         <h1 className="text-2xl font-bold text-center">
           Welcome to littleneck

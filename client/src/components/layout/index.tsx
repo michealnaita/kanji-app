@@ -2,8 +2,15 @@ import React from 'react';
 import { ToastContainer } from 'react-toastify';
 import { useApp } from '../../context/app';
 import Header from './header';
+import { Helmet } from 'react-helmet';
 
-export default function Layout({ children }: { children: any }) {
+export default function Layout({
+  children,
+  title,
+}: {
+  children: any;
+  title: string;
+}) {
   const { current_amount, username, isAuthenticated } = useApp();
   // React.useEffect(() => {
   //   setTimeout(function () {
@@ -12,6 +19,9 @@ export default function Layout({ children }: { children: any }) {
   // }, []);
   return (
     <>
+      <Helmet>
+        <title>{title + ' | Littleneck'}</title>
+      </Helmet>
       <ToastContainer
         position="top-right"
         autoClose={3000}

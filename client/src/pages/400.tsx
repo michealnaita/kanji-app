@@ -6,7 +6,7 @@ export default function ErrorPage() {
   const message = searchParams.get('message');
   const code = searchParams.get('code');
   return (
-    <Layout>
+    <Layout title="400">
       <div className="w-full h-full flex flex-col items-center justify-center space-y-3">
         <h1 className="text-4xl font-semibold">400</h1>
         <p className="text-xl text-skin-secondary">

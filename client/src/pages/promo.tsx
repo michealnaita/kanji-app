@@ -6,7 +6,7 @@ export default function RechargePage() {
   let [searchParams, setSearchParams] = useSearchParams();
   const status = searchParams.get('status');
   return (
-    <Layout>
+    <Layout title="Promo">
       <PromoCard />
     </Layout>
   );

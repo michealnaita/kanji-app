@@ -11,7 +11,7 @@ export default function HouseholdPage() {
     if (isAuthenticated) navigate('/');
   }, []);
   return (
-    <Layout>
+    <Layout title="Sign In">
       <SignInForm />
     </Layout>
   );
