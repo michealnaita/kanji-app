@@ -40,7 +40,7 @@ export default function Header({
                 <Menu.Item>
                   {({ active }) => (
                     <button className="hover:text-skin-orange text-skin-secondary text-right pt-4 px-4">
-                      <a href="mailto:michealnaita15@gmail.com">Help</a>
+                      <a href="mailto:littleneck.app@gmail.com">Help</a>
                     </button>
                   )}
                 </Menu.Item>
