@@ -8,8 +8,6 @@
   font-weight: 400;
 
   color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -32,8 +30,11 @@ a {
 @tailwind utilities;
 
 @layer components {
-  p,label { 
-    @apply text-skin-off-white
+  .align-center{
+    @apply  flex flex-col items-center
+  }
+  .center{
+    @apply flex justify-center items-center
   }
   .card {
     @apply shadow-lg bg-skin-secondary rounded-2xl p-7 
@@ -44,7 +45,10 @@ a {
   }
 
   button.primary {
-    @apply bg-skin-lime w-full max-w-xs  text-white rounded-2xl font-semibold py-4
+    @apply bg-skin-lime w-full max-w-xs text-skin-dark  rounded-2xl font-semibold py-4
+  }
+  button.secondary{
+    @apply border-skin-lime border w-full max-w-xs  text-white rounded-2xl font-semibold py-4
   }
   button.danger {
     @apply bg-skin-red w-full max-w-xs text-white rounded-2xl font-semibold py-4

@@ -5,9 +5,9 @@ module.exports = {
     extend: {
       backgroundColor: {
         skin: {
-          primary: '#17191B',
+          primary: '#1E2022',
           secondary: '#1E2022',
-          lime: '#75B975',
+          lime: '#9EFC27',
           red: '#EB434D',
         },
       },
@@ -18,15 +18,18 @@ module.exports = {
           'off-white': '#D2D2D3',
           primary: '#D2D2D3',
           secondary: '#828282',
-          gary: '#828282',
-          lime: '#75B975',
+          gary: '#929292',
+          gray: '#929292',
+          lime: '#9EFC27',
           red: '#EB434D',
+          dark: '#1E2022',
         },
       },
       borderColor: {
         skin: {
           primary: '#F6955C',
           secondary: '#828282',
+          lime: '#9EFC27',
         },
       },
       ringColor: {

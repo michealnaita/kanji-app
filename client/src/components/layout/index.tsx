@@ -7,8 +7,10 @@ import { Helmet } from 'react-helmet';
 export default function Layout({
   children,
   title,
+  hide,
 }: {
   children: any;
+  hide?: true;
   title: string;
 }) {
   const { current_amount, username, isAuthenticated } = useApp();
@@ -30,13 +32,17 @@ export default function Layout({
         closeOnClick
         theme="light"
       />
-      <div className="bg-skin-primary w-screen overflow-y-scroll h-full border-b-4 border-skin-primary flex flex-col">
-        <Header
-          amount={current_amount}
-          username={username}
-          isAuthenticated={isAuthenticated}
-        />
-        <div className="p-6  flex  flex-col container space-y-6 flex-1 overflow-y-scroll">
+      <div className="bg-skin-primary w-screen overflow-y-scroll h-full  flex flex-col">
+        <>
+          {!hide && (
+            <Header
+              amount={current_amount}
+              username={username}
+              isAuthenticated={isAuthenticated}
+            />
+          )}
+        </>
+        <div className="  flex  flex-col bg-red-10  flex-1 overflow-y-scroll">
           {children}
         </div>
       </div>
