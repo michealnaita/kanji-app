@@ -2,29 +2,22 @@ import React from 'react';
 import { useForm } from 'react-hook-form';
 import { Link, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import useSignInMutation from '../../api/auth/signin';
-import { SignInData } from '../../utils/types';
+import useResetPasswordMutation from '../../api/auth/reset-password';
 
 export default function SignInForm() {
   const navigate = useNavigate();
-  const { mutate, isLoading, error, isError, data } = useSignInMutation();
+  const { mutate, isLoading, error, isError, data } =
+    useResetPasswordMutation();
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<SignInData>();
-  function onSubmit(data: SignInData) {
+  } = useForm<{ email: string }>();
+  function onSubmit(data: { email: string }) {
     mutate(data);
   }
   React.useEffect(() => {
-    if (data) {
-      const from = new URLSearchParams(window.location.search).get('from');
-      if (from) {
-        navigate(from);
-      } else {
-        navigate('/');
-      }
-    }
+    if (data) navigate('/signin');
   }, [data]);
   React.useEffect(() => {
     if (isError) toast.error((error as Error).message);
@@ -35,9 +28,9 @@ export default function SignInForm() {
       onSubmit={handleSubmit(onSubmit)}
     >
       <div className="space-y-4">
-        <h1 className="font-semibold text-2xl">Welcome back</h1>
+        <h1 className="font-semibold text-2xl">Reset Password</h1>
         <p className="ont-semibold text-base text-skin-gray">
-          Sign in to continue
+          We will send a password reset link to your email
         </p>
       </div>
       <div className="space-y-4">
@@ -61,27 +54,6 @@ export default function SignInForm() {
             </span>
           )}
         </div>
-        <div className="form-group">
-          <label htmlFor="password">Password</label>
-          <input
-            type="password"
-            className="form-input"
-            id="password"
-            {...register('password', {
-              required: { value: true, message: 'password is required' },
-            })}
-          />
-          {errors.password && (
-            <span className="text-skin-red text-sm italic">
-              {errors.password.message}
-            </span>
-          )}
-        </div>
-        <p className="text-skin-secondary text-center underline">
-          <Link to={'/password'} className="text-skin-gray">
-            Forgot password?
-          </Link>
-        </p>
       </div>
       <div className="space-y-4">
         <button
@@ -92,7 +64,7 @@ export default function SignInForm() {
               : 'primary self-center'
           }
         >
-          {isLoading ? 'Please wait...' : 'Sign In'}
+          {isLoading ? 'Please wait...' : 'Reset'}
         </button>
         <p className="text-skin-secondary text-center underline">
           <Link

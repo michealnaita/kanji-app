@@ -18,6 +18,8 @@ import RechargePage from './pages/recharge';
 import PromoPage from './pages/promo';
 import AboutPage from './pages/about';
 import BadRequestErrorPage from './pages/400';
+import ResetPasswordPage from './pages/reset-password';
+import VerifyEmailPage from './pages/verify-email';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -45,6 +47,8 @@ const router = createBrowserRouter([
   { path: '/404', element: <NotFoundErrorPage /> },
   { path: '/400', element: <BadRequestErrorPage /> },
   { path: '/about', element: <AboutPage /> },
+  { path: '/password', element: <ResetPasswordPage /> },
+  { path: '/verifyEmail', element: <VerifyEmailPage /> },
 ]);
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <React.StrictMode>

@@ -6,7 +6,7 @@ module.exports = {
       backgroundColor: {
         skin: {
           primary: '#1E2022',
-          secondary: '#1E2022',
+          secondary: '#292B2D',
           lime: '#9EFC27',
           red: '#EB434D',
         },
@@ -17,7 +17,7 @@ module.exports = {
           orange: '#F6955C',
           'off-white': '#D2D2D3',
           primary: '#D2D2D3',
-          secondary: '#828282',
+          secondary: '#929292',
           gary: '#929292',
           gray: '#929292',
           lime: '#9EFC27',
@@ -34,7 +34,7 @@ module.exports = {
       },
       ringColor: {
         skin: {
-          primary: '#F6955C',
+          primary: '#9EFC27',
         },
       },
       fontFamily: {
@@ -43,5 +43,4 @@ module.exports = {
       },
     },
   },
-  plugins: [require('@tailwindcss/forms')],
 };

@@ -14,7 +14,7 @@ export default function Header({
 }: headerType) {
   return (
     <div className="px-6 py-4 container ">
-      <div className=" items-center pb-2 flex justify-between border-b-2 border-neutral-800">
+      <div className=" items-center pb-2 flex justify-between">
         {isAuthenticated ? (
           <Link to="/">
             <img src={Logo} alt="logo" width={35} />

@@ -8,8 +8,8 @@
   font-weight: 400;
 
   color-scheme: light dark;
-
   font-synthesis: none;
+  color:white;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -24,6 +24,7 @@ button,
 select,
 a {
     -webkit-tap-highlight-color: transparent;
+    outline: 0;
 }
 @tailwind base;
 @tailwind components;
@@ -54,7 +55,10 @@ a {
     @apply bg-skin-red w-full max-w-xs text-white rounded-2xl font-semibold py-4
   }
   input.form-input{
-   @apply w-full text-skin-secondary border-skin-secondary border bg-transparent  rounded-lg focus:border-transparent focus:ring-skin-primary
+   @apply w-full text-skin-secondary font-semibold border-skin-secondary outline-0 ring-0 border-2 bg-transparent  py-2 px-4 rounded-2xl focus:border-skin-lime
+  }
+  .form-group{
+    @apply space-y-2
   }
   .tool-tip {
     @apply absolute origin-bottom-right bottom-8 z-50 right-0 bg-[#828282] shadow-lg w-40 p-4 rounded-lg text-xs

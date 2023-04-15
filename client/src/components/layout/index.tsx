@@ -1,17 +1,19 @@
-import React from 'react';
 import { ToastContainer } from 'react-toastify';
 import { useApp } from '../../context/app';
 import Header from './header';
 import { Helmet } from 'react-helmet';
+import cn from 'classnames';
 
 export default function Layout({
   children,
   title,
   hide,
+  className,
 }: {
   children: any;
   hide?: true;
   title: string;
+  className?: string;
 }) {
   const { current_amount, username, isAuthenticated } = useApp();
   // React.useEffect(() => {
@@ -42,7 +44,12 @@ export default function Layout({
             />
           )}
         </>
-        <div className="  flex  flex-col bg-red-10  flex-1 overflow-y-scroll">
+        <div
+          className={cn(
+            'flex  flex-col bg-red-10 flex-1 overflow-y-scroll',
+            className
+          )}
+        >
           {children}
         </div>
       </div>
