@@ -83,7 +83,7 @@ export default function SignInForm() {
           </Link>
         </p>
       </div>
-      <div className="space-y-4">
+      <div className="space-y-4 place-self-center">
         <button
           disabled={isLoading}
           className={

@@ -48,7 +48,7 @@ const router = createBrowserRouter([
   { path: '/400', element: <BadRequestErrorPage /> },
   { path: '/about', element: <AboutPage /> },
   { path: '/password', element: <ResetPasswordPage /> },
-  { path: '/verifyEmail', element: <VerifyEmailPage /> },
+  { path: '/verifyEmail', element: <ProtectedRoute Route={VerifyEmailPage} /> },
 ]);
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <React.StrictMode>

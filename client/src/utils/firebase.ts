@@ -22,14 +22,9 @@ export const db = getFirestore(app);
 export const functions = getFunctions(app);
 // Initialize Firebase Authentication
 export const auth = getAuth(app);
-if (/localhost|192\.168\.0\.115/.test(window.location.host)) {
-  connectAuthEmulator(auth, 'http://localhost:9099');
-  connectFirestoreEmulator(db, 'localhost', 8080);
-  connectFunctionsEmulator(functions, 'localhost', 5001);
-}
-if (/41\.190\.133\.177/.test(window.location.host)) {
-  connectAuthEmulator(auth, 'http://41.190.133.177:9099');
-  connectFirestoreEmulator(db, '41.190.133.177', 8080);
-  connectFunctionsEmulator(functions, '41.190.133.177', 5001);
+if (import.meta.env.DEV) {
+  connectAuthEmulator(auth, `http://${window.location.hostname}:9099`);
+  connectFirestoreEmulator(db, window.location.hostname, 8080);
+  connectFunctionsEmulator(functions, window.location.hostname, 5001);
 }
 export default app;

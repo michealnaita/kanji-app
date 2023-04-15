@@ -34,7 +34,7 @@ export default function RegiserForm() {
 
   return (
     <form
-      className="card flex flex-col form space-y-10"
+      className="flex flex-col form space-y-10"
       onSubmit={handleSubmit(onSubmit)}
     >
       <div className="space-y-4">
@@ -187,7 +187,7 @@ export default function RegiserForm() {
           )}
         </div>
       </div>
-      <div className="space-y-4">
+      <div className="space-y-4 place-self-center">
         <button
           disabled={isLoading}
           className={
@@ -199,7 +199,7 @@ export default function RegiserForm() {
           {isLoading ? 'Please wait...' : 'Register'}
         </button>
         <p className="text-skin-secondary text-center underline">
-          <Link to={'/password'} className="text-skin-gray">
+          <Link to={'/signin'} className="text-skin-gray">
             Already have an account
           </Link>
         </p>
