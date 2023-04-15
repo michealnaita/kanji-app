@@ -64,7 +64,7 @@ const Details: React.FC = () => {
 };
 export default function AboutPage() {
   return (
-    <Layout title="About" hide>
+    <Layout title="About" hide className="p-0">
       <div className="w-full relative">
         <img src={landingImage} alt="landing image" />
         <div className="absolute top-1/2 left-1/2 transfrom -translate-x-1/2 -translate-y-1/2">

@@ -4,9 +4,8 @@ import Card from '../shared/cards/card-two';
 import { useForm } from 'react-hook-form';
 import useRechargeMutation from '../../api/getRechargeLink';
 import { toast } from 'react-toastify';
-import { useNavigate } from 'react-router-dom';
+import { formatPrice } from '../../utils/utils';
 export default function RechargeCard() {
-  const navigate = useNavigate();
   const { current_amount, firstname, lastname, email, phone } = useApp();
   const {
     register,
@@ -30,15 +29,18 @@ export default function RechargeCard() {
     if (data) window.location.href = data;
   }, [data]);
   return (
-    <Card title="Wallet">
+    <Card title="Recharge">
       <form
-        className="flex flex-col space-y-4 "
+        className="flex flex-col space-y-7"
         onSubmit={handleSubmit(onSubmit)}
       >
-        <h1 className="text-skin-secondary font-semibold text-xl">
-          Your Current Amount: shs.{current_amount}
-        </h1>
-        <div>
+        <div className="space-y-4">
+          <p className="font-semibold">Current balance</p>
+          <div className="card text-2xl font-semibold text-center text-skin-secondary">
+            <span>UGX {formatPrice(current_amount)}</span>
+          </div>
+        </div>
+        <div className="form-group">
           <label htmlFor="amount">
             Amount{' '}
             <span className="text-skin-secondary italic text-sm">
@@ -67,13 +69,14 @@ export default function RechargeCard() {
           )}
         </div>
         <button
+          disabled={isLoading}
           className={
             isLoading
-              ? 'font-semibold text-skin-secondary animate-pulse cursor-not-allowed'
-              : 'text-skin-lime font-semibold'
+              ? 'primary self-center disabled cursor-not-allowed animate-pulse'
+              : 'primary self-center'
           }
         >
-          {isLoading ? 'please wait...' : 'recharge'}
+          {isLoading ? 'Please wait...' : 'Confirm'}
         </button>
       </form>
     </Card>

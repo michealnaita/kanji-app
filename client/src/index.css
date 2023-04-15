@@ -38,7 +38,7 @@ a {
     @apply flex justify-center items-center
   }
   .card {
-    @apply shadow-lg bg-skin-secondary rounded-2xl p-7 
+    @apply drop-shadow-md bg-skin-secondary rounded-2xl p-7 
   }
   .scroll-view{
     @apply relative after:bg-gradient-to-t after:from-[#17191B] after:via-[#17191B]  after:bottom-0 after:z-10 after:w-full after:h-8 after:absolute;

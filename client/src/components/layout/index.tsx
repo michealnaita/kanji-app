@@ -46,7 +46,7 @@ export default function Layout({
         </>
         <div
           className={cn(
-            'flex  flex-col bg-red-10 flex-1 overflow-y-scroll',
+            'flex  flex-col bg-red-10 flex-1 p-6 overflow-y-scroll',
             className
           )}
         >
