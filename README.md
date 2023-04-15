@@ -1,1 +1,1 @@
-# Kangi App
+# Loscribe
