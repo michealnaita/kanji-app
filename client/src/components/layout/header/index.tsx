@@ -42,6 +42,13 @@ export default function Header({
                 </Menu.Item>
                 <Menu.Item>
                   {({ active }) => (
+                    <button className="hover:text-skin-orange text-skin-secondary text-right px-4">
+                      <Link to="/profile">profile</Link>
+                    </button>
+                  )}
+                </Menu.Item>
+                <Menu.Item>
+                  {({ active }) => (
                     <button className="hover:text-skin-orange text-skin-secondary text-right pt-4 px-4">
                       <a href="mailto:littleneck.app@gmail.com">Help</a>
                     </button>
