@@ -34,7 +34,7 @@ export type User = {
   phone: number;
   households: Household[];
   current_amount: number;
-  notifications: string[];
+  notifications?: string[];
 };
 
 export type FunctionResponse = {
