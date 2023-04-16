@@ -1,19 +1,12 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
-import HouseholdCard from '../components/household/houseHold-card';
 import Layout from '../components/layout';
+import ServiceCards from '../components/services/dashboard';
 import WalletCard from '../components/wallet/wallet-card';
 
 export default function Home() {
   return (
-    <Layout title="Dashboard">
+    <Layout title="Dashboard" className="space-y-10 !pb-10">
       <WalletCard />
-      <HouseholdCard />
-      <Link to="/search" className="self-center">
-        <button className="text-skin-lime font-semibold underline-offset-2 underline self-center">
-          Browse Households
-        </button>
-      </Link>
+      <ServiceCards />
     </Layout>
   );
 }

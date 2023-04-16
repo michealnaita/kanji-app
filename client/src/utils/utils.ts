@@ -1,3 +1,6 @@
+import spotify from '../assets/spotify.svg';
+import netflix from '../assets/netflix.svg';
+import prime from '../assets/prime.svg';
 export function formatPrice(price: number): string {
   const priceStr = price.toString();
   let formatedPrice: string = '';
@@ -11,4 +14,13 @@ export function formatPrice(price: number): string {
       }
     });
   return Array.from(formatedPrice).reverse().join('');
+}
+
+export function getBrandLogo(name: string) {
+  const services: { [s: string]: any } = {
+    spotify,
+    netflix,
+    prime,
+  };
+  return services[name];
 }

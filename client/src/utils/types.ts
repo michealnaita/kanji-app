@@ -48,3 +48,10 @@ export type FunctionResponse = {
     code: string;
   };
 };
+
+export type Service = {
+  id: string;
+  price: number;
+  membership: string;
+  renewal: string;
+};

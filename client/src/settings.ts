@@ -10,6 +10,7 @@ export const routes = {
   signin: '/signin',
   register: '/register',
   notifications: '#',
+  services: '/services',
 };
 
 export const settings = {
