@@ -15,12 +15,7 @@ export default function Layout({
   title: string;
   className?: string;
 }) {
-  const { current_amount, username, isAuthenticated } = useApp();
-  // React.useEffect(() => {
-  //   setTimeout(function () {
-  //     window.scrollTo(0, document.body.scrollHeight);
-  //   }, 1000);
-  // }, []);
+  const { notifications, firstname, isAuthenticated } = useApp();
   return (
     <>
       <Helmet>
@@ -38,8 +33,8 @@ export default function Layout({
         <>
           {!hide && (
             <Header
-              amount={current_amount}
-              username={username}
+              notifications={notifications}
+              username={firstname}
               isAuthenticated={isAuthenticated}
             />
           )}

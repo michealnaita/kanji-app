@@ -11,6 +11,7 @@ interface IApp {
   current_amount: number;
   households: HouseholdSlim[];
   isAuthenticated: boolean;
+  notifications: string[];
 }
 
 export enum Actions {
@@ -38,6 +39,7 @@ const initialState: IApp = {
   lastname: '',
   phone: 0,
   email: '',
+  notifications: [],
 };
 
 function appReducer(state: IApp, action: ActionsType): IApp {

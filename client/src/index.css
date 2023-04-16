@@ -95,5 +95,15 @@ a {
     right: 10%;
     z-index:10
   }
+
+  .menu-card{
+    @apply fixed top-0 transform translate-y-20 z-10 w-screen max-w-sm right-0 px-6 before:fixed before:bg-black before:bg-opacity-50 before:top-0 before:transform before:-translate-y-20 before:left-0 before:pointer-events-none before:h-screen before:w-screen
+  }
+  .menu-card .menu-container {
+    @apply bg-white rounded-md drop-shadow-md p-7
+  }
+  .menu-item {
+    @apply flex space-x-4 font-semibold items-center
+  }
 }
 

@@ -1,3 +1,6 @@
+import bell from './assets/icons/bell.svg';
+import wallet from './assets/icons/wallet.svg';
+import avatar from './assets/icons/avatar.svg';
 export const routes = {
   about: '/about',
   dashboard: '/',
@@ -6,6 +9,7 @@ export const routes = {
   signout: '/signout',
   signin: '/signin',
   register: '/register',
+  notifications: '#',
 };
 
 export const settings = {
@@ -23,5 +27,11 @@ export const settings = {
     2: 'Load money onto your account using mobile money',
     3: 'Find the service',
     4: 'Find the service',
+  },
+  support: 'loscribe@gmail.com',
+  menu: {
+    Profile: { link: '/profile', icon: avatar },
+    'Transaction History': { link: '#', icon: wallet },
+    Notifications: { link: '#', icon: bell },
   },
 };

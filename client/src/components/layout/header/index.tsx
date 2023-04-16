@@ -1,74 +1,49 @@
-import { Menu } from '@headlessui/react';
-import { BsPlus } from 'react-icons/bs';
+import { Popover } from '@headlessui/react';
 import { Link } from 'react-router-dom';
 import Logo from '../../../assets/logo.svg';
+import bellIcon from '../../../assets/icons/bell-light.svg';
+import { routes } from '../../../settings';
+import { RxAvatar } from 'react-icons/rx';
+import NotifcationsWrapper from './notifications';
+import MenuWrapper from './menu';
+
 type headerType = {
   username?: string;
-  amount?: number;
+  notifications?: string[];
   isAuthenticated: boolean;
 };
+
 export default function Header({
   username,
-  amount,
   isAuthenticated,
+  notifications,
 }: headerType) {
   return (
     <div className="px-6 py-4 container ">
       <div className=" items-center pb-2 flex justify-between">
         {isAuthenticated ? (
           <Link to="/">
-            <img src={Logo} alt="logo" width={35} />
+            <img src={Logo} alt="logo" width={20} />
           </Link>
         ) : (
           <a href="/">
-            <img src={Logo} alt="logo" width={35} />
+            <img src={Logo} alt="logo" width={20} />
           </a>
         )}
         {isAuthenticated && (
-          <div className="flex flex-col items-end">
-            <Menu>
-              <Menu.Button>
-                <p className="font-semibold text-skin-cyan text-lg">
-                  {username}
-                </p>
-              </Menu.Button>
-              <Menu.Items className="absolute bg-skin-secondary shadow-lg origin-top-right divide-y divide-[rgba(255,255,255,0.1)] py-6 z-10 mt-8 w-56 rounded-lg flex flex-col space-y-4">
-                <Menu.Item>
-                  {({ active }) => (
-                    <button className="hover:text-skin-orange text-skin-secondary text-right px-4">
-                      <Link to="/promo">Use Promo</Link>
-                    </button>
-                  )}
-                </Menu.Item>
-                <Menu.Item>
-                  {({ active }) => (
-                    <button className="hover:text-skin-orange text-skin-secondary text-right px-4">
-                      <Link to="/profile">profile</Link>
-                    </button>
-                  )}
-                </Menu.Item>
-                <Menu.Item>
-                  {({ active }) => (
-                    <button className="hover:text-skin-orange text-skin-secondary text-right pt-4 px-4">
-                      <a href="mailto:littleneck.app@gmail.com">Help</a>
-                    </button>
-                  )}
-                </Menu.Item>
-                <Menu.Item>
-                  {({ active }) => (
-                    <button className="hover:text-skin-orange text-skin-secondary text-right pt-4 px-4">
-                      <Link to="/signout">Log out</Link>
-                    </button>
-                  )}
-                </Menu.Item>
-              </Menu.Items>
-            </Menu>
-            <p className="flex items-center space-x-2 text-base">
-              <span className="text-white opacity-50 ">shs. {amount} </span>
-              <Link to="/recharge">
-                <BsPlus size={28} color="#75B975" />
-              </Link>
-            </p>
+          <div className="flex space-x-4 items-center">
+            <NotifcationsWrapper notifications={notifications}>
+              <div className="relative center w-8 h-8">
+                <img src={bellIcon} alt="" />
+                {notifications && notifications.length && (
+                  <div className="absolute w-2 h-2 rounded-full bg-skin-lime top-0 right-0" />
+                )}
+              </div>
+            </NotifcationsWrapper>
+            <p className="font-semibold text-skin-lime ">{username}</p>
+            <MenuWrapper>
+              <RxAvatar color="white" size="35" />
+            </MenuWrapper>
           </div>
         )}
       </div>
