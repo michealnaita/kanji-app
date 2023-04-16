@@ -35,9 +35,9 @@ export default function Header({
             <NotifcationsWrapper notifications={notifications}>
               <div className="relative center w-8 h-8">
                 <img src={bellIcon} alt="" />
-                {notifications && notifications.length && (
+                {notifications && notifications.length ? (
                   <div className="absolute w-2 h-2 rounded-full bg-skin-lime top-0 right-0" />
-                )}
+                ) : null}
               </div>
             </NotifcationsWrapper>
             <p className="font-semibold text-skin-lime ">{username}</p>
