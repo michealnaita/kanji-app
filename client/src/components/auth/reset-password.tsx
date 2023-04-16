@@ -24,7 +24,7 @@ export default function SignInForm() {
   }, [isError]);
   return (
     <form
-      className="px-6 flex flex-col form space-y-10"
+      className=" flex flex-col form space-y-10"
       onSubmit={handleSubmit(onSubmit)}
     >
       <div className="space-y-4">
@@ -33,7 +33,7 @@ export default function SignInForm() {
           We will send a password reset link to your email
         </p>
       </div>
-      <div className="space-y-4">
+      <div className="space-y-4  align-center">
         <div className="form-group">
           <label htmlFor="email">Email</label>
           <input
@@ -55,7 +55,7 @@ export default function SignInForm() {
           )}
         </div>
       </div>
-      <div className="space-y-4 place-self-center">
+      <div className="space-y-4 align-center">
         <button
           disabled={isLoading}
           className={

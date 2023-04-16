@@ -34,7 +34,7 @@ export default function Layout({
         closeOnClick
         theme="light"
       />
-      <div className="bg-skin-primary w-screen overflow-y-scroll h-full  flex flex-col">
+      <div className="bg-skin-primary w-screen overflow-y-auto h-full  flex flex-col">
         <>
           {!hide && (
             <Header
@@ -46,7 +46,7 @@ export default function Layout({
         </>
         <div
           className={cn(
-            'flex  flex-col bg-red-10 flex-1 p-6 overflow-y-scroll',
+            'flex  flex-col bg-red-10 flex-1 p-6 overflow-y-auto',
             className
           )}
         >

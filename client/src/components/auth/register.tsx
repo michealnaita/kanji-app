@@ -44,7 +44,7 @@ export default function RegiserForm() {
         </p>
       </div>
 
-      <div className="space-y-4">
+      <div className="space-y-4 align-center">
         <div
           className="form-group
         "
@@ -187,7 +187,7 @@ export default function RegiserForm() {
           )}
         </div>
       </div>
-      <div className="space-y-4 place-self-center">
+      <div className="space-y-4 align-center">
         <button
           disabled={isLoading}
           className={

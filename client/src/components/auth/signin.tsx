@@ -40,7 +40,7 @@ export default function SignInForm() {
           Sign in to continue
         </p>
       </div>
-      <div className="space-y-4">
+      <div className="space-y-4 align-center">
         <div className="form-group">
           <label htmlFor="email">Email</label>
           <input
@@ -83,7 +83,7 @@ export default function SignInForm() {
           </Link>
         </p>
       </div>
-      <div className="space-y-4 place-self-center">
+      <div className="space-y-4 align-center">
         <button
           disabled={isLoading}
           className={

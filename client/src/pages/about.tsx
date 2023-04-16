@@ -5,8 +5,8 @@ import netflix from '../assets/netflix.svg';
 import prime from '../assets/prime.svg';
 import landingImage from '../assets/landing-image.jpg';
 import logo from '../assets/logo.svg';
-import { Link } from 'react-router-dom';
-import { settings } from '../settings';
+import { useNavigate } from 'react-router-dom';
+import { routes, settings } from '../settings';
 import { Disclosure } from '@headlessui/react';
 const services: { [s: string]: any } = {
   spotify,
@@ -63,15 +63,16 @@ const Details: React.FC = () => {
   );
 };
 export default function AboutPage() {
+  const navigate = useNavigate();
   return (
-    <Layout title="About" hide className="p-0">
-      <div className="w-full relative">
-        <img src={landingImage} alt="landing image" />
-        <div className="absolute top-1/2 left-1/2 transfrom -translate-x-1/2 -translate-y-1/2">
+    <Layout title="About" hide className="!p-0">
+      <div className="w-full h-max landing-gradient max-h-[600px] overflow-hidden relative">
+        <img src={landingImage} alt="landing image" width="100%" />
+        <div className="absolute top-1/2 left-1/2 z-20 transfrom -translate-x-1/2 -translate-y-1/2">
           <img src={logo} alt="logo" />
         </div>
       </div>
-      <div className="bg-skin-primary flex flex-col gap-4 space-y-4 p-6">
+      <div className="bg-skin-primary align-center gap-4 space-y-4 px-6 py-10">
         <div className="space-y-8">
           <h1 className="text-4xl font-bold text-center text-white">
             {settings.appName}
@@ -81,13 +82,19 @@ export default function AboutPage() {
 
         <Details />
 
-        <Link to={'/signin' + window.location.search} className="text-center">
-          <button className="primary">Login</button>
-        </Link>
+        <button
+          className="primary"
+          onClick={() => navigate(routes.signin + window.location.search)}
+        >
+          Login
+        </button>
 
-        <Link to={'/register' + window.location.search} className="text-center">
-          <button className="secondary">Sign Up</button>
-        </Link>
+        <button
+          className="secondary"
+          onClick={() => navigate(routes.register + window.location.search)}
+        >
+          Sign Up
+        </button>
       </div>
     </Layout>
   );

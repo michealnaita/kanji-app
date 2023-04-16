@@ -2,6 +2,10 @@ export const routes = {
   about: '/about',
   dashboard: '/',
   wallet: '/wallet',
+  recharge: '/recharge',
+  signout: '/signout',
+  signin: '/signin',
+  register: '/register',
 };
 
 export const settings = {
