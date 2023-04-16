@@ -21,6 +21,7 @@ import BadRequestErrorPage from './pages/400';
 import ResetPasswordPage from './pages/reset-password';
 import VerifyEmailPage from './pages/verify-email';
 import FlutterWaveRedirect from './pages/flutterwave';
+import ProfilePage from './pages/profile';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -50,6 +51,7 @@ const router = createBrowserRouter([
   { path: '/about', element: <AboutPage /> },
   { path: '/password', element: <ResetPasswordPage /> },
   { path: '/verifyEmail', element: <ProtectedRoute Route={VerifyEmailPage} /> },
+  { path: '/profile', element: <ProtectedRoute Route={ProfilePage} /> },
   {
     path: '/flutterwaveRedirect',
     element: <ProtectedRoute Route={FlutterWaveRedirect} />,

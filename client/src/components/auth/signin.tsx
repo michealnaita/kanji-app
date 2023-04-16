@@ -31,7 +31,7 @@ export default function SignInForm() {
   }, [isError]);
   return (
     <form
-      className="px-6 flex flex-col form space-y-10"
+      className="flex flex-col form space-y-10"
       onSubmit={handleSubmit(onSubmit)}
     >
       <div className="space-y-4">

@@ -10,7 +10,6 @@ const useAuth = () => {
   const [isAuth, setAuth] = React.useState(false);
   const [error, setError] = React.useState<any>(null);
   React.useEffect(() => {
-    console.log('here');
     if (isAuthenticated) {
       setAuth(true);
       setLoading(false);

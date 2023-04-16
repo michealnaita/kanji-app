@@ -22,7 +22,7 @@ export default function CardTwo({
         className="flex space-x-4 items-center text-white"
       >
         <TfiAngleLeft size={20} />{' '}
-        <p className="font-patrick-hand font-semibold text-lg">{title}</p>
+        <p className="font-semibold text-lg">{title}</p>
       </button>
       <>
         {children}

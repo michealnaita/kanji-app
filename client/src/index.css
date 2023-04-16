@@ -25,6 +25,7 @@ select,
 a {
     -webkit-tap-highlight-color: transparent;
     outline: 0;
+    width:max-content;
 }
 @tailwind base;
 @tailwind components;
@@ -54,12 +55,28 @@ a {
   button.danger {
     @apply bg-skin-red w-full max-w-xs text-white rounded-2xl font-semibold py-4
   }
+  button.danger-alt {
+    @apply bg-red-500 w-full max-w-xs bg-opacity-0 text-red-500 border-2 border-red-500 rounded-2xl font-semibold py-4 hover:bg-opacity-5
+  }
   input.form-input{
-   @apply w-full text-skin-secondary font-semibold border-skin-secondary outline-0 ring-0 border-2 bg-transparent  py-2 px-4 rounded-2xl focus:border-skin-lime bg-skin-lime hover:text-white bg-opacity-0 hover:bg-opacity-10
+   @apply w-full text-skin-secondary max-w-xs font-semibold border-skin-secondary outline-0 ring-0 border-2 bg-transparent  py-2 px-4 rounded-2xl focus:border-skin-lime bg-skin-lime hover:text-white bg-opacity-0 hover:bg-opacity-10
+  }
+
+  .form-group-alt {
+    @apply flex justify-between
+  }
+  .form-group-alt input{
+    @apply border-b-2 outline-0 text-right border-b-transparent bg-transparent 
+  }
+  .form-group-alt input.edit{
+    @apply focus:border-b-skin-lime
+  }
+  .form-group-alt label{
+    @apply flex-1
   }
   .form-group{
     @apply space-y-2
-  }PromoPage
+  }
   .tool-tip {
     @apply absolute origin-bottom-right bottom-8 z-50 right-0 bg-[#828282] shadow-lg w-40 p-4 rounded-lg text-xs
   }
