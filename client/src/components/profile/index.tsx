@@ -28,7 +28,7 @@ export default function ProfileForm() {
   const del = useDeleteUserMutation();
   const update = useUpdateUserMutation();
   const navigate = useNavigate();
-  const { firstname, lastname, email, phone } = useApp();
+  const { firstname, lastname, email, phone, updateUserProfile } = useApp();
   const {
     register,
     handleSubmit,
@@ -52,7 +52,7 @@ export default function ProfileForm() {
   }, [del.data]);
   React.useEffect(() => {
     if (update.data) {
-      // TODO: update application state with new data
+      updateUserProfile(update.data);
       toast.success('updated');
     }
   }, [update.data]);
@@ -76,7 +76,7 @@ export default function ProfileForm() {
       >
         <div className="space-y-4">
           <div className="flex justify-between">
-            <h1 className=" text-lg font-semibold">Basic Info</h1>
+            <h1 className="text-lg font-semibold">Basic Info</h1>
             <button type="button" onClick={() => setEditBasic(!editBasic)}>
               {editBasic ? <BsX size="25" /> : <ImPencil />}
             </button>

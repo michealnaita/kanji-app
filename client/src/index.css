@@ -71,7 +71,7 @@ a {
     @apply flex justify-between
   }
   .form-group-alt input{
-    @apply border-b-2 outline-0 text-right border-b-transparent bg-transparent 
+    @apply border-b-2 outline-0 text-right bg-transparent border-b-transparent w-48
   }
   .form-group-alt input.edit{
     @apply focus:border-b-skin-lime

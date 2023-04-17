@@ -1,6 +1,10 @@
 import React from 'react';
 import { HouseholdSlim } from '../../utils/types';
-
+type EditableUserData = {
+  firstname: string;
+  lastname: string;
+  phone: number;
+};
 interface IApp {
   firstname: string;
   lastname: string;
@@ -19,6 +23,7 @@ export enum Actions {
   AUTHENTICATE = 'AUTHENTICATE',
   UPDATE_HOUSEHOLDS = 'UPDATE_HOUSEHOLDS',
   SIGN_OUT = 'SIGN_OUT',
+  UPDATE_USER_PROFILE = 'UPDATE_USER_PROFILE',
 }
 type ActionsType =
   | {
@@ -29,7 +34,11 @@ type ActionsType =
       type: Actions.AUTHENTICATE;
     }
   | { type: Actions.UPDATE_HOUSEHOLDS; payload: HouseholdSlim[] }
-  | { type: Actions.SIGN_OUT };
+  | { type: Actions.SIGN_OUT }
+  | {
+      type: Actions.UPDATE_USER_PROFILE;
+      payload: EditableUserData;
+    };
 
 const initialState: IApp = {
   username: '',
@@ -55,6 +64,9 @@ function appReducer(state: IApp, action: ActionsType): IApp {
     case Actions.UPDATE_HOUSEHOLDS: {
       return { ...state, households: action.payload };
     }
+    case Actions.UPDATE_USER_PROFILE: {
+      return { ...state, ...action.payload };
+    }
     case Actions.SIGN_OUT: {
       return initialState;
     }
@@ -68,6 +80,7 @@ type ActionCreators = {
   updateHouseholds: (d: HouseholdSlim[]) => void;
   load: (d: any) => void;
   signOut: () => void;
+  updateUserProfile: (d: EditableUserData) => void;
 };
 
 const AppContext = React.createContext<(IApp & ActionCreators) | null>(null);
@@ -90,6 +103,11 @@ export function AppProvider({ children }: { children: JSX.Element }) {
       updateHouseholds: (payload: HouseholdSlim[]) =>
         dispatch({ type: Actions.UPDATE_HOUSEHOLDS, payload }),
       signOut: () => dispatch({ type: Actions.SIGN_OUT }),
+      updateUserProfile: (payload: EditableUserData) =>
+        dispatch({
+          type: Actions.UPDATE_USER_PROFILE,
+          payload,
+        }),
     }),
     [state]
   );
