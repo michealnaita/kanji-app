@@ -18,6 +18,7 @@ export enum Actions {
   LOAD = 'LOAD',
   AUTHENTICATE = 'AUTHENTICATE',
   UPDATE_HOUSEHOLDS = 'UPDATE_HOUSEHOLDS',
+  SIGN_OUT = 'SIGN_OUT',
 }
 type ActionsType =
   | {
@@ -27,7 +28,8 @@ type ActionsType =
   | {
       type: Actions.AUTHENTICATE;
     }
-  | { type: Actions.UPDATE_HOUSEHOLDS; payload: HouseholdSlim[] };
+  | { type: Actions.UPDATE_HOUSEHOLDS; payload: HouseholdSlim[] }
+  | { type: Actions.SIGN_OUT };
 
 const initialState: IApp = {
   username: '',
@@ -53,6 +55,9 @@ function appReducer(state: IApp, action: ActionsType): IApp {
     case Actions.UPDATE_HOUSEHOLDS: {
       return { ...state, households: action.payload };
     }
+    case Actions.SIGN_OUT: {
+      return initialState;
+    }
     default:
       return state;
   }
@@ -62,6 +67,7 @@ type ActionCreators = {
   authenticate: () => void;
   updateHouseholds: (d: HouseholdSlim[]) => void;
   load: (d: any) => void;
+  signOut: () => void;
 };
 
 const AppContext = React.createContext<(IApp & ActionCreators) | null>(null);
@@ -83,6 +89,7 @@ export function AppProvider({ children }: { children: JSX.Element }) {
       authenticate: () => dispatch({ type: Actions.AUTHENTICATE }),
       updateHouseholds: (payload: HouseholdSlim[]) =>
         dispatch({ type: Actions.UPDATE_HOUSEHOLDS, payload }),
+      signOut: () => dispatch({ type: Actions.SIGN_OUT }),
     }),
     [state]
   );

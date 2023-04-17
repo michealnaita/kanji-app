@@ -11,6 +11,8 @@ import cn from 'classnames';
 import useDeleteUserMutation from '../../api/user/delete';
 import useUpdateUserMutation from '../../api/user/update';
 import { toast } from 'react-toastify';
+import { useNavigate } from 'react-router-dom';
+import { routes } from '../../settings';
 
 export type UserProfileForm = {
   firstname: string;
@@ -25,6 +27,7 @@ export default function ProfileForm() {
   const [editContact, setEditContact] = React.useState<boolean>(false);
   const del = useDeleteUserMutation();
   const update = useUpdateUserMutation();
+  const navigate = useNavigate();
   const { firstname, lastname, email, phone } = useApp();
   const {
     register,
@@ -41,8 +44,10 @@ export default function ProfileForm() {
   });
   React.useEffect(() => {
     if (del.data) {
-      // TODO: redirect to signout
       toast.success('done');
+      setTimeout(() => {
+        navigate(routes.signout);
+      }, 2000);
     }
   }, [del.data]);
   React.useEffect(() => {

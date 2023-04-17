@@ -23,6 +23,7 @@ import VerifyEmailPage from './pages/verify-email';
 import FlutterWaveRedirect from './pages/flutterwave';
 import ProfilePage from './pages/profile';
 import ServicePage from './pages/services';
+import SignOutPage from './pages/signout';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -53,6 +54,7 @@ const router = createBrowserRouter([
   { path: '/password', element: <ResetPasswordPage /> },
   { path: '/services', element: <ServicePage /> },
   { path: '/verifyEmail', element: <ProtectedRoute Route={VerifyEmailPage} /> },
+  { path: '/signout', element: <ProtectedRoute Route={SignOutPage} /> },
   { path: '/profile', element: <ProtectedRoute Route={ProfilePage} /> },
   {
     path: '/flutterwaveRedirect',
