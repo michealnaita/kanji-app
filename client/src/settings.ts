@@ -11,6 +11,7 @@ export const routes = {
   register: '/register',
   notifications: '#',
   services: '/services',
+  flutterRedirect: '/flutterwaveRedirect',
 };
 
 export const settings = {

@@ -5,11 +5,10 @@ import { useNavigate } from 'react-router-dom';
 import flutterwaveLogo from '../assets/flutterwave-logo.svg';
 
 export default function FlutterWaveRedirect() {
-  const navigate = useNavigate();
   React.useEffect(() => {
     const url = new URLSearchParams(window.location.search).get('url');
     if (url) {
-      setTimeout(() => navigate(url), 3000);
+      setTimeout(() => (window.location.href = url), 3000);
     }
   }, []);
   return (

@@ -12,7 +12,7 @@ export default function WalletCard() {
           UGX {formatPrice(current_amount)}
         </p>
         <button
-          className="text-skin-secondary text-center underline"
+          className=" text-center underline"
           onClick={() => navigate('/recharge')}
         >
           Recharge

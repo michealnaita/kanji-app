@@ -5,7 +5,10 @@ import { useForm } from 'react-hook-form';
 import useRechargeMutation from '../../api/getRechargeLink';
 import { toast } from 'react-toastify';
 import { formatPrice } from '../../utils/utils';
+import { useNavigate } from 'react-router-dom';
+import { routes } from '../../settings';
 export default function RechargeCard() {
+  const navigate = useNavigate();
   const { current_amount, firstname, lastname, email, phone } = useApp();
   const {
     register,
@@ -26,7 +29,10 @@ export default function RechargeCard() {
     if (isError) toast.error((error as Error).message);
   }, [isError]);
   React.useEffect(() => {
-    if (data) window.location.href = data;
+    if (data) {
+      const s = new URLSearchParams({ url: data });
+      navigate(routes.flutterRedirect + '?' + s.toString());
+    }
   }, [data]);
   return (
     <Card title="Recharge">
