@@ -102,7 +102,10 @@ a {
   .menu-card{
     @apply fixed top-0 transform translate-y-20 z-10 w-screen max-w-sm right-0 px-6 before:fixed before:bg-black before:bg-opacity-25 before:top-0 before:transform before:-translate-y-20 before:left-0 before:pointer-events-none before:h-screen before:w-screen
   }
-  .menu-card .menu-container {
+  .modal-card{
+    @apply fixed z-50 top-0 left-0 w-screen h-screen px-6 max-w-sm  flex flex-col justify-center before:fixed before:bg-black before:bg-opacity-25 before:top-0 before:left-0 before:pointer-events-none before:h-screen before:w-screen
+  }
+  .menu-container {
     @apply bg-white rounded-md drop-shadow-md p-7
   }
   .menu-item {

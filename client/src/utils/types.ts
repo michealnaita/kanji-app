@@ -32,26 +32,44 @@ export type User = {
   lastname: string;
   email: string;
   phone: number;
-  households: Household[];
+  households: HouseholdSlim[];
   current_amount: number;
-  notifications?: string[];
+  reserved?: number;
+  notifications: UserNotification[];
+  services: Service[];
+  transactions: UserTransaction[];
+  balance: number;
 };
-
-export type FunctionResponse = {
-  status: 'fail' | 'success';
-  data?: {
-    message: string;
+export type UserNotification = { message: string; at: string };
+export type UserTransaction = {
+  amount: number;
+  action: 'service-payment' | 'balance-top-up';
+  at: string;
+};
+export type Service = {
+  id: 'netflix' | 'spotify';
+  price: number;
+  renewal: string;
+  status: 'pending' | 'active';
+  at: string;
+  membership: string;
+};
+export type FunctionResponse<
+  T = {
     [key: string]: any;
-  };
+  }
+> = {
+  status: 'fail' | 'success';
+  data?: T;
   error?: {
-    message: string;
+    message?: string;
     code: string;
   };
 };
 
-export type Service = {
-  id: string;
-  price: number;
-  membership: string;
-  renewal: string;
+export type AddServiceData = {
+  transactions: User['transactions'];
+  notifications: User['notifications'];
+  current_amount: number;
+  services: User['services'];
 };

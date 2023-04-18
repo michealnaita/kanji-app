@@ -1,5 +1,11 @@
 import React from 'react';
-import { HouseholdSlim } from '../../utils/types';
+import {
+  AddServiceData,
+  HouseholdSlim,
+  Service,
+  UserNotification,
+  UserTransaction,
+} from '../../utils/types';
 type EditableUserData = {
   firstname: string;
   lastname: string;
@@ -15,7 +21,9 @@ interface IApp {
   current_amount: number;
   households: HouseholdSlim[];
   isAuthenticated: boolean;
-  notifications: string[];
+  notifications: UserNotification[];
+  transactions: UserTransaction[];
+  services: Service[];
 }
 
 export enum Actions {
@@ -24,6 +32,7 @@ export enum Actions {
   UPDATE_HOUSEHOLDS = 'UPDATE_HOUSEHOLDS',
   SIGN_OUT = 'SIGN_OUT',
   UPDATE_USER_PROFILE = 'UPDATE_USER_PROFILE',
+  ADD_SERVICE = 'ADD_SERVICE',
 }
 type ActionsType =
   | {
@@ -38,6 +47,10 @@ type ActionsType =
   | {
       type: Actions.UPDATE_USER_PROFILE;
       payload: EditableUserData;
+    }
+  | {
+      type: Actions.ADD_SERVICE;
+      payload: AddServiceData;
     };
 
 const initialState: IApp = {
@@ -51,6 +64,8 @@ const initialState: IApp = {
   phone: 0,
   email: '',
   notifications: [],
+  transactions: [],
+  services: [],
 };
 
 function appReducer(state: IApp, action: ActionsType): IApp {
@@ -70,6 +85,9 @@ function appReducer(state: IApp, action: ActionsType): IApp {
     case Actions.SIGN_OUT: {
       return initialState;
     }
+    case Actions.ADD_SERVICE: {
+      return { ...state, ...action.payload };
+    }
     default:
       return state;
   }
@@ -81,6 +99,7 @@ type ActionCreators = {
   load: (d: any) => void;
   signOut: () => void;
   updateUserProfile: (d: EditableUserData) => void;
+  addService: (d: AddServiceData) => void;
 };
 
 const AppContext = React.createContext<(IApp & ActionCreators) | null>(null);
@@ -108,6 +127,8 @@ export function AppProvider({ children }: { children: JSX.Element }) {
           type: Actions.UPDATE_USER_PROFILE,
           payload,
         }),
+      addService: (payload: AddServiceData) =>
+        dispatch({ type: Actions.ADD_SERVICE, payload }),
     }),
     [state]
   );

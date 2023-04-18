@@ -1,8 +1,10 @@
 import { ToastContainer } from 'react-toastify';
+import { toast, Toaster } from 'react-hot-toast';
 import { useApp } from '../../context/app';
 import Header from './header';
 import { Helmet } from 'react-helmet';
 import cn from 'classnames';
+import React from 'react';
 
 export default function Layout({
   children,
@@ -16,6 +18,9 @@ export default function Layout({
   className?: string;
 }) {
   const { notifications, firstname, isAuthenticated } = useApp();
+  React.useEffect(() => {
+    toast.dismiss();
+  }, []);
   return (
     <>
       <Helmet>
@@ -29,6 +34,7 @@ export default function Layout({
         closeOnClick
         theme="light"
       />
+      <Toaster toastOptions={{ duration: 2000 }} />
       <div className="bg-skin-primary w-screen overflow-y-auto h-full  flex flex-col">
         <>
           {!hide && (

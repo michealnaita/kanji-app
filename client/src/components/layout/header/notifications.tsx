@@ -1,6 +1,7 @@
 import { Popover } from '@headlessui/react';
 import { Link } from 'react-router-dom';
 import { routes } from '../../../settings';
+import { UserNotification } from '../../../utils/types';
 
 type headerType = {
   username?: string;
@@ -13,7 +14,7 @@ export default function NotifcationsWrapper({
   notifications,
 }: {
   children: any;
-  notifications?: string[];
+  notifications?: UserNotification[];
 }) {
   return (
     <Popover>
@@ -26,7 +27,7 @@ export default function NotifcationsWrapper({
               <>
                 <>
                   {notifications.slice(0, 3).map((n, i) => (
-                    <p key={i}>{n}</p>
+                    <p key={i}>{n.message}</p>
                   ))}
                 </>
                 <p>

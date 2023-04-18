@@ -2,43 +2,12 @@ import React from 'react';
 import { formatPrice, getBrandLogo } from '../../../utils/utils';
 import { BsPlus } from 'react-icons/bs';
 import { useApp } from '../../../context/app';
-import { Dialog } from '@headlessui/react';
 import useAddServiceMutation from '../../../api/service/add';
-import { toast } from 'react-toastify';
+import toast from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
+import { routes } from '../../../settings';
+import ConfirmationModal from '../../shared/confirm-modal';
 
-function ConfirmationModal({
-  open,
-  action,
-  onClose,
-  children,
-  title,
-}: {
-  open: boolean;
-  action: () => void;
-  onClose: () => void;
-  children: any;
-  title: string;
-}) {
-  return (
-    <Dialog open={open} onClose={onClose}>
-      <Dialog.Panel className="menu-card">
-        <div className="menu-container space-y-7 text-black">
-          <h1 className="font-semibold">{title}</h1>
-          <p>{children}</p>
-          <div className="space-y-4">
-            <button className="primary" onClick={action}>
-              Confirm
-            </button>
-            <button className="primary-alt" onClick={onClose}>
-              Cancel
-            </button>
-          </div>
-        </div>
-      </Dialog.Panel>
-    </Dialog>
-  );
-}
 export default function ServiceCard({
   price,
   id,
@@ -49,10 +18,11 @@ export default function ServiceCard({
   available?: boolean;
 }) {
   const navigate = useNavigate();
-  const { isAuthenticated } = useApp();
+  const { isAuthenticated, addService, services, current_amount } = useApp();
   const { mutate, isLoading, data, error, isError } = useAddServiceMutation();
   const [show, setShow] = React.useState(false);
-  function addService() {
+  const [showRecharge, setShowRecharge] = React.useState(false);
+  function handleAddService() {
     setShow(false);
     if (!isAuthenticated) {
       const s = new URLSearchParams();
@@ -60,17 +30,28 @@ export default function ServiceCard({
       navigate('/signin?' + s.toString());
       return;
     }
+    const hasService = !!services.filter((s) => s.id === id).length;
+    if (hasService) {
+      toast('you already have this service');
+      return;
+    }
+    if (price && current_amount - price < 0) {
+      setShowRecharge(true);
+      return;
+    }
     mutate(id);
   }
   React.useEffect(() => {
     // TODO: update user
     if (data) {
+      addService(data);
       toast.success('services added');
+      setTimeout(() => navigate(routes.dashboard), 2000);
     }
   }, [data]);
   React.useEffect(() => {
     if (error) {
-      toast.success((error as Error).message);
+      toast.error((error as any).message);
     }
   }, [isError]);
   return (
@@ -93,11 +74,23 @@ export default function ServiceCard({
         title="New Subscription"
         open={show}
         onClose={() => setShow(false)}
-        action={addService}
+        action={handleAddService}
       >
         You are subscribing to{' '}
         <span className="font-semibold">
           {id} for UGX {!!price && formatPrice(price)}
+        </span>
+      </ConfirmationModal>
+      <ConfirmationModal
+        title="Insufficient Balance"
+        open={showRecharge}
+        onClose={() => setShow(false)}
+        action={() => navigate(routes.recharge)}
+        buttonText="Top Up"
+      >
+        You dont have enough money to pay for{' '}
+        <span className="font-semibold">
+          {id} at UGX {!!price && formatPrice(price)}
         </span>
       </ConfirmationModal>
     </>

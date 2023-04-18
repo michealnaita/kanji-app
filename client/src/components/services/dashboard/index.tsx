@@ -1,16 +1,10 @@
 import { Link } from 'react-router-dom';
+import { useApp } from '../../../context/app';
 import { routes } from '../../../settings';
 import ServiceCard from './service-card';
 
 export default function ServiceCards() {
-  const services = [
-    {
-      price: 4000,
-      id: 'spotify',
-      membership: 'Spotify(Premium)',
-      renewal: '14th May, 2023',
-    },
-  ];
+  const { services } = useApp();
   return (
     <div className="space-y-16 flex flex-col ">
       <>

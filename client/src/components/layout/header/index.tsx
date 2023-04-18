@@ -6,10 +6,11 @@ import { routes } from '../../../settings';
 import { RxAvatar } from 'react-icons/rx';
 import NotifcationsWrapper from './notifications';
 import MenuWrapper from './menu';
+import { UserNotification } from '../../../utils/types';
 
 type headerType = {
   username?: string;
-  notifications?: string[];
+  notifications?: UserNotification[];
   isAuthenticated: boolean;
 };
 

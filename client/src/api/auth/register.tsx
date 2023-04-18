@@ -26,6 +26,10 @@ function handleRegister({
           phone: parseInt(phone),
           households: [],
           current_amount: 0,
+          notifications: [],
+          transactions: [],
+          services: [],
+          balance: 0,
         };
         setDoc(docRef, userData)
           .then((r) => resolve(true))
