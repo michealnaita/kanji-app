@@ -5,7 +5,7 @@ import RechargeCard from '../components/wallet/recharge-card';
 import TransactionMessage from '../components/wallet/transaction-message';
 
 export default function RechargePage() {
-  let [searchParams, setSearchParams] = useSearchParams();
+  let [searchParams] = useSearchParams();
   const status = searchParams.get('status');
   return (
     <Layout title="Recharge">

@@ -4,6 +4,7 @@ import { Service } from '../../../utils/types';
 import { TfiAngleDown } from 'react-icons/tfi';
 import cn from 'classnames';
 import { formatPrice, getBrandLogo } from '../../../utils/utils';
+import moment from 'moment';
 
 export default function ServiceCard({
   membership,
@@ -14,8 +15,11 @@ export default function ServiceCard({
   const details: { [field: string]: string } = React.useMemo(
     () => ({
       Membership: membership,
-      Price: formatPrice(price),
-      Renewal: renewal,
+      Price: 'UGX ' + formatPrice(price),
+      Renewal:
+        moment(renewal).get('date') +
+        'th ' +
+        moment(renewal).format('MMMM, YYYY'),
     }),
     []
   );

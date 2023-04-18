@@ -5,6 +5,7 @@ import Header from './header';
 import { Helmet } from 'react-helmet';
 import cn from 'classnames';
 import React from 'react';
+import { settings } from '../../settings';
 
 export default function Layout({
   children,
@@ -24,7 +25,7 @@ export default function Layout({
   return (
     <>
       <Helmet>
-        <title>{title + ' | Littleneck'}</title>
+        <title>{title + ' | ' + settings.appName}</title>
       </Helmet>
       <ToastContainer
         position="top-right"
