@@ -26,11 +26,9 @@ describe('Delete User Account', () => {
   };
   beforeAll(async () => {
     wrapped = testEnv.wrap(deleteUser);
-    // await db.doc(user.path).create(user.data);
   });
-  beforeEach(async () => {});
-  afterEach(async () => {
-    // await db.doc(user.path).delete();
+  afterAll(() => {
+    testEnv.cleanup();
   });
   it.only('Should throw Error if client unauthenticated', async () => {
     const ctx = {};
