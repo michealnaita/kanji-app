@@ -1,7 +1,7 @@
 import React from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import useAuth from '../../utils/useAuth';
-import Logo from '../../assets/logo-white.svg';
+import Logo from '../../assets/logo.svg';
 
 export default function ProtectedRoute({
   Route,
