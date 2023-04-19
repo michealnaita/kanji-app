@@ -11,27 +11,17 @@ import { UserNotification } from '../../../utils/types';
 type headerType = {
   username?: string;
   notifications?: UserNotification[];
-  isAuthenticated: boolean;
 };
 
-export default function Header({
-  username,
-  isAuthenticated,
-  notifications,
-}: headerType) {
+export default function Header({ username, notifications }: headerType) {
   return (
     <div className="px-6 py-4 container ">
       <div className=" items-center pb-2 flex justify-between">
-        {isAuthenticated ? (
-          <Link to="/">
-            <img src={Logo} alt="logo" width={20} />
-          </Link>
-        ) : (
-          <a href="/">
-            <img src={Logo} alt="logo" width={20} />
-          </a>
-        )}
-        {isAuthenticated && (
+        <Link to="/">
+          <img src={Logo} alt="logo" width={20} />
+        </Link>
+
+        {!!username && !!notifications && (
           <div className="flex space-x-4 items-center">
             <NotifcationsWrapper notifications={notifications}>
               <div className="relative center w-8 h-8">

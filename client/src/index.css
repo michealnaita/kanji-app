@@ -41,6 +41,18 @@ a {
   .card {
     @apply drop-shadow-md bg-skin-secondary rounded-2xl p-7 
   }
+  .loader{
+    @apply animate-pulse bg-[#242628]
+  }
+  .loader-card{
+    @apply  w-full h-[100px] rounded-md loader
+  }
+  .loader-text{
+    @apply h-6 w-[160px] rounded-md loader
+  }
+  .loader-text-long{
+    @apply h-4 w-full rounded-md loader
+  }
   .scroll-view{
     @apply relative after:bg-gradient-to-t after:from-[#17191B] after:via-[#17191B]  after:bottom-0 after:z-10 after:w-full after:h-8 after:absolute;
     @apply  before:bg-gradient-to-b before:from-[#17191B] before:via-[#17191B]  before:top-0 before:z-10 before:w-full before:h-8 before:absolute;

@@ -18,7 +18,7 @@ export default function Layout({
   title: string;
   className?: string;
 }) {
-  const { notifications, firstname, isAuthenticated } = useApp();
+  const { notifications, firstname } = useApp();
   React.useEffect(() => {
     toast.dismiss();
   }, []);
@@ -39,11 +39,7 @@ export default function Layout({
       <div className="bg-skin-primary w-screen overflow-y-auto h-full  flex flex-col">
         <>
           {!hide && (
-            <Header
-              notifications={notifications}
-              username={firstname}
-              isAuthenticated={isAuthenticated}
-            />
+            <Header notifications={notifications} username={firstname} />
           )}
         </>
         <div

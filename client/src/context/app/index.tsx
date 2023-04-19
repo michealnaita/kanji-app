@@ -20,10 +20,10 @@ interface IApp {
   id: string;
   current_amount: number;
   households: HouseholdSlim[];
-  isAuthenticated: boolean;
   notifications: UserNotification[];
   transactions: UserTransaction[];
   services: Service[];
+  isLoading: boolean;
 }
 
 export enum Actions {
@@ -56,7 +56,6 @@ type ActionsType =
 const initialState: IApp = {
   username: '',
   id: '',
-  isAuthenticated: false,
   current_amount: 0,
   households: [],
   firstname: '',
@@ -66,15 +65,13 @@ const initialState: IApp = {
   notifications: [],
   transactions: [],
   services: [],
+  isLoading: true,
 };
 
 function appReducer(state: IApp, action: ActionsType): IApp {
   switch (action.type) {
     case Actions.LOAD: {
-      return { ...state, ...action.payload };
-    }
-    case Actions.AUTHENTICATE: {
-      return { ...state, isAuthenticated: true };
+      return { ...state, ...action.payload, isLoading: false };
     }
     case Actions.UPDATE_HOUSEHOLDS: {
       return { ...state, households: action.payload };

@@ -12,6 +12,7 @@ export const routes = {
   notifications: '#',
   services: '/services',
   flutterRedirect: '/flutterwaveRedirect',
+  verifyEmail: '/verifyEmail',
 };
 
 export const settings = {
