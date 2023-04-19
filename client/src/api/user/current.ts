@@ -1,4 +1,4 @@
-import { useQuery } from 'react-query';
+import { useMutation } from 'react-query';
 import { doc, getDoc } from 'firebase/firestore';
 import { db } from '../../utils/firebase';
 import { User } from '../../utils/types';
@@ -19,6 +19,6 @@ function getUserData(uid: string): Promise<User> {
   });
 }
 
-export default function useGetUserDataQuery(uid: string) {
-  return useQuery(['users', uid], () => getUserData(uid));
+export default function useGetUserDataQuery() {
+  return useMutation(getUserData);
 }

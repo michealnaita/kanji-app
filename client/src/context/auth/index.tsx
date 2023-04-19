@@ -36,11 +36,12 @@ export default function AuthProvider({ children }: { children: any }) {
             isAuthenticated,
             user_uid,
           });
-          setLoading(false);
         }
+        setLoading(false);
       },
       (e) => {
         console.log(e);
+        setLoading(false);
       }
     );
   }, []);
