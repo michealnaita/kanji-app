@@ -13,6 +13,7 @@ import useJoinHouseholdMutation from '../../api/household/joinHousehold';
 import { toast } from 'react-toastify';
 import DialogPrompt from './dialog';
 import { Transition } from '@headlessui/react';
+import { useAuth } from '../../context/auth';
 
 export default function Household({ id }: { id: string }) {
   const navigate = useNavigate();
@@ -20,7 +21,8 @@ export default function Household({ id }: { id: string }) {
   const { data, isLoading, isError, error } = useHouseholdQuery(id);
   const l = useLeaveHouseholdMutation();
   const j = useJoinHouseholdMutation();
-  const { id: userId, isAuthenticated } = useApp();
+  const { id: userId } = useApp();
+  const { isAuthenticated } = useAuth();
   const [isMember, setMember] = React.useState<boolean>(false);
   const [isOpen, setOpen] = React.useState<boolean>(false);
   const [showToolTip, setShow] = React.useState<boolean>(false);

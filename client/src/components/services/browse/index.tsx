@@ -7,6 +7,7 @@ import toast from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
 import { routes } from '../../../settings';
 import ConfirmationModal from '../../shared/confirm-modal';
+import { useAuth } from '../../../context/auth';
 
 export default function ServiceCard({
   price,
@@ -18,7 +19,8 @@ export default function ServiceCard({
   available?: boolean;
 }) {
   const navigate = useNavigate();
-  const { isAuthenticated, addService, services, current_amount } = useApp();
+  const { addService, services, current_amount } = useApp();
+  const { isAuthenticated } = useAuth();
   const { mutate, isLoading, data, error, isError } = useAddServiceMutation();
   const [show, setShow] = React.useState(false);
   const [showRecharge, setShowRecharge] = React.useState(false);
@@ -30,16 +32,21 @@ export default function ServiceCard({
       navigate('/signin?' + s.toString());
       return;
     }
-    const hasService = !!services.filter((s) => s.id === id).length;
-    if (hasService) {
-      toast('you already have this service');
-      return;
-    }
+
     if (price && current_amount - price < 0) {
       setShowRecharge(true);
       return;
     }
     mutate(id);
+    toast.loading('please wait...');
+  }
+  function handleClick() {
+    const hasService = !!services.filter((s) => s.id === id).length;
+    if (hasService) {
+      toast('you already have this service');
+      return;
+    }
+    setShow(true);
   }
   React.useEffect(() => {
     // TODO: update user
@@ -63,10 +70,7 @@ export default function ServiceCard({
             <p className="text-skin-secondary">UGX {formatPrice(price)}</p>
           )}
         </div>
-        <button
-          onClick={() => setShow(true)}
-          disabled={!available || isLoading}
-        >
+        <button onClick={handleClick} disabled={!available || isLoading}>
           <BsPlus color={available ? 'white' : '#1E2022'} size="30" />
         </button>
       </div>
@@ -84,7 +88,7 @@ export default function ServiceCard({
       <ConfirmationModal
         title="Insufficient Balance"
         open={showRecharge}
-        onClose={() => setShow(false)}
+        onClose={() => setShowRecharge(false)}
         action={() => navigate(routes.recharge)}
         buttonText="Top Up"
       >
