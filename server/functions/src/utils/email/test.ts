@@ -20,6 +20,8 @@ describe('User Email Client', () => {
         service: 'spotify',
         start: '2023-04-04',
         end: '2023-05-04',
+        link: 'https://link.com',
+        address: 'home',
       })
       .send();
     expect(email._template).toBe(TEMPLATES.onActiveService);

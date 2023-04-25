@@ -2,7 +2,6 @@ import functions from 'firebase-functions-test';
 import admin from 'firebase-admin';
 import joinService from '.';
 import { FunctionResponse, User } from '../../utils/types';
-import { alertAdmin } from '../../utils/alertAdmin';
 const testEnv = functions(
   {
     projectId: 'pinocchio-40489',
@@ -16,14 +15,14 @@ const userSendMock = jest.fn();
 jest.mock('../../utils/email/email', () => ({
   UserEmail: function () {
     return {
-      onDelete: () => ({
+      onJoinService: () => ({
         send: userSendMock,
       }),
     };
   },
   AdminEmail: function () {
     return {
-      onDelete: () => ({
+      onNewRequest: () => ({
         send: adminSendMock,
       }),
     };

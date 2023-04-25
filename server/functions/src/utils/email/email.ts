@@ -108,10 +108,14 @@ export class UserEmail extends Email {
     service,
     start,
     end,
+    link,
+    address,
   }: {
     service: string;
     start: string;
     end: string;
+    link: string;
+    address: string;
   }) {
     this._template = TEMPLATES.onActiveService;
     this._subject = `Active your ${service} Premium`;
@@ -121,6 +125,8 @@ export class UserEmail extends Email {
       SERVICE: service,
       START: start,
       END: end,
+      LINK: link,
+      ADDRESS: address,
     };
     return this;
   }

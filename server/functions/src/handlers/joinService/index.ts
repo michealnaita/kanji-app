@@ -9,7 +9,6 @@ import {
 } from '../../utils/types';
 import { SERVICES } from '../../settings';
 import { getRenewalDate } from '../../utils/helpers';
-import { alertAdmin } from '../../utils/alertAdmin';
 import moment from 'moment';
 import { AdminEmail, UserEmail } from '../../utils/email/email';
 
