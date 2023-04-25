@@ -12,7 +12,16 @@ const testEnv = functions(
 let wrapped: any;
 const db = admin.firestore();
 const auth = admin.auth();
-
+const sendMock = jest.fn();
+jest.mock('../../utils/email/email', () => ({
+  UserEmail: function () {
+    return {
+      onDelete: () => ({
+        send: sendMock,
+      }),
+    };
+  },
+}));
 describe('Delete User Account', () => {
   jest.setTimeout(30000);
   const user = {
@@ -55,6 +64,7 @@ describe('Delete User Account', () => {
     await expect(auth.getUser(user.uid)).rejects.toThrow();
     expect((await db.doc('users/' + user.uid).get()).exists).toEqual(false);
     expect(res.status).toEqual('success');
+    expect(sendMock).toBeCalled();
     await db.doc('users/' + user.uid).delete();
   });
 });

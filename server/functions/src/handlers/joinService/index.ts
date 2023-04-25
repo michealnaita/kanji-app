@@ -11,6 +11,7 @@ import { SERVICES } from '../../settings';
 import { getRenewalDate } from '../../utils/helpers';
 import { alertAdmin } from '../../utils/alertAdmin';
 import moment from 'moment';
+import { AdminEmail, UserEmail } from '../../utils/email/email';
 
 process.env.NODE_ENV === 'testing' && admin.initializeApp();
 const db = admin.firestore();
@@ -46,7 +47,7 @@ const joinService = functions.https.onCall(
         return {
           status: 'fail',
           error: {
-            message: 'missing service id',
+            message: 'You already have this service',
             code: 'ALREADY_HAS_SERVICE',
           },
         };
@@ -84,20 +85,24 @@ const joinService = functions.https.onCall(
         current_amount: newBalance,
       };
       await userRef.update({ ...updatedUserData });
-      alertAdmin('new-subscription', {
-        email: rest.email,
-        firstname: rest.firstname,
-        service: service_id,
-        id: userDoc.id,
-        at: new Date().toString(),
-      });
+      await new AdminEmail()
+        .onNewRequest({
+          email: rest.email,
+          username: rest.firstname + ' ' + rest.lastname,
+          uid,
+          service: service_id,
+        })
+        .send();
+      await new UserEmail({ email: rest.email, name: rest.firstname })
+        .onJoinService(service_id)
+        .send();
       return {
         status: 'success',
         data: updatedUserData,
       };
     } catch (error: any) {
       process.env.NODE_ENV !== 'testing' && functions.logger.log(error);
-      if (error.code) throw error;
+      if (error instanceof functions.https.HttpsError) throw error;
       throw new functions.https.HttpsError('internal', error.message);
     }
   }

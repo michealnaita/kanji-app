@@ -11,8 +11,23 @@ const testEnv = functions(
 );
 
 const db = admin.firestore();
-jest.mock('../../utils/alertAdmin', () => ({
-  alertAdmin: jest.fn(),
+const adminSendMock = jest.fn();
+const userSendMock = jest.fn();
+jest.mock('../../utils/email/email', () => ({
+  UserEmail: function () {
+    return {
+      onDelete: () => ({
+        send: userSendMock,
+      }),
+    };
+  },
+  AdminEmail: function () {
+    return {
+      onDelete: () => ({
+        send: adminSendMock,
+      }),
+    };
+  },
 }));
 describe('Add User To Service', () => {
   jest.setTimeout(30000);
@@ -126,8 +141,11 @@ describe('Add User To Service', () => {
       expect(userDoc.transactions).toHaveLength(1);
       expect(userDoc.transactions[0].action).toEqual('service-payment');
     });
-    it('Should alert Admin', () => {
-      expect(alertAdmin).toBeCalled();
+    it('Should alert Admin on new request', () => {
+      expect(adminSendMock).toBeCalled();
+    });
+    it('Should send a notification email to user', () => {
+      expect(userSendMock).toBeCalled();
     });
   });
 });

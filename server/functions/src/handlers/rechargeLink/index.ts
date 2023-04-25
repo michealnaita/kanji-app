@@ -11,7 +11,7 @@ process.env.NODE_ENV === 'testing' && admin.initializeApp();
 const db = admin.firestore();
 
 const generateRechargeLink = functions
-  .runWith({ secrets: ['APP_URL', 'PAYMENT_WEBHOOK'] })
+  .runWith({ secrets: ['APP_URL', 'PAYMENT_WEBHOOK', 'APP_NAME'] })
   .https.onCall(
     async ({ phone, amount, email, name }: PaymentRequestData, context) => {
       const { APP_URL, PAYMENT_WEBHOOK, NODE_ENV } = process.env;
@@ -50,7 +50,7 @@ const generateRechargeLink = functions
           name,
         },
         customizations: {
-          title: 'Littleneck',
+          title: process.env.APP_NAME,
           logo: APP_URL + '/logo.svg',
         },
       };
