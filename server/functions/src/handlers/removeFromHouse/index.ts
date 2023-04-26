@@ -37,15 +37,16 @@ const addToHouse = functions.https.onCall(
         );
 
       const uid = context.auth.uid;
-      const adminRef = db.doc('users/' + uid);
+      const currentUserRef = db.doc('users/' + uid);
       const userRef = db.doc('users/' + user);
       const houseRef = db.doc('houses/' + house);
+      const adminRef = db.doc('system/admin');
       // Order of check affects the tests
 
-      const adminDoc = await adminRef.get();
-      if (!adminDoc.exists)
+      const currentUserDoc = await currentUserRef.get();
+      if (!currentUserDoc.exists)
         throw new functions.https.HttpsError('not-found', 'ADMIN_NOT_FOUND');
-      const { roles } = adminDoc.data() as User;
+      const { roles } = currentUserDoc.data() as User;
       const isAdmin = !!roles.filter((role) => role === 'admin').length;
       if (!isAdmin)
         throw new functions.https.HttpsError(
@@ -62,8 +63,8 @@ const addToHouse = functions.https.onCall(
 
       const u = userDoc.data() as User;
       const h = houseDoc.data() as House;
-      const a = adminDoc.data() as Admin;
-      const isMember = !!h.members.filter(({ id }) => id === user).length;
+
+      const isMember = !!h.members.filter(({ uid }) => uid === user).length;
       if (!isMember)
         return {
           status: 'fail',
@@ -72,7 +73,13 @@ const addToHouse = functions.https.onCall(
             message: 'user is not member of house',
           },
         };
-      const members: HouseMember[] = h.members.filter(({ id }) => id !== user);
+
+      const adminDoc = await adminRef.get();
+      const a = adminDoc.data() as Admin;
+
+      const members: HouseMember[] = h.members.filter(
+        ({ uid }) => uid !== user
+      );
       const houses = a.houses.map((h) => {
         if (h.id === house)
           return {
@@ -90,16 +97,19 @@ const addToHouse = functions.https.onCall(
         notification,
         ...u.notifications,
       ];
-
+      const active_services = a.active_services.filter(
+        ({ uid }) => uid !== user
+      );
       // UPDATE DOCUMENTS WITH NEW DATA
       await userRef.update({ services, notifications });
-      await adminRef.update({ houses });
+      await adminRef.update({ houses, active_services });
       await houseRef.update({ members });
 
       return {
         status: 'success',
         data: {
           houses,
+          active_services,
         },
       };
     } catch (err: any) {

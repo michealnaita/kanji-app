@@ -34,7 +34,7 @@ export interface User {
   roles: ('user' | 'admin')[];
 }
 
-export interface Admin extends User {
+export interface Admin {
   pending_requests: {
     uid: string;
     email: string;
@@ -43,6 +43,12 @@ export interface Admin extends User {
     at: string;
   }[];
   users_count: number;
+  active_services: {
+    uid: string;
+    email: string;
+    service: string;
+    renewal: string;
+  }[];
   houses: {
     email: string;
     id: string;
@@ -60,7 +66,7 @@ export type House = {
 };
 export type HouseMember = {
   email: string;
-  id: string;
+  uid: string;
   name: string;
 };
 export type UserNotification = { message: string; at: string };

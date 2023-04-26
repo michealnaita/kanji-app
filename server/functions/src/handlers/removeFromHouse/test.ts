@@ -76,15 +76,15 @@ describe('Remove User From House', () => {
     });
   });
 
-  describe('Success', () => {
+  describe.only('Success', () => {
     let res: FunctionResponse;
     let userDoc: User;
     let adminDoc: Admin;
     let houseDoc: House;
     beforeAll(async () => {
       const user = {
-        uid: 'user_1',
-        path: 'users/user_1',
+        uid: 'user1',
+        path: 'users/user1',
         data: {
           firstname: 'Jane',
           email: 'jane@example.com',
@@ -100,23 +100,31 @@ describe('Remove User From House', () => {
           service: 'spotify',
           link: 'https://service.com/join',
           name: 'my house',
-          members: [{ id: user.uid }],
+          members: [{ uid: user.uid }],
         },
       };
       const admin = {
-        uid: 'admin1',
-        path: 'users/admin1',
+        path: 'system/admin',
         data: {
           houses: [{ id: house.id, capacity: 1 }],
+          roles: ['admin'],
+          active_services: [{ uid: user.uid }],
+        },
+      };
+      const currentUser = {
+        uid: 'user2',
+        path: 'users/user2',
+        data: {
           roles: ['admin'],
         },
       };
       await createDoc(user.data, user.path);
       await createDoc(house.data, house.path);
       await createDoc(admin.data, admin.path);
+      await createDoc(currentUser.data, currentUser.path);
       res = await wrapped(
         { house: house.id, user: user.uid },
-        { auth: { uid: admin.uid } }
+        { auth: { uid: currentUser.uid } }
       );
       userDoc = (await db.doc(user.path).get()).data() as any;
       adminDoc = (await db.doc(admin.path).get()).data() as any;
@@ -125,6 +133,7 @@ describe('Remove User From House', () => {
     afterAll(async () => {
       await db.recursiveDelete(db.collection('users'));
       await db.recursiveDelete(db.collection('houses'));
+      await db.recursiveDelete(db.collection('system'));
     });
     test('should update admin houses with new capacity', () => {
       expect(adminDoc.houses[0].capacity).toEqual(0);

@@ -40,15 +40,16 @@ const addToHouse = functions.https.onCall(
         );
 
       const uid = context.auth.uid;
-      const adminRef = db.doc('users/' + uid);
+      const currentUserRef = db.doc('users/' + uid);
       const userRef = db.doc('users/' + user);
       const houseRef = db.doc('houses/' + house);
+      const adminRef = db.doc('system/admin');
       // Order of check affects the tests
 
-      const adminDoc = await adminRef.get();
-      if (!adminDoc.exists)
+      const currentUserDoc = await currentUserRef.get();
+      if (!currentUserDoc.exists)
         throw new functions.https.HttpsError('not-found', 'ADMIN_NOT_FOUND');
-      const { roles } = adminDoc.data() as User;
+      const { roles } = currentUserDoc.data() as User;
       const isAdmin = !!roles.filter((role) => role === 'admin').length;
       if (!isAdmin)
         throw new functions.https.HttpsError(
@@ -65,9 +66,9 @@ const addToHouse = functions.https.onCall(
 
       const u = userDoc.data() as User;
       const h = houseDoc.data() as House;
-      const a = adminDoc.data() as Admin;
 
-      const isMember = !!h.members.filter(({ id }) => id === user).length;
+      // CHECK THAT USER ISN'T ALREADY A MEMBER OF THAT HOUSE
+      const isMember = !!h.members.filter(({ uid }) => uid === user).length;
       if (isMember)
         return {
           status: 'fail',
@@ -76,7 +77,7 @@ const addToHouse = functions.https.onCall(
             message: 'user is already a member of house',
           },
         };
-
+      // CHECK THAT THE HOUSE ISN'T ALREADY AT MAXIMUM CAPACITY
       if (h.members.length === 5) {
         return {
           status: 'fail',
@@ -87,11 +88,14 @@ const addToHouse = functions.https.onCall(
         };
       }
 
+      const adminDoc = await adminRef.get();
+      const a = adminDoc.data() as Admin;
+
       const now = moment();
 
       const member: HouseMember = {
         email: u.email,
-        id: user,
+        uid: user,
         name: u.firstname + ' ' + u.lastname,
       };
       const members: HouseMember[] = [...h.members, member];
@@ -112,11 +116,20 @@ const addToHouse = functions.https.onCall(
             ...s,
             at: now.format('YYYY-MM-DD'),
             status: 'active',
-            renewal: getRenewalDate(),
+            renewal: getRenewalDate(now),
             house: house,
           };
         return s;
       });
+      const active_services: Admin['active_services'] = [
+        {
+          email: u.email,
+          uid: user,
+          service: h.service,
+          renewal: getRenewalDate(now),
+        },
+        ...a.active_services,
+      ];
       const notification: UserNotification = {
         message: `Your ${h.service} subscription has been proccessed check your email on how to procced`,
         at: new Date().toISOString(),
@@ -127,7 +140,7 @@ const addToHouse = functions.https.onCall(
       ];
       // UPDATE DOCUMENTS WITH NEW DATA
       await userRef.update({ services, notifications });
-      await adminRef.update({ pending_requests, houses });
+      await adminRef.update({ pending_requests, houses, active_services });
       await houseRef.update({ members });
 
       // NOTIFY USER
@@ -149,6 +162,7 @@ const addToHouse = functions.https.onCall(
         data: {
           pending_requests,
           houses,
+          active_services,
         },
       };
     } catch (err: any) {

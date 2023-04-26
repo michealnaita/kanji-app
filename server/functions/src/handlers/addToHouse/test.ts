@@ -74,7 +74,7 @@ describe('Add User to House', () => {
     });
     it('Should fail when trying to add a user thats already in the house', async () => {
       await createDoc({ roles: ['user'] }, 'users/user1');
-      await createDoc({ members: [{ id: 'user1' }] }, 'houses/house1');
+      await createDoc({ members: [{ uid: 'user1' }] }, 'houses/house1');
       await createDoc({ roles: ['admin'] }, 'users/admin1');
       const res: FunctionResponse = await wrapped(
         { house: 'house1', user: 'user1' },
@@ -82,6 +82,22 @@ describe('Add User to House', () => {
       );
       expect(res.status).toEqual('fail');
       expect(res.error!.code).toMatch(/ALREADY_A_MEMBER/);
+    });
+    it('Should fail when trying to add a user to a house thats at maximum capacity', async () => {
+      await createDoc({ roles: ['user'] }, 'users/user1');
+      await createDoc(
+        {
+          members: [{ uid: 1 }, { uid: 2 }, { uid: 4 }, { uid: 4 }, { uid: 5 }],
+        },
+        'houses/house1'
+      );
+      await createDoc({ roles: ['admin'] }, 'users/admin1');
+      const res: FunctionResponse = await wrapped(
+        { house: 'house1', user: 'user1' },
+        { auth: { uid: 'admin1' } }
+      );
+      expect(res.status).toEqual('fail');
+      expect(res.error!.code).toMatch(/HOUSE_AT_MAXIMUM_CAPACITY/);
     });
   });
 
@@ -92,8 +108,8 @@ describe('Add User to House', () => {
     let houseDoc: House;
     beforeAll(async () => {
       const user = {
-        uid: 'user_1',
-        path: 'users/user_1',
+        uid: 'user1',
+        path: 'users/user1',
         data: {
           firstname: 'Jane',
           email: 'jane@example.com',
@@ -112,21 +128,28 @@ describe('Add User to House', () => {
           members: [],
         },
       };
+      const currentUser = {
+        uid: 'user2',
+        path: 'users/user2',
+        data: {
+          roles: ['admin'],
+        },
+      };
       const admin = {
-        uid: 'admin1',
-        path: 'users/admin1',
+        path: 'system/admin',
         data: {
           pending_requests: [{ uid: user.uid }],
           houses: [{ id: house.id, capacity: 0 }],
-          roles: ['admin'],
+          active_services: [],
         },
       };
       await createDoc(user.data, user.path);
       await createDoc(house.data, house.path);
       await createDoc(admin.data, admin.path);
+      await createDoc(currentUser.data, currentUser.path);
       res = await wrapped(
         { house: house.id, user: user.uid },
-        { auth: { uid: admin.uid } }
+        { auth: { uid: currentUser.uid } }
       );
       userDoc = (await db.doc(user.path).get()).data() as any;
       adminDoc = (await db.doc(admin.path).get()).data() as any;
@@ -135,6 +158,7 @@ describe('Add User to House', () => {
     afterAll(async () => {
       await db.recursiveDelete(db.collection('users'));
       await db.recursiveDelete(db.collection('houses'));
+      await db.recursiveDelete(db.collection('system'));
     });
     it('should remove request from admin pending requests', () => {
       expect(adminDoc.pending_requests).toHaveLength(0);
@@ -153,6 +177,9 @@ describe('Add User to House', () => {
     });
     it('should notify user through email', () => {
       expect(sendMock).toBeCalled();
+    });
+    test('should add user to admins active services', () => {
+      expect(adminDoc.active_services).toHaveLength(1);
     });
     it('should respond with success and new appliactions state when user has been added to house ', () => {
       expect(res.status).toEqual('success');
