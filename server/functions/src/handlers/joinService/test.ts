@@ -1,7 +1,7 @@
 import functions from 'firebase-functions-test';
 import admin from 'firebase-admin';
 import joinService from '.';
-import { FunctionResponse, User } from '../../utils/types';
+import { Admin, FunctionResponse, User } from '../../utils/types';
 const testEnv = functions(
   {
     projectId: 'pinocchio-40489',
@@ -50,7 +50,7 @@ describe('Add User To Service', () => {
   afterAll(() => {
     testEnv.cleanup();
   });
-  describe('Add User To Service: Fail', () => {
+  describe('Fail', () => {
     it('Should throw Error if client unauthenticated', async () => {
       const ctx = {};
       await expect(wrapped({}, ctx)).rejects.toThrow(/IS_UNAUTHENTICATED/);
@@ -103,9 +103,10 @@ describe('Add User To Service', () => {
       );
     });
   });
-  describe('Add User To Service: Success', () => {
+  describe('Success', () => {
     let res: FunctionResponse;
     let userDoc: User;
+    let adminDoc: Admin;
     const u = {
       ...user,
       data: {
@@ -115,15 +116,18 @@ describe('Add User To Service', () => {
     };
     beforeAll(async () => {
       await db.doc(u.path).create(u.data);
+      await db.doc('system/admin').create({ pending_requests: [] });
       const ctx = {
         auth: { uid: u.uid },
       };
       const data = { service_id: 'spotify' };
       res = await wrapped(data, ctx);
       userDoc = (await db.doc(u.path).get()).data() as any;
+      adminDoc = (await db.doc('system/admin').get()).data() as any;
     });
     afterAll(async () => {
       await db.doc(u.path).delete();
+      await db.doc('system/admin').delete();
     });
     it('should response with succes when user is added to service', async () => {
       expect(res.status).toEqual('success');
@@ -139,6 +143,9 @@ describe('Add User To Service', () => {
     it('should update user with new transaction', async () => {
       expect(userDoc.transactions).toHaveLength(1);
       expect(userDoc.transactions[0].action).toEqual('service-payment');
+    });
+    test('should add user to admins pending requests', () => {
+      expect(adminDoc.pending_requests).toHaveLength(1);
     });
     it('Should alert Admin on new request', () => {
       expect(adminSendMock).toBeCalled();

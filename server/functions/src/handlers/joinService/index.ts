@@ -1,4 +1,4 @@
-import { FunctionResponse } from '../../utils/types';
+import { Admin, FunctionResponse } from '../../utils/types';
 import * as functions from 'firebase-functions';
 import * as admin from 'firebase-admin';
 import {
@@ -34,6 +34,7 @@ const joinService = functions.https.onCall(
       const uid = ctx.auth.uid;
       const userRef = db.doc('users/' + uid);
       const userDoc = await userRef.get();
+      const adminRef = db.doc('system/admin');
 
       // order of check affects the tests
       if (!userDoc.exists)
@@ -60,6 +61,8 @@ const joinService = functions.https.onCall(
             code: 'INSUFFICIENT_BALANCE',
           },
         };
+
+      const a = (await adminRef.get()).data() as Admin;
       const notification: UserNotification = {
         message: `You have been charged UGX ${servicePrice} for your ${service_id} subscription`,
         at: new Date().toISOString(),
@@ -83,6 +86,17 @@ const joinService = functions.https.onCall(
         notifications: [notification, ...notifications],
         current_amount: newBalance,
       };
+      const pending_requests: Admin['pending_requests'] = [
+        ...a.pending_requests,
+        {
+          uid,
+          email: rest.email,
+          service: service_id,
+          at: new Date().toISOString(),
+          name: rest.firstname,
+        },
+      ];
+      await adminRef.update({ pending_requests });
       await userRef.update({ ...updatedUserData });
       await new AdminEmail()
         .onNewRequest({
