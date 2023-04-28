@@ -1,29 +1,20 @@
 import React from 'react';
-import {
-  AddServiceData,
-  HouseholdSlim,
-  Service,
-  UserNotification,
-  UserTransaction,
-} from '../../utils/types';
+import { AddServiceData, HouseholdSlim, User } from '../../utils/types';
+import { useAuth } from '../auth';
+import useGetUserDataQuery from '../../api/user/current';
+
 type EditableUserData = {
   firstname: string;
   lastname: string;
   phone: number;
 };
-interface IApp {
-  firstname: string;
-  lastname: string;
-  email: string;
-  phone: number;
+interface IApp extends User {
   username: string;
-  id: string;
-  current_amount: number;
-  households: HouseholdSlim[];
-  notifications: UserNotification[];
-  transactions: UserTransaction[];
-  services: Service[];
   isLoading: boolean;
+  isError?: {
+    state: boolean;
+    message: string;
+  };
 }
 
 export enum Actions {
@@ -33,6 +24,7 @@ export enum Actions {
   SIGN_OUT = 'SIGN_OUT',
   UPDATE_USER_PROFILE = 'UPDATE_USER_PROFILE',
   ADD_SERVICE = 'ADD_SERVICE',
+  ERROR = 'ERROR',
 }
 type ActionsType =
   | {
@@ -51,6 +43,10 @@ type ActionsType =
   | {
       type: Actions.ADD_SERVICE;
       payload: AddServiceData;
+    }
+  | {
+      type: Actions.ERROR;
+      payload: { message: string };
     };
 
 const initialState: IApp = {
@@ -66,12 +62,18 @@ const initialState: IApp = {
   transactions: [],
   services: [],
   isLoading: true,
+  roles: [],
+  balance: 0,
 };
 
 function appReducer(state: IApp, action: ActionsType): IApp {
   switch (action.type) {
     case Actions.LOAD: {
-      return { ...state, ...action.payload, isLoading: false };
+      return {
+        ...state,
+        ...action.payload,
+        isLoading: false,
+      };
     }
     case Actions.UPDATE_HOUSEHOLDS: {
       return { ...state, households: action.payload };
@@ -85,6 +87,12 @@ function appReducer(state: IApp, action: ActionsType): IApp {
     case Actions.ADD_SERVICE: {
       return { ...state, ...action.payload };
     }
+    case Actions.ERROR: {
+      return {
+        ...state,
+        isError: { state: true, message: action.payload.message },
+      };
+    }
     default:
       return state;
   }
@@ -97,6 +105,7 @@ type ActionCreators = {
   signOut: () => void;
   updateUserProfile: (d: EditableUserData) => void;
   addService: (d: AddServiceData) => void;
+  error: (d: { message: string }) => void;
 };
 
 const AppContext = React.createContext<(IApp & ActionCreators) | null>(null);
@@ -110,24 +119,45 @@ export function useApp() {
 
 // App Provider
 export function AppProvider({ children }: { children: JSX.Element }) {
+  const { data, error, mutate } = useGetUserDataQuery();
+  const { user_uid, isAuthenticated } = useAuth();
   const [state, dispatch] = React.useReducer(appReducer, initialState);
-  const value = React.useMemo(
+  const value = React.useMemo<IApp & ActionCreators>(
     () => ({
       ...state,
-      load: (payload: any) => dispatch({ type: Actions.LOAD, payload }),
+      load: (payload) => dispatch({ type: Actions.LOAD, payload }),
       authenticate: () => dispatch({ type: Actions.AUTHENTICATE }),
-      updateHouseholds: (payload: HouseholdSlim[]) =>
+      updateHouseholds: (payload) =>
         dispatch({ type: Actions.UPDATE_HOUSEHOLDS, payload }),
       signOut: () => dispatch({ type: Actions.SIGN_OUT }),
-      updateUserProfile: (payload: EditableUserData) =>
+      updateUserProfile: (payload) =>
         dispatch({
           type: Actions.UPDATE_USER_PROFILE,
           payload,
         }),
-      addService: (payload: AddServiceData) =>
-        dispatch({ type: Actions.ADD_SERVICE, payload }),
+      addService: (payload) => dispatch({ type: Actions.ADD_SERVICE, payload }),
+      error: (payload) => dispatch({ type: Actions.ERROR, payload }),
     }),
     [state]
   );
+  React.useEffect(() => {
+    if (data) {
+      value.load({ id: user_uid, ...data });
+    }
+  }, [data]);
+  React.useEffect(() => {
+    if (error) {
+      console.error(error.message);
+      value.error({ message: error.message });
+    }
+  }, [error]);
+  React.useEffect(() => {
+    if (user_uid && isAuthenticated) {
+      mutate(user_uid);
+    }
+  }, [user_uid, isAuthenticated]);
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;
+}
+function useGetUserDataMutation(): { data: any; error: any; mutate: any } {
+  throw new Error('Function not implemented.');
 }

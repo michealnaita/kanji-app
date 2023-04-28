@@ -1,36 +1,38 @@
 import React from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import useGetUserDataMutation from '../../api/user/current';
 import { useApp } from '../../context/app';
 import { useAuth } from '../../context/auth';
 import { routes } from '../../settings';
 
-export default function UserProvider({ Page }: { Page: React.FC }) {
+export default function ProtectedRoute({
+  page: Page,
+  admin = false,
+}: {
+  page: React.FC;
+  admin?: boolean;
+}) {
   const navigate = useNavigate();
   const location = useLocation();
-  const { isAuthenticated, isEmailVerified, user_uid } = useAuth();
-  const { load } = useApp();
-  const { data, error, mutate } = useGetUserDataMutation();
-  React.useEffect(() => {
-    if (data) {
-      load({ id: user_uid, ...data });
-    }
-  }, [data]);
-  React.useEffect(() => {
-    if (error) {
-      navigate('/500');
-    }
-  }, [error]);
+  const { isAuthenticated, isEmailVerified } = useAuth();
+  const { roles } = useApp();
+  const isAdmin = roles.includes('admin');
   React.useEffect(() => {
     const s = new URLSearchParams();
     s.set('from', location.pathname);
     if (!isAuthenticated) {
       navigate('/about?' + s.toString());
     } else {
-      mutate(user_uid);
       if (!isEmailVerified) navigate(routes.verifyEmail);
     }
   }, []);
-
-  return <>{<Page />}</>;
+  React.useEffect(() => {
+    if (!!roles.length && admin && !roles.includes('admin')) {
+      setTimeout(() => navigate(routes.dashboard), 3000);
+    }
+  }, [roles]);
+  return !isAdmin && admin ? (
+    <p className="text-black">not authorised</p>
+  ) : (
+    <Page />
+  );
 }

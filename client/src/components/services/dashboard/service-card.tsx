@@ -11,6 +11,7 @@ export default function ServiceCard({
   id,
   price,
   renewal,
+  status,
 }: Service) {
   const details: { [field: string]: string } = React.useMemo(
     () => ({
@@ -40,17 +41,26 @@ export default function ServiceCard({
             </Disclosure.Button>
           </div>
           <Disclosure.Panel className="flex flex-col space-y-8">
-            <div className="space-y-1 text-sm">
-              {Object.keys(details).map((field, i) => (
-                <div key={i} className="w-full flex justify-between">
-                  <p>{field}:</p>
-                  <p>{details[field]}</p>
+            {status === 'pending' ? (
+              <p className="text-skin-secondary">
+                Your service is being provisioned please wait for a confirmation
+                email
+              </p>
+            ) : (
+              <>
+                <div className="space-y-1 text-sm">
+                  {Object.keys(details).map((field, i) => (
+                    <div key={i} className="w-full flex justify-between">
+                      <p>{field}:</p>
+                      <p>{details[field]}</p>
+                    </div>
+                  ))}
                 </div>
-              ))}
-            </div>
-            <button className="underline place-self-center">
-              Extend subscription
-            </button>
+                <button className="underline place-self-center">
+                  Extend subscription
+                </button>
+              </>
+            )}
           </Disclosure.Panel>
         </div>
       )}

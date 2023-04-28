@@ -13,6 +13,7 @@ export const routes = {
   services: '/services',
   flutterRedirect: '/flutterwaveRedirect',
   verifyEmail: '/verifyEmail',
+  500: 500,
 };
 
 export const settings = {

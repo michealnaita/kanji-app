@@ -8,6 +8,8 @@ function getUserData(uid: string): Promise<User> {
     try {
       const docRef = doc(db, 'users', uid);
       const user = await getDoc(docRef);
+      console.log(uid);
+      console.log(user.exists());
       if (!user.exists()) {
         reject({ message: "user doesn't exist" });
         return;
@@ -20,5 +22,5 @@ function getUserData(uid: string): Promise<User> {
 }
 
 export default function useGetUserDataQuery() {
-  return useMutation(getUserData);
+  return useMutation<User, { message: string }, string>(getUserData);
 }
