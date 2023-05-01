@@ -103,7 +103,7 @@ export class UserEmail extends Email {
   onDelete() {
     this._action = 'delete account';
     this._template = TEMPLATES.onDelete;
-    this._subject = '';
+    this._subject = 'Sad to see you go';
     this._sender = { email: 'no-reply@loscribe.com', name: 'Loscribe' };
     this._params = { NAME: this._name };
     return this;
@@ -131,7 +131,7 @@ export class UserEmail extends Email {
   }) {
     this._action = 'activate service';
     this._template = TEMPLATES.onActiveService;
-    this._subject = `Active your ${service} Premium`;
+    this._subject = `Activate your ${service} Premium`;
     this._sender = { email: 'notifications@loscribe.com', name: 'Loscribe' };
     this._params = {
       NAME: this._name,
