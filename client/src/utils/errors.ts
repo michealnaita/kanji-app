@@ -10,6 +10,6 @@ export class InternalServerError extends Error {
   }
 }
 export const formatErrorMessage = (s: string) => {
-  const message = s.replaceAll('-', ' ').replaceAll(/auth\/|firestore\//, '');
+  const message = s.replaceAll('-', ' ').replace(/auth\/|firestore\//, '');
   return message.slice(0, 1).toUpperCase() + message.slice(1);
 };
