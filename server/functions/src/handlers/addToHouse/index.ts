@@ -157,7 +157,14 @@ const addToHouse = functions.https.onCall(
           address: h.address,
         })
         .send();
-
+      process.env.NODE_ENV !== 'testing' &&
+        functions.logger.log(`user added to house`, {
+          user: {
+            uid,
+            email: u.email,
+          },
+          house,
+        });
       return {
         status: 'success',
         data: {

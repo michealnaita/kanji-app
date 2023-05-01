@@ -31,6 +31,7 @@ export const TEMPLATES = {
   ),
 };
 class Email {
+  _action: string = '';
   _email: string;
   _name: string;
   _template: string = '';
@@ -56,10 +57,18 @@ class Email {
       to: [{ email: this._email, name: this._name }],
     };
 
-    emailApi.sendTransacEmail(settings).catch((e) => {
-      console.log(e);
-      functions.logger.error(e);
-    });
+    emailApi
+      .sendTransacEmail(settings)
+      .then((_) => {
+        if (process.env.NODE_ENV !== 'testing')
+          functions.logger.log(`email sent to ${this._email}`, {
+            email_type: this._action,
+          });
+      })
+      .catch((e) => {
+        console.log(e);
+        functions.logger.error(e);
+      });
   }
 }
 export class AdminEmail extends Email {
@@ -78,6 +87,7 @@ export class AdminEmail extends Email {
     uid: string;
     email: string;
   }) {
+    this._action = 'service request';
     this._template = TEMPLATES.newRequest;
     this._subject = 'New Subscription Request';
     this._sender = { email: 'no-reply@loscribe.com', name: 'Loscribe' };
@@ -91,6 +101,7 @@ export class UserEmail extends Email {
     super(config);
   }
   onDelete() {
+    this._action = 'delete account';
     this._template = TEMPLATES.onDelete;
     this._subject = '';
     this._sender = { email: 'no-reply@loscribe.com', name: 'Loscribe' };
@@ -98,6 +109,7 @@ export class UserEmail extends Email {
     return this;
   }
   onJoinService(service: string) {
+    this._action = 'join service';
     this._template = TEMPLATES.onJoinService;
     this._subject = `Good News, you have joined ${service} with loscribe`;
     this._sender = { email: 'notifications@loscribe.com', name: 'Loscribe' };
@@ -117,6 +129,7 @@ export class UserEmail extends Email {
     link: string;
     address: string;
   }) {
+    this._action = 'activate service';
     this._template = TEMPLATES.onActiveService;
     this._subject = `Active your ${service} Premium`;
     this._sender = { email: 'notifications@loscribe.com', name: 'Loscribe' };

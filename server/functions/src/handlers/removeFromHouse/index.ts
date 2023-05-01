@@ -104,7 +104,14 @@ const addToHouse = functions.https.onCall(
       await userRef.update({ services, notifications });
       await adminRef.update({ houses, active_services });
       await houseRef.update({ members });
-
+      process.env.NODE_ENV !== 'testing' &&
+        functions.logger.log(`user removed from house`, {
+          user: {
+            uid,
+            email: u.email,
+          },
+          house,
+        });
       return {
         status: 'success',
         data: {

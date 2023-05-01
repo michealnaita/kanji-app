@@ -109,6 +109,14 @@ const joinService = functions.https.onCall(
       await new UserEmail({ email: rest.email, name: rest.firstname })
         .onJoinService(service_id)
         .send();
+      process.env.NODE_ENV !== 'testing' &&
+        functions.logger.log(`user joined service`, {
+          user: {
+            uid,
+            email: rest.email,
+          },
+          service: service_id,
+        });
       return {
         status: 'success',
         data: updatedUserData,

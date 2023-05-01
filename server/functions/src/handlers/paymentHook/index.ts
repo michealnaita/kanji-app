@@ -32,13 +32,6 @@ const paymentHook = functions
         fulfilled,
       } = txDoc.data() as Transaction;
       if (fulfilled) throw new BadRequestError('transaction-already-fulfilled');
-
-      // check that transaction is valid
-      // TODO: REVERT THIS
-      // const tx = await Promise.resolve({
-      //   status: 'success',
-      //   data: { status: 'successful' },
-      // });
       const { status, data } = await flw.Transaction.verify({
         id: transaction_id,
       });
@@ -46,12 +39,10 @@ const paymentHook = functions
         return res.redirect(APP_URL + '/recharge?status=fail');
 
       if (data.amount && status === 'success') {
-        // TODO: REVERT THIS
-        // const { amount } = await Promise.resolve({ amount: 5000 });
         if (!(data.amount == tx_amount))
           throw new InternalServerError('different-transaction-amounts');
         const userDoc = await db.doc('users/' + user_uid).get();
-        const { current_amount } = userDoc.data() as User;
+        const { current_amount, email } = userDoc.data() as User;
         const newAmount =
           parseFloat(current_amount as any) + parseFloat(data.amount as any);
         await db.doc('users/' + user_uid).update({
@@ -60,6 +51,14 @@ const paymentHook = functions
         await db.doc('transactions/' + tx_ref).update({
           fulfilled: true,
         });
+        process.env.NODE_ENV !== 'testing' &&
+          functions.logger.log(`user top up`, {
+            user: {
+              uid: user_uid,
+              email: email,
+            },
+            amount: data.amount,
+          });
         return res.redirect(APP_URL + '/recharge?status=success');
       }
       throw new InternalServerError('transaction-neither-fail-nor-success');
