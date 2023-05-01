@@ -38,7 +38,7 @@ export default function ServiceCard({
       return;
     }
     mutate(id);
-    toast.loading('please wait...');
+    toast.loading('Please wait...');
   }
   function handleClick() {
     const hasService = !!services.filter((s) => s.id === id).length;
@@ -49,10 +49,9 @@ export default function ServiceCard({
     setShow(true);
   }
   React.useEffect(() => {
-    // TODO: update user
     if (data) {
       addService(data);
-      toast.success('services added');
+      toast.success('Service added');
       setTimeout(() => navigate(routes.dashboard), 2000);
     }
   }, [data]);

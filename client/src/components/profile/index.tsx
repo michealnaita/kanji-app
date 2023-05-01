@@ -44,7 +44,7 @@ export default function ProfileForm() {
   });
   React.useEffect(() => {
     if (del.data) {
-      toast.success('done');
+      toast.success('Account Deleted');
       setTimeout(() => {
         navigate(routes.signout);
       }, 2000);
@@ -53,7 +53,7 @@ export default function ProfileForm() {
   React.useEffect(() => {
     if (update.data) {
       updateUserProfile(update.data);
-      toast.success('updated');
+      toast.success('Profile updated');
     }
   }, [update.data]);
 

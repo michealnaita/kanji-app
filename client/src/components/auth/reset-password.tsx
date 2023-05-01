@@ -1,7 +1,7 @@
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import { Link, useNavigate } from 'react-router-dom';
-import { toast } from 'react-toastify';
+import toast from 'react-hot-toast';
 import useResetPasswordMutation from '../../api/auth/reset-password';
 
 export default function SignInForm() {
@@ -17,7 +17,10 @@ export default function SignInForm() {
     mutate(data);
   }
   React.useEffect(() => {
-    if (data) navigate('/signin');
+    if (data) {
+      toast.success('Reset link sent to your email');
+      setTimeout(() => navigate('/signin'), 3000);
+    }
   }, [data]);
   React.useEffect(() => {
     if (isError) toast.error((error as Error).message);

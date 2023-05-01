@@ -158,6 +158,3 @@ export function AppProvider({ children }: { children: JSX.Element }) {
   }, [user_uid, isAuthenticated]);
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;
 }
-function useGetUserDataMutation(): { data: any; error: any; mutate: any } {
-  throw new Error('Function not implemented.');
-}

@@ -2,7 +2,7 @@ import { Popover } from '@headlessui/react';
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import { Link, useNavigate } from 'react-router-dom';
-import { toast } from 'react-toastify';
+import toast from 'react-hot-toast';
 import useRegisterMutation from '../../api/auth/register';
 import { RegisterData } from '../../utils/types';
 
