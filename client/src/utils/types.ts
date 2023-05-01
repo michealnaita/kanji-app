@@ -98,6 +98,7 @@ export type Admin = {
     email: string;
     id: string;
     capacity: number;
+    service: 'spotify' | 'netflix';
   }[];
 };
 

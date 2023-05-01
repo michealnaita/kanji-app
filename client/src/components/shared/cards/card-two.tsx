@@ -8,7 +8,7 @@ type CardProps = {
   className?: string;
 };
 
-export default function CardTwo({
+export default function PageWrapper({
   title,
   children,
   button,

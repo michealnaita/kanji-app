@@ -26,6 +26,7 @@ import AuthProvider from './context/auth';
 import { AdminProvider } from './context/admin';
 import AdminPage from './pages/admin';
 import ProtectedRoute from './components/shared/protected-route';
+import PendingRequestPage from './pages/request';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -54,6 +55,10 @@ const router = createBrowserRouter([
   { path: '/signout', element: <ProtectedRoute page={SignOutPage} /> },
   { path: '/profile', element: <ProtectedRoute page={ProfilePage} /> },
   { path: '/admin', element: <ProtectedRoute page={AdminPage} /> },
+  {
+    path: '/admin/requests/:uid',
+    element: <ProtectedRoute page={PendingRequestPage} />,
+  },
   {
     path: '/flutterwaveRedirect',
     element: <ProtectedRoute page={FlutterWaveRedirect} />,

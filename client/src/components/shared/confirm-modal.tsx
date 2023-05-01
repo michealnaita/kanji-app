@@ -22,7 +22,13 @@ export default function ConfirmationModal({
           <h1 className="font-semibold">{title}</h1>
           <p>{children}</p>
           <div className="space-y-4">
-            <button className="primary" onClick={action}>
+            <button
+              className="primary"
+              onClick={() => {
+                action();
+                onClose();
+              }}
+            >
               {buttonText || 'Confirm'}
             </button>
             <button className="primary-alt" onClick={onClose}>

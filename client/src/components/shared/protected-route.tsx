@@ -11,6 +11,8 @@ export default function ProtectedRoute({
   page: React.FC;
   admin?: boolean;
 }) {
+  const protectedRoutes =
+    import.meta.env.PROTECTED_ROUTES === 'off' ? false : true;
   const navigate = useNavigate();
   const location = useLocation();
   const { isAuthenticated, isEmailVerified } = useAuth();
@@ -26,11 +28,16 @@ export default function ProtectedRoute({
     }
   }, []);
   React.useEffect(() => {
-    if (!!roles.length && admin && !roles.includes('admin')) {
+    if (
+      protectedRoutes &&
+      !!roles.length &&
+      admin &&
+      !roles.includes('admin')
+    ) {
       setTimeout(() => navigate(routes.dashboard), 3000);
     }
   }, [roles]);
-  return !isAdmin && admin ? (
+  return protectedRoutes && !isAdmin && admin ? (
     <p className="text-black">not authorised</p>
   ) : (
     <Page />

@@ -1,6 +1,6 @@
 import PendingRequstsCard from '../components/admin/pendingRequests/card';
 import Layout from '../components/layout';
-import { useApp } from '../context/app';
+import useAdmin from '../context/admin';
 
 const Loader = () => {
   return (
@@ -19,7 +19,7 @@ const Loader = () => {
 };
 
 export default function AdminPage() {
-  const { isLoading } = useApp();
+  const { isLoading } = useAdmin();
   return (
     <Layout title="Dashboard" className="space-y-10 !pb-10">
       {isLoading ? (
