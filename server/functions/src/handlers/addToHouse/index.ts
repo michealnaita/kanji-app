@@ -114,9 +114,9 @@ const addToHouse = functions.https.onCall(
         if (s.id == h.service)
           return {
             ...s,
-            at: now.format('YYYY-MM-DD'),
+            at: now.toISOString(),
+            renewal: moment(now).add(1, 'month').toISOString(),
             status: 'active',
-            renewal: getRenewalDate(now),
             house: house,
           };
         return s;
@@ -126,13 +126,14 @@ const addToHouse = functions.https.onCall(
           email: u.email,
           uid: user,
           service: h.service,
-          renewal: getRenewalDate(now),
+          at: now.toISOString(),
+          renewal: moment(now).add(1, 'month').toISOString(),
         },
         ...a.active_services,
       ];
       const notification: UserNotification = {
         message: `Your ${h.service} subscription has been proccessed check your email on how to procced`,
-        at: new Date().toISOString(),
+        at: now.toISOString(),
       };
       const notifications: UserNotification[] = [
         notification,
@@ -149,8 +150,8 @@ const addToHouse = functions.https.onCall(
         name: u.firstname,
       })
         .onActiveService({
-          start: now.format('YYYY-MM-DD'),
-          end: getRenewalDate(),
+          start: now.toISOString(),
+          end: moment(now).add(1, 'month').toISOString(),
           service: h.service,
           link: h.link,
           address: h.address,

@@ -3,29 +3,13 @@ export type HouseholdMember = {
   firstname: string;
   phone: number;
 };
-export interface HouseholdSlim {
-  name: string;
-  id: string;
-  service: string;
-  promo?: boolean;
-}
-export interface Household extends HouseholdSlim {
-  price: number;
-  service_membership: string;
-  logins?: {
-    email: string;
-    password: string;
-  };
-  members: HouseholdMember[];
-  status: 'active' | 'inactive';
-}
+
 export interface User {
   id?: string;
   firstname: string;
   lastname: string;
   email: string;
   phone: number;
-  households: HouseholdSlim[];
   current_amount: number;
   reserved?: number;
   notifications: UserNotification[];
@@ -48,6 +32,7 @@ export interface Admin {
     email: string;
     service: string;
     renewal: string;
+    at: string;
   }[];
   houses: {
     email: string;
@@ -103,12 +88,6 @@ export type FlutterwaveResponse = {
   data: {
     link: string;
   };
-};
-export type Promo = {
-  slots: number;
-  expired: boolean;
-  household: HouseholdSlim;
-  users: string[];
 };
 export type FunctionResponse<
   T = {
