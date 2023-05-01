@@ -150,8 +150,8 @@ const addToHouse = functions.https.onCall(
         name: u.firstname,
       })
         .onActiveService({
-          start: now.toISOString(),
-          end: moment(now).add(1, 'month').toISOString(),
+          start: now.format('DD MMMM, YYYY'),
+          end: moment(now).add(1, 'month').format('DD MMMM, YYYY'),
           service: h.service,
           link: h.link,
           address: h.address,
