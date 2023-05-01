@@ -95,6 +95,7 @@ export default function PendingRequest({ uid }: { uid: string }) {
           <button
             className="primary place-self-center"
             onClick={() => setDialog(true)}
+            disabled={isLoading}
           >
             Add to House
           </button>

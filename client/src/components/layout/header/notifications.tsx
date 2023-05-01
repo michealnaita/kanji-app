@@ -1,4 +1,5 @@
 import { Popover } from '@headlessui/react';
+import moment from 'moment';
 import { Link } from 'react-router-dom';
 import { routes } from '../../../settings';
 import { UserNotification } from '../../../utils/types';
@@ -27,7 +28,12 @@ export default function NotifcationsWrapper({
               <>
                 <>
                   {notifications.slice(0, 3).map((n, i) => (
-                    <p key={i}>{n.message}</p>
+                    <div key={i} className="flex flex-col">
+                      <p>{n.message}</p>
+                      <span className="text-xs text-skin-secondary">
+                        {moment(n.at).fromNow()}
+                      </span>
+                    </div>
                   ))}
                 </>
                 <p>
