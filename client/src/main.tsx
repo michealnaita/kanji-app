@@ -12,11 +12,21 @@ import SignInPage from './pages/signin';
 import RegisterPage from './pages/register';
 import ErrorPage from './pages/500';
 import NotFoundErrorPage from './pages/404';
-import ProtectedRoute from './components/shared/protected-route';
 import 'react-toastify/dist/ReactToastify.css';
 import RechargePage from './pages/recharge';
-import PromoPage from './pages/promo';
 import AboutPage from './pages/about';
+import BadRequestErrorPage from './pages/400';
+import ResetPasswordPage from './pages/reset-password';
+import VerifyEmailPage from './pages/verify-email';
+import FlutterWaveRedirect from './pages/flutterwave';
+import ProfilePage from './pages/profile';
+import ServicePage from './pages/services';
+import SignOutPage from './pages/signout';
+import AuthProvider from './context/auth';
+import { AdminProvider } from './context/admin';
+import AdminPage from './pages/admin';
+import ProtectedRoute from './components/shared/protected-route';
+import PendingRequestPage from './pages/request';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -28,28 +38,42 @@ const queryClient = new QueryClient({
 const router = createBrowserRouter([
   {
     path: '/',
-    element: <ProtectedRoute Route={Home} />,
+    element: <ProtectedRoute page={Home} />,
     errorElement: <NotFoundErrorPage />,
   },
-  { path: '/search', element: <ProtectedRoute Route={Search} /> },
-  {
-    path: '/house/:householdId',
-    element: <ProtectedRoute Route={HouseholdPage} />,
-  },
+  { path: '/search', element: <ProtectedRoute page={Search} /> },
   { path: '/signin', element: <SignInPage /> },
   { path: '/register', element: <RegisterPage /> },
-  { path: '/recharge', element: <ProtectedRoute Route={RechargePage} /> },
-  { path: '/promo', element: <ProtectedRoute Route={PromoPage} /> },
+  { path: '/recharge', element: <ProtectedRoute page={RechargePage} /> },
   { path: '/500', element: <ErrorPage /> },
   { path: '/404', element: <NotFoundErrorPage /> },
+  { path: '/400', element: <BadRequestErrorPage /> },
   { path: '/about', element: <AboutPage /> },
+  { path: '/password', element: <ResetPasswordPage /> },
+  { path: '/services', element: <ProtectedRoute page={ServicePage} /> },
+  { path: '/verifyEmail', element: <ProtectedRoute page={VerifyEmailPage} /> },
+  { path: '/signout', element: <ProtectedRoute page={SignOutPage} /> },
+  { path: '/profile', element: <ProtectedRoute page={ProfilePage} /> },
+  { path: '/admin', element: <ProtectedRoute page={AdminPage} admin /> },
+  {
+    path: '/admin/requests/:uid',
+    element: <ProtectedRoute page={PendingRequestPage} admin />,
+  },
+  {
+    path: '/flutterwaveRedirect',
+    element: <ProtectedRoute page={FlutterWaveRedirect} />,
+  },
 ]);
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <React.StrictMode>
-    <AppProvider>
-      <QueryClientProvider client={queryClient}>
-        <RouterProvider router={router} />
-      </QueryClientProvider>
-    </AppProvider>
+    <QueryClientProvider client={queryClient}>
+      <AuthProvider>
+        <AppProvider>
+          <AdminProvider>
+            <RouterProvider router={router} />
+          </AdminProvider>
+        </AppProvider>
+      </AuthProvider>
+    </QueryClientProvider>
   </React.StrictMode>
 );

@@ -11,7 +11,7 @@ process.env.NODE_ENV === 'testing' && admin.initializeApp();
 const db = admin.firestore();
 
 const generateRechargeLink = functions
-  .runWith({ secrets: ['APP_URL', 'PAYMENT_WEBHOOK'] })
+  .runWith({ secrets: ['APP_URL', 'PAYMENT_WEBHOOK', 'APP_NAME'] })
   .https.onCall(
     async ({ phone, amount, email, name }: PaymentRequestData, context) => {
       const { APP_URL, PAYMENT_WEBHOOK, NODE_ENV } = process.env;
@@ -50,8 +50,8 @@ const generateRechargeLink = functions
           name,
         },
         customizations: {
-          title: 'Kanji App',
-          logo: APP_URL + '/images/logo.svg',
+          title: process.env.APP_NAME,
+          logo: APP_URL + '/logo.svg',
         },
       };
       try {
@@ -73,7 +73,7 @@ const generateRechargeLink = functions
         await db.doc('transactions/' + tx_ref).create(txData);
         return data;
       } catch (e: any) {
-        if (e! instanceof functions.https.HttpsError)
+        if (!(e instanceof functions.https.HttpsError))
           throw new functions.https.HttpsError('unknown', e.message);
         throw e;
       }

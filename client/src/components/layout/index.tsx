@@ -1,17 +1,32 @@
-import React from 'react';
 import { ToastContainer } from 'react-toastify';
+import { toast, Toaster } from 'react-hot-toast';
 import { useApp } from '../../context/app';
 import Header from './header';
+import { Helmet } from 'react-helmet';
+import cn from 'classnames';
+import React from 'react';
+import { settings } from '../../settings';
 
-export default function Layout({ children }: { children: any }) {
-  const { current_amount, username, isAuthenticated } = useApp();
-  // React.useEffect(() => {
-  //   setTimeout(function () {
-  //     window.scrollTo(0, document.body.scrollHeight);
-  //   }, 1000);
-  // }, []);
+export default function Layout({
+  children,
+  title,
+  hide,
+  className,
+}: {
+  children: any;
+  hide?: true;
+  title: string;
+  className?: string;
+}) {
+  const { notifications, firstname } = useApp();
+  React.useEffect(() => {
+    toast.dismiss();
+  }, []);
   return (
     <>
+      <Helmet>
+        <title>{title + ' | ' + settings.appName}</title>
+      </Helmet>
       <ToastContainer
         position="top-right"
         autoClose={3000}
@@ -20,13 +35,19 @@ export default function Layout({ children }: { children: any }) {
         closeOnClick
         theme="light"
       />
-      <div className="bg-skin-primary w-screen overflow-y-scroll h-full border-b-4 border-skin-primary flex flex-col">
-        <Header
-          amount={current_amount}
-          username={username}
-          isAuthenticated={isAuthenticated}
-        />
-        <div className="p-6  flex  flex-col container space-y-6 flex-1 overflow-y-scroll">
+      <Toaster toastOptions={{ duration: 2000 }} />
+      <div className="bg-skin-primary w-screen overflow-y-auto h-full  flex flex-col">
+        <>
+          {!hide && (
+            <Header notifications={notifications} username={firstname} />
+          )}
+        </>
+        <div
+          className={cn(
+            'flex  flex-col bg-red-10 flex-1 p-6 overflow-y-auto',
+            className
+          )}
+        >
           {children}
         </div>
       </div>

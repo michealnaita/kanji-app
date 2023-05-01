@@ -1,19 +1,23 @@
-import React from 'react';
-import { Navigate, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useApp } from '../../context/app';
-import { Card } from '../shared';
+import { formatPrice } from '../../utils/utils';
 export default function WalletCard() {
   const navigate = useNavigate();
   const { current_amount } = useApp();
   return (
-    <Card
-      heading="Your Balance"
-      onClick={() => navigate('/recharge')}
-      button="recharge"
-    >
-      <p className="text-4xl text-skin-secondary font-semibold">
-        Shs. {current_amount}
-      </p>
-    </Card>
+    <div className="space-y-4">
+      <h1 className="font-semibold">Wallet</h1>
+      <div className="card space-y-7 text-center">
+        <p className="text-4xl text-skin-secondary font-semibold">
+          UGX {formatPrice(current_amount)}
+        </p>
+        <button
+          className=" text-center underline"
+          onClick={() => navigate('/recharge')}
+        >
+          Recharge
+        </button>
+      </div>
+    </div>
   );
 }

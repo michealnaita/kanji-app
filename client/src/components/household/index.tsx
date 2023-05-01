@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Fragment } from 'react';
 import { HouseholdMember } from '../../utils/types';
 import spotify from '../../assets/spotify.svg';
 import netflix from '../../assets/netflix.svg';
@@ -12,6 +12,8 @@ import useLeaveHouseholdMutation from '../../api/household/leaveHousehold';
 import useJoinHouseholdMutation from '../../api/household/joinHousehold';
 import { toast } from 'react-toastify';
 import DialogPrompt from './dialog';
+import { Transition } from '@headlessui/react';
+import { useAuth } from '../../context/auth';
 
 export default function Household({ id }: { id: string }) {
   const navigate = useNavigate();
@@ -20,9 +22,13 @@ export default function Household({ id }: { id: string }) {
   const l = useLeaveHouseholdMutation();
   const j = useJoinHouseholdMutation();
   const { id: userId } = useApp();
+  const { isAuthenticated } = useAuth();
   const [isMember, setMember] = React.useState<boolean>(false);
   const [isOpen, setOpen] = React.useState<boolean>(false);
-  const [action, setAction] = React.useState<'leave' | 'join'>('leave');
+  const [showToolTip, setShow] = React.useState<boolean>(false);
+  const [action, setAction] = React.useState<'leave' | 'join' | 'auth'>(
+    'leave'
+  );
   const services = {
     spotify,
     netflix,
@@ -51,7 +57,7 @@ export default function Household({ id }: { id: string }) {
   React.useEffect(() => {
     if (isError) {
       if (error instanceof NotFoundError) {
-        navigate('/400');
+        navigate('/404');
       } else {
         navigate('/500');
       }
@@ -65,28 +71,48 @@ export default function Household({ id }: { id: string }) {
     }
   }, [data]);
   React.useEffect(() => {
-    if (j.data) {
+    if (j.data && !l.data) {
       toast.success('Successfully joined house');
       setMember(true);
+      setShow(true);
+      setTimeout(() => setShow(false), 3000);
     }
-    if (l.data) {
+    if (l.data && !j.data) {
       toast.success('Successfully left house');
       setMember(false);
     }
+    l.data && j.data && toast.warn('Try again later');
   }, [j.data, l.data]);
   const handlers = React.useMemo(
     () => ({
       leave: () => {
         setOpen(false);
-        l.mutate({ household: id });
+        j.data
+          ? toast.warn('Wait some time before you can leave house')
+          : l.mutate({ household: id });
       },
       join: () => {
         setOpen(false);
-        j.mutate({ household: id });
+        l.data
+          ? toast.warn('Wait some time before you can join house again')
+          : j.mutate({ household: id });
+      },
+      auth: () => {
+        const s = new URLSearchParams();
+        s.set('from', location.pathname);
+        navigate('/signin?' + s.toString());
       },
     }),
-    []
+    [j.data, l.data]
   );
+  function handleShare() {
+    const shareData = {
+      title: 'Littleneck App',
+      text: 'Join ' + data?.name,
+      url: window.location.href,
+    };
+    navigator.share && navigator.share(shareData);
+  }
   return (
     <>
       <DialogPrompt
@@ -125,8 +151,13 @@ export default function Household({ id }: { id: string }) {
                       : 'primary self-center'
                   }
                   onClick={() => {
-                    setAction('join');
-                    setOpen(true);
+                    if (isAuthenticated) {
+                      setAction('join');
+                      setOpen(true);
+                    } else {
+                      setAction('auth');
+                      setOpen(true);
+                    }
                   }}
                   disabled={j.isLoading}
                 >
@@ -140,7 +171,17 @@ export default function Household({ id }: { id: string }) {
                 src={services[data!.service as 'netflix' | 'spotify']}
                 alt="house icon"
               />
-              <button className="text-skin-lime">invite</button>
+              <div className="relative">
+                <Transition as={Fragment} show={showToolTip}>
+                  <p className="tool-tip">
+                    Invite friends, to fill up house quickly
+                  </p>
+                </Transition>
+
+                <button className="text-skin-lime" onClick={handleShare}>
+                  invite
+                </button>
+              </div>
             </div>
             <div>
               <p className="text-skin-secondary font-semibold">Details</p>

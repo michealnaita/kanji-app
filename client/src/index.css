@@ -8,10 +8,8 @@
   font-weight: 400;
 
   color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
-
   font-synthesis: none;
+  color:white;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -26,30 +24,104 @@ button,
 select,
 a {
     -webkit-tap-highlight-color: transparent;
+    outline: 0;
+    width:max-content;
 }
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @layer components {
-  p,label { 
-    @apply text-skin-off-white
+  .align-center{
+    @apply  flex flex-col items-center 
+  }
+  .center{
+    @apply flex justify-center items-center
   }
   .card {
-    @apply shadow-lg bg-skin-secondary rounded-2xl p-7 
+    @apply drop-shadow-md bg-skin-secondary rounded-2xl p-7 
+  }
+  .loader{
+    @apply animate-pulse bg-[#242628]
+  }
+  .loader-card{
+    @apply  w-full h-[100px] rounded-md loader
+  }
+  .loader-text{
+    @apply h-6 w-[160px] rounded-md loader
+  }
+  .loader-text-long{
+    @apply h-4 w-full rounded-md loader
   }
   .scroll-view{
     @apply relative after:bg-gradient-to-t after:from-[#17191B] after:via-[#17191B]  after:bottom-0 after:z-10 after:w-full after:h-8 after:absolute;
     @apply  before:bg-gradient-to-b before:from-[#17191B] before:via-[#17191B]  before:top-0 before:z-10 before:w-full before:h-8 before:absolute;
   }
-
+  .landing-gradient {
+    @apply relative after:bg-gradient-to-t after:from-[#1E2022] after:bg-skin-primary after:bg-opacity-60 after:bottom-0 after:z-10 after:w-full after:h-full after:absolute;
+  }
   button.primary {
-    @apply bg-skin-lime w-full max-w-xs  text-white rounded-2xl font-semibold py-4
+    @apply bg-skin-lime w-full max-w-xs text-skin-dark  rounded-2xl font-semibold py-4
+  }
+  button.secondary{
+    @apply border-skin-lime border w-full max-w-xs  text-white rounded-2xl font-semibold py-4
   }
   button.danger {
     @apply bg-skin-red w-full max-w-xs text-white rounded-2xl font-semibold py-4
   }
+  button.danger-alt {
+    @apply bg-red-500 w-full max-w-xs bg-opacity-0 text-red-500 border-2 border-red-500 rounded-2xl font-semibold py-4 hover:bg-opacity-5
+  }
+  button.primary-alt {
+    @apply bg-skin-lime w-full max-w-xs bg-opacity-0 text-black border-2 border-skin-lime rounded-2xl font-semibold py-4 hover:bg-opacity-5
+  }
   input.form-input{
-   @apply w-full text-skin-secondary border-skin-secondary border bg-transparent  rounded-lg focus:border-transparent focus:ring-skin-primary
+   @apply  text-skin-secondary w-full max-w-xs font-semibold border-skin-secondary outline-0 ring-0 border-2 bg-transparent  py-2 px-4 rounded-2xl focus:border-skin-lime bg-skin-lime hover:text-white bg-opacity-0 hover:bg-opacity-10
+  }
+
+  .form-group-alt {
+    @apply flex justify-between
+  }
+  .form-group-alt input{
+    @apply border-b-2 outline-0 text-right bg-transparent border-b-transparent w-48
+  }
+  .form-group-alt input.edit{
+    @apply focus:border-b-skin-lime
+  }
+  .form-group-alt label{
+    @apply flex-1
+  }
+  .form-group{
+    @apply  flex flex-col space-y-2  w-full max-w-xs  
+  }
+  .tool-tip {
+    @apply absolute origin-bottom-right bottom-8 z-50 right-0 bg-[#828282] shadow-lg w-40 p-4 rounded-lg text-xs
+  }
+  .tool-tip::after{
+    content:'';
+    width: 0; 
+    height: 0; 
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    border-top: 10px solid #828282;
+    position:absolute;
+    transform-origin: bottom;
+    bottom: -10px;
+    right: 10%;
+    z-index:10
+  }
+
+  .menu-card{
+    @apply fixed top-0 transform translate-y-20 z-10 w-screen max-w-sm right-0 px-6 before:fixed before:bg-black before:bg-opacity-25 before:top-0 before:transform before:-translate-y-20 before:left-0 before:pointer-events-none before:h-screen before:w-screen
+  }
+  .modal-card{
+    @apply fixed z-50 top-0 left-0 w-screen h-screen px-6 max-w-sm  flex flex-col justify-center before:fixed before:bg-black before:bg-opacity-25 before:top-0 before:left-0 before:pointer-events-none before:h-screen before:w-screen
+  }
+  .menu-container {
+    @apply bg-white rounded-md drop-shadow-md p-7
+  }
+  .menu-item {
+    @apply flex space-x-4 font-semibold items-center
   }
 }
+

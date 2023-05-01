@@ -9,5 +9,7 @@ export class InternalServerError extends Error {
     super(message);
   }
 }
-export const formatErrorMessage = (s: string) =>
-  s.replace('-', ' ').replace(/auth\/|firestore\//, '');
+export const formatErrorMessage = (s: string) => {
+  const message = s.replaceAll('-', ' ').replace(/auth\/|firestore\//, '');
+  return message.slice(0, 1).toUpperCase() + message.slice(1);
+};

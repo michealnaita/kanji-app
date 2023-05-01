@@ -11,6 +11,5 @@
     "noImplicitAny": false,
     "rootDir": "src"
   },
-  "compileOnSave": true,
-  "include": ["src", "src/handlers/paymentHook/.d.ts"]
+  "compileOnSave": true
 }

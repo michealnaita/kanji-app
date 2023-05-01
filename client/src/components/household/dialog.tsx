@@ -10,7 +10,7 @@ export default function Modal({
   isOpen: boolean;
   closeModal: () => void;
   proceed: () => void;
-  action: 'leave' | 'join';
+  action: 'leave' | 'join' | 'auth';
 }) {
   return (
     <Transition appear show={isOpen} as={Fragment}>
@@ -64,6 +64,11 @@ export default function Modal({
                 {action === 'leave' && (
                   <p className="mt-4 text-lg text-skin-secondary">
                     Are you sure you want to leave this Household
+                  </p>
+                )}
+                {action === 'auth' && (
+                  <p className="mt-4 text-lg text-skin-secondary">
+                    You need to sign in before you can join this Household
                   </p>
                 )}
                 <div className="mt-4 space-x-6 float-right w-max ">

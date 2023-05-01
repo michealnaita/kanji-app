@@ -1,5 +1,5 @@
 import { useMutation } from 'react-query';
-import { signInWithEmailAndPassword, onAuthStateChanged } from 'firebase/auth';
+import { signInWithEmailAndPassword } from 'firebase/auth';
 import { SignInData } from '../../utils/types';
 import { auth } from '../../utils/firebase';
 import { formatErrorMessage } from '../../utils/errors';

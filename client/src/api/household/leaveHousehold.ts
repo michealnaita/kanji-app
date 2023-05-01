@@ -35,3 +35,4 @@ export default function useLeaveHouseholdMutation() {
   const { updateHouseholds } = useApp();
   return useMutation((data: RequestData) => leaveHouse(data, updateHouseholds));
 }
+

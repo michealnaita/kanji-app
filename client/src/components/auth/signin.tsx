@@ -1,7 +1,7 @@
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import { Link, useNavigate } from 'react-router-dom';
-import { toast, ToastContainer } from 'react-toastify';
+import toast from 'react-hot-toast';
 import useSignInMutation from '../../api/auth/signin';
 import { SignInData } from '../../utils/types';
 
@@ -31,71 +31,78 @@ export default function SignInForm() {
   }, [isError]);
   return (
     <form
-      className="card flex flex-col form space-y-4"
+      className="flex flex-col form space-y-10"
       onSubmit={handleSubmit(onSubmit)}
     >
-      <ToastContainer
-        position="top-right"
-        autoClose={3000}
-        hideProgressBar={false}
-        newestOnTop={false}
-        closeOnClick
-        theme="light"
-      />
-      <ToastContainer />
-      <h1 className="text-center font-semibold text-lg">Sign In</h1>
-      <div>
-        <label htmlFor="email">Email</label>
-        <input
-          type="text"
-          className="form-input"
-          id="email"
-          {...register('email', {
-            required: { value: true, message: 'email is required' },
-            pattern: {
-              value: /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/,
-              message: 'Please use a valid email',
-            },
-          })}
-        />
-        {errors.email && (
-          <span className="text-skin-red text-sm italic">
-            {errors.email.message}
-          </span>
-        )}
+      <div className="space-y-4">
+        <h1 className="font-semibold text-2xl">Welcome back</h1>
+        <p className="ont-semibold text-base text-skin-gray">
+          Sign in to continue
+        </p>
       </div>
-      <div>
-        <label htmlFor="password">Password</label>
-        <input
-          type="password"
-          className="form-input"
-          id="password"
-          {...register('password', {
-            required: { value: true, message: 'password is required' },
-          })}
-        />
-        {errors.password && (
-          <span className="text-skin-red text-sm italic">
-            {errors.password.message}
-          </span>
-        )}
+      <div className="space-y-4 align-center">
+        <div className="form-group">
+          <label htmlFor="email">Email</label>
+          <input
+            type="text"
+            className="form-input"
+            id="email"
+            {...register('email', {
+              required: { value: true, message: 'email is required' },
+              pattern: {
+                value: /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/,
+                message: 'Please use a valid email',
+              },
+            })}
+          />
+          {errors.email && (
+            <span className="text-skin-red text-sm italic">
+              {errors.email.message}
+            </span>
+          )}
+        </div>
+        <div className="form-group">
+          <label htmlFor="password">Password</label>
+          <input
+            type="password"
+            className="form-input"
+            id="password"
+            {...register('password', {
+              required: { value: true, message: 'password is required' },
+            })}
+          />
+          {errors.password && (
+            <span className="text-skin-red text-sm italic">
+              {errors.password.message}
+            </span>
+          )}
+        </div>
+        <p className="text-skin-secondary text-center underline">
+          <Link to={'/password'} className="text-skin-gray">
+            Forgot password?
+          </Link>
+        </p>
       </div>
-      <p className="text-skin-secondary italic">
-        Don't have account{' '}
-        <span className="text-skin-orange">
-          <Link to="/register">Create account</Link>
-        </span>
-      </p>
-      <button
-        disabled={isLoading}
-        className={
-          isLoading
-            ? ' primary self-center disabled cursor-not-allowed animate-pulse'
-            : 'primary self-center'
-        }
-      >
-        {isLoading ? 'Please wait...' : 'Sign In'}
-      </button>
+      <div className="space-y-4 align-center">
+        <button
+          disabled={isLoading}
+          className={
+            isLoading
+              ? ' primary self-center disabled cursor-not-allowed animate-pulse'
+              : 'primary self-center'
+          }
+        >
+          {isLoading ? 'Please wait...' : 'Sign In'}
+        </button>
+        <p className="text-skin-secondary text-center underline">
+          <Link
+            to={'/register' + window.location.search}
+            className="text-skin-gray"
+          >
+            Dont have an account
+          </Link>
+        </p>
+      </div>
     </form>
   );
 }

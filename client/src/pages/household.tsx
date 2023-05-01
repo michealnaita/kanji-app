@@ -6,7 +6,7 @@ import Layout from '../components/layout';
 export default function HouseholdPage() {
   const { householdId } = useParams();
   return (
-    <Layout>
+    <Layout title="Household">
       <Household id={householdId!} />
     </Layout>
   );

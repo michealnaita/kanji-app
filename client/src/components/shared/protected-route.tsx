@@ -1,32 +1,45 @@
 import React from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
-import useAuth from '../../utils/useAuth';
-import Logo from '../../assets/logo-white.svg';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { useApp } from '../../context/app';
+import { useAuth } from '../../context/auth';
+import { routes } from '../../settings';
 
-export default function ProtectedRoute({ Route }: { Route: React.FC }) {
-  const { isAuth, isLoading, error } = useAuth();
+export default function ProtectedRoute({
+  page: Page,
+  admin = false,
+}: {
+  page: React.FC;
+  admin?: boolean;
+}) {
+  const protectedRoutes =
+    import.meta.env.PROTECTED_ROUTES === 'off' ? false : true;
   const navigate = useNavigate();
   const location = useLocation();
+  const { isAuthenticated, isEmailVerified } = useAuth();
+  const { roles } = useApp();
+  const isAdmin = roles.includes('admin');
   React.useEffect(() => {
     const s = new URLSearchParams();
     s.set('from', location.pathname);
-    if (!isAuth && !isLoading) navigate('/about?' + s.toString());
-    if (error && !isLoading) navigate('/500');
-  }, [isAuth, isLoading, error]);
-  return (
-    <>
-      {isLoading ? (
-        <div className="w-full h-full flex justify-center items-center">
-          <img
-            src={Logo}
-            alt="logo"
-            width={30}
-            className="animate-bounce animate-ping"
-          />
-        </div>
-      ) : (
-        <>{isAuth && <Route />}</>
-      )}
-    </>
+    if (!isAuthenticated) {
+      navigate('/about?' + s.toString());
+    } else {
+      if (!isEmailVerified) navigate(routes.verifyEmail);
+    }
+  }, []);
+  React.useEffect(() => {
+    if (
+      protectedRoutes &&
+      !!roles.length &&
+      admin &&
+      !roles.includes('admin')
+    ) {
+      setTimeout(() => navigate(routes.dashboard), 3000);
+    }
+  }, [roles]);
+  return protectedRoutes && !isAdmin && admin ? (
+    <p className="text-black">not authorised</p>
+  ) : (
+    <Page />
   );
 }
