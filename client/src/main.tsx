@@ -54,10 +54,10 @@ const router = createBrowserRouter([
   { path: '/verifyEmail', element: <ProtectedRoute page={VerifyEmailPage} /> },
   { path: '/signout', element: <ProtectedRoute page={SignOutPage} /> },
   { path: '/profile', element: <ProtectedRoute page={ProfilePage} /> },
-  { path: '/admin', element: <ProtectedRoute page={AdminPage} /> },
+  { path: '/admin', element: <ProtectedRoute page={AdminPage} admin /> },
   {
     path: '/admin/requests/:uid',
-    element: <ProtectedRoute page={PendingRequestPage} />,
+    element: <ProtectedRoute page={PendingRequestPage} admin />,
   },
   {
     path: '/flutterwaveRedirect',
