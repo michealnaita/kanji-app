@@ -30,6 +30,7 @@ function handleRegister({
           transactions: [],
           services: [],
           balance: 0,
+          roles: ['user'],
         };
         setDoc(docRef, userData)
           .then((r) => resolve(true))
