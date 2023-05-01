@@ -1,3 +1,4 @@
+import moment from 'moment';
 import React from 'react';
 import toast from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
@@ -19,26 +20,29 @@ export default function PendingRequest({ uid }: { uid: string }) {
     }),
     []
   );
-  if (!house) {
-    navigate('/404');
-  }
-  const userDetails: { [k: string]: string } = React.useMemo(
-    () => ({
-      UID: request.uid,
-      Name: request.name,
-      Email: request.email,
-      Service: request.service,
-      'Created At': new Date(request.at).toUTCString(),
-    }),
+  const userDetails: { [k: string]: string } | null = React.useMemo(
+    () =>
+      request
+        ? {
+            UID: request.uid,
+            Name: request.name,
+            Email: request.email,
+            Service: request.service,
+            'Created At': moment(request.at).fromNow(),
+          }
+        : null,
 
     []
   );
-  const houseDetails: { [k: string]: any } = React.useMemo(
-    () => ({
-      'Account Email': house.email,
-      Service: house.service,
-      Capactity: house.capacity,
-    }),
+  const houseDetails: { [k: string]: any } | null = React.useMemo(
+    () =>
+      house
+        ? {
+            'Account Email': house.email,
+            Service: house.service,
+            Capactity: house.capacity,
+          }
+        : null,
 
     []
   );
@@ -47,7 +51,6 @@ export default function PendingRequest({ uid }: { uid: string }) {
     toast.loading('please wait...');
   }
   React.useEffect(() => {
-    // TODO: update user
     if (data) {
       updateAdmin(data);
       toast.success('user added to house');
@@ -63,7 +66,7 @@ export default function PendingRequest({ uid }: { uid: string }) {
     <>
       <ConfirmationModal
         open={dialog}
-        action={() => {}}
+        action={handleAddToHouse}
         onClose={() => setDialog(false)}
         title="Add User to House"
         buttonText="Continue"
@@ -71,35 +74,50 @@ export default function PendingRequest({ uid }: { uid: string }) {
         Are you sure, you want to add user to this house
       </ConfirmationModal>
       <PageWrapper title="Pending Request" className="space-y-10">
-        <div className="space-y-4">
-          <h1 className="font-semibold">User Info</h1>
-          <ul className="space-y-2">
-            {Object.keys(userDetails).map((key, i) => (
-              <li className="flex justify-between " key={i}>
-                <p>{key}</p>
-                <p>{userDetails[key]}</p>
-              </li>
-            ))}
-          </ul>
-        </div>
-        <div className="space-y-4 flex flex-col">
-          <h1 className="font-semibold">Available House</h1>
-          <ul className="space-y-2">
-            {Object.keys(houseDetails).map((key, i) => (
-              <li className="flex justify-between " key={i}>
-                <p>{key}</p>
-                <p>{houseDetails[key]}</p>
-              </li>
-            ))}
-          </ul>
-          <button
-            className="primary place-self-center"
-            onClick={() => setDialog(true)}
-            disabled={isLoading}
-          >
-            Add to House
-          </button>
-        </div>
+        {userDetails ? (
+          <>
+            <div className="space-y-4">
+              <h1 className="font-semibold">User Info</h1>
+
+              <ul className="space-y-2">
+                {Object.keys(userDetails).map((key, i) => (
+                  <li className="flex justify-between " key={i}>
+                    <p>{key}</p>
+                    <p>{userDetails[key]}</p>
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <div className="space-y-4 flex flex-col">
+              <h1 className="font-semibold">Available House</h1>
+              {houseDetails ? (
+                <>
+                  <ul className="space-y-2">
+                    {Object.keys(houseDetails).map((key, i) => (
+                      <li className="flex justify-between " key={i}>
+                        <p>{key}</p>
+                        <p>{houseDetails[key]}</p>
+                      </li>
+                    ))}
+                  </ul>
+                  <button
+                    className="primary place-self-center"
+                    onClick={() => setDialog(true)}
+                    disabled={isLoading}
+                  >
+                    Add to House
+                  </button>
+                </>
+              ) : (
+                <div className="flex justify-between ">
+                  <p>no available house</p>
+                </div>
+              )}
+            </div>
+          </>
+        ) : (
+          <p className="text-red-500 italic">request not found</p>
+        )}
       </PageWrapper>
     </>
   );

@@ -43,15 +43,15 @@ const INITIAL_STATE: IAdmin = {
   active_services: [],
   pending_requests: [],
   houses: [],
-  isLoading: false,
+  isLoading: true,
 };
 
 function adminReducer(state: IAdmin, action: ActionTypes): IAdmin {
   if (action.type == Actions.LOAD) {
-    return { ...state, ...action.payload };
+    return { ...state, ...action.payload, isLoading: false };
   }
   if (action.type == Actions.UPDATE_STATE) {
-    return { ...state, ...action.payload, isLoading: false };
+    return { ...state, ...action.payload };
   }
   if (action.type == Actions.ERROR) {
     return {

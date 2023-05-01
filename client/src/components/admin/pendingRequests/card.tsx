@@ -8,7 +8,7 @@ const Request: React.FC<Admin['pending_requests'][0]> = ({ email, uid }) => {
   return (
     <div
       className="text-skin-secondary"
-      onClick={() => navigate('request/' + uid)}
+      onClick={() => navigate('requests/' + uid)}
     >
       {email}
     </div>
