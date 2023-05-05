@@ -32,7 +32,7 @@ export const settings = {
     3: 'Find the service',
     4: 'Find the service',
   },
-  support: 'loscribe@gmail.com',
+  support: 'support@loscribe.com',
   menu: {
     Profile: { link: '/profile', icon: avatar },
     'Transaction History': { link: '#', icon: wallet },
