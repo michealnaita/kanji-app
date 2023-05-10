@@ -3,7 +3,7 @@ import { useApp } from '../../context/app';
 import Card from '../shared/cards/card-two';
 import { useForm } from 'react-hook-form';
 import useRechargeMutation from '../../api/getRechargeLink';
-import { toast } from 'react-toastify';
+import toast from 'react-hot-toast';
 import { formatPrice } from '../../utils/utils';
 import { useNavigate } from 'react-router-dom';
 import { routes } from '../../settings';

@@ -156,5 +156,15 @@ export function AppProvider({ children }: { children: JSX.Element }) {
       mutate(user_uid);
     }
   }, [user_uid, isAuthenticated]);
+  React.useEffect(() => {
+    const { protocol, host, pathname } = window.location;
+    if (
+      !(
+        Intl.DateTimeFormat().resolvedOptions().timeZone === 'Africa/Kampala' &&
+        pathname === '/unavailable'
+      )
+    )
+      location.replace(`${protocol}//${host}/unavailable`);
+  });
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;
 }
