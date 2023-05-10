@@ -6,7 +6,7 @@ import { handleTransactionFulfillment } from './utils';
 
 process.env.NODE_ENV === 'testing' && admin.initializeApp();
 
-export const app: Express = express();
+const app: Express = express();
 
 app.post('/', async (req, res) => {
   try {
@@ -53,6 +53,6 @@ app.get('/', async (req, res) => {
   }
 });
 
-const paymentHook = functions.https.onRequest(app);
+const paymentHook = functions.https.onRequest(() => {});
 
 export default paymentHook;

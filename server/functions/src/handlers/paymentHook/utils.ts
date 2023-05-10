@@ -7,11 +7,6 @@ import { Transaction, User } from '../../utils/types';
 process.env.NODE_ENV === 'testing' && admin.initializeApp();
 
 const { FLW_PUBLIC_KEY, FLW_SECRET_KEY, NODE_ENV } = process.env;
-const flw = new Flutterwave(
-  FLW_PUBLIC_KEY as string,
-  FLW_SECRET_KEY as string,
-  NODE_ENV === 'production'
-);
 
 const db = admin.firestore();
 /**
@@ -25,6 +20,11 @@ export function handleTransactionFulfillment(
 ): Promise<'success' | 'fail'> {
   return new Promise(async (resolve, reject) => {
     try {
+      const flw = new Flutterwave(
+        FLW_PUBLIC_KEY as string,
+        FLW_SECRET_KEY as string,
+        NODE_ENV === 'production'
+      );
       // Check that transaction refernce exists
       const txDoc = await db.doc('transactions/' + tx_ref).get();
       if (!txDoc.exists) throw new BadRequestError('TRANSACTION_NOT_FOUND');

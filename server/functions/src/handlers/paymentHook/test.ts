@@ -1,5 +1,5 @@
 import request from 'supertest';
-import paymentHook, { app } from '.';
+import paymentHook from '.';
 import dotenv from 'dotenv';
 import express from 'express';
 
