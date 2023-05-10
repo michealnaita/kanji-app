@@ -1,134 +1,70 @@
-import { Transaction, User } from './../../utils/types';
-import functions from 'firebase-functions-test';
-import * as admin from 'firebase-admin';
-import paymentHook from '.';
+import request from 'supertest';
+import paymentHook, { app } from '.';
 import dotenv from 'dotenv';
+import express from 'express';
 
 dotenv.config();
-const testEnv = functions(
-  {
-    projectId: 'pinocchio-40489',
-  },
-  './service-account.json'
-);
-const db = admin.firestore();
-async function createDoc(data: { [key: string]: any }, path: string) {
-  return await admin.firestore().doc(path).create(data);
-}
-async function getRediractUrl(req) {
-  return new Promise(async (resolve, _) => {
-    const res = {
-      redirect: (url: string) => resolve(url),
-    };
-    await paymentHook(req as any, res as any);
-  });
-}
 
-const mockVerify = jest.fn();
-jest.mock('flutterwave-node-v3', () => {
-  return jest.fn().mockImplementation(() => ({
-    Transaction: {
-      verify: mockVerify,
-    },
-  }));
-});
-
-describe('Recharge Hook', () => {
-  jest.setTimeout(30000);
-  const userData = { current_amount: 1000 };
-  const txData: Transaction = {
-    user_uid: 'user_uid',
-    amount: 1000,
-    fulfilled: false,
-  };
-  beforeAll(async () => {
-    await createDoc(userData, 'users/user_uid');
-    await createDoc({ ...txData, fulfilled: true }, 'transactions/tx_ref_2');
+const mockHandleTx = jest.fn();
+jest.mock('./utils', () => ({
+  handleTransactionFulfillment: () => mockHandleTx(),
+}));
+describe('Payment Webhook', () => {
+  let app: express.Express;
+  beforeAll(() => {
+    app = express();
+    app.use(express.json());
+    app.use(express.urlencoded({ extended: true }));
+    app.use(paymentHook);
   });
-  beforeEach(async () => {
-    await createDoc(txData, 'transactions/tx_ref_1');
+  afterEach(() => {
+    mockHandleTx.mockClear();
   });
-  afterEach(async () => {
-    await db.doc('transactions/tx_ref_1').delete();
-  });
-  afterAll(async () => {
-    await db.doc('users/user_uid').delete();
-    await db.doc('transactions/tx_ref_2').delete();
-    testEnv.cleanup();
-  });
-  it('should fail with BadRequest page when invalid tx ref', async () => {
-    const req = {
-      query: {
-        transaction_id: 'tx_id',
-        tx_ref: 'wrong_tx_ref',
-      },
-    };
-    const url = await getRediractUrl(req);
-    expect(url).toMatch(/400\?code=invalid-tx_ref/);
-  });
-  it('should return transacton failed if invalid transaction id', async () => {
-    mockVerify.mockResolvedValue({ status: 'error' });
-    const req = {
-      query: {
-        tx_ref: 'tx_ref_1',
-        transaction_id: 'wrong_tx_id',
-      },
-    };
-    const url = await getRediractUrl(req);
-    expect(url).toMatch(/recharge\?status=fail/);
-  });
-  it('should return transacton return BadRequest if transaction is already fulfilled', async () => {
-    mockVerify.mockResolvedValue({ status: 'error' });
-    const req = {
-      query: {
-        tx_ref: 'tx_ref_2',
-        transaction_id: 'tx_id',
-      },
-    };
-    const url = await getRediractUrl(req);
-    expect(url).toMatch(/400\?code=transaction-already-fulfilled/);
-  });
-  it('should update users current amount and trasnaction fulfilment if transactions is successful', async () => {
-    mockVerify.mockResolvedValue({
-      status: 'success',
-      data: { amount: 1000 },
+  mockHandleTx.mockClear();
+  describe('GET', () => {
+    it('should redirect to 500 page when error occurs', async () => {
+      mockHandleTx.mockRejectedValue(new Error());
+      const response = await request(app)
+        .get('/')
+        .query({ transaction_id: 'tx_id', tx_ref: 'tx_ref' });
+      expect(response.status).toEqual(302);
+      expect(response.headers['location']).toMatch(/\/500/);
     });
-
-    const req = {
-      query: {
-        tx_ref: 'tx_ref_1',
-        transaction_id: 'tx_id',
-      },
-    };
-    await paymentHook(req as any, { redirect: () => {} } as any);
-    const userDoc = await db.doc('users/user_uid').get();
-    const txDoc = await db.doc('transactions/tx_ref_1').get();
-    expect((userDoc.data() as User).current_amount).toEqual(2000);
-    expect((txDoc.data() as Transaction).fulfilled).toBe(true);
-  });
-  it('should redirect user to success page if transaction is successful', async () => {
-    mockVerify.mockResolvedValue({
-      status: 'success',
-      data: { amount: 1000 },
+    it('should redirect user to success page if transaction is successful', async () => {
+      mockHandleTx.mockResolvedValue('success');
+      const response = await request(app)
+        .get('/')
+        .query({ transaction_id: 'tx_id', tx_ref: 'tx_ref' });
+      expect(response.status).toEqual(302);
+      expect(response.headers['location']).toMatch(/recharge\?status=success/);
     });
-    const req = {
-      query: {
-        tx_ref: 'tx_ref_1',
-        transaction_id: 'tx_id',
-      },
-    };
-    const url = await getRediractUrl(req);
-    expect(url).toMatch(/recharge\?status=success/);
+    it('should redirect user to fail page if transaction failed', async () => {
+      mockHandleTx.mockResolvedValue('fail');
+      const response = await request(app)
+        .get('/')
+        .query({ transaction_id: 'tx_id', tx_ref: 'tx_ref' });
+      expect(response.status).toEqual(302);
+      expect(response.headers['location']).toMatch(/recharge\?status=fail/);
+    });
   });
-  it('should redirect user to fail page if transaction failed', async () => {
-    mockVerify.mockResolvedValue({ status: '', data: { status: 'failed' } });
-    const req = {
-      query: {
-        tx_ref: 'tx_ref_1',
-        transaction_id: 'tx_id',
-      },
-    };
-    const url = await getRediractUrl(req);
-    expect(url).toMatch(/recharge\?status=fail/);
+  describe('POST', () => {
+    let response: request.Response;
+    beforeAll(async () => {
+      response = await request(app)
+        .post('/')
+        .send({
+          event: 'charge.completed',
+          data: {
+            id: 'tx_id',
+            tx_ref: 'tx_ref',
+          },
+        });
+    });
+    test('should call function to handle transaction fulfillment', () => {
+      expect(mockHandleTx).toBeCalledTimes(1);
+    });
+    test('should resond with a status of 200', () => {
+      expect(response.status).toEqual(200);
+    });
   });
 });
