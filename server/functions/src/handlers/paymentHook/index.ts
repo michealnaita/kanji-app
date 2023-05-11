@@ -15,17 +15,18 @@ app.post('/', async (req, res) => {
       const { tx_ref, id } = data;
       await handleTransactionFulfillment(tx_ref, id);
     }
-    res.status(200).send('done');
+    res.sendStatus(200);
   } catch (e) {
     if (e instanceof BadRequestError) {
       process.env.NODE_ENV !== 'testing' &&
         functions.logger.log(`failed user top up`, {
-          message: '',
+          message: e.message,
         });
-      res.status(200).send('done');
+      res.sendStatus(200);
+      return;
     }
-    console.log(e);
-    res.status(500).send('done');
+    functions.logger.error(e);
+    res.sendStatus(500);
   }
 });
 
@@ -53,6 +54,6 @@ app.get('/', async (req, res) => {
   }
 });
 
-const paymentHook = functions.https.onRequest(() => {});
+const paymentHook = functions.https.onRequest(app);
 
 export default paymentHook;
