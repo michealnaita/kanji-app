@@ -13,12 +13,15 @@ export const routes = {
   services: '/services',
   flutterRedirect: '/flutterwaveRedirect',
   verifyEmail: '/verifyEmail',
+  unavailable: '/unavailable',
+  extendSubscription: '/extendSubscription',
   500: 500,
 };
 
 export const settings = {
   appName: 'Loscribe',
   landingText: 'Get the lowest subscriptions for your favorite apps',
+  timeZone: 'Africa/Kampala',
   services: {
     available: [{ name: 'spotify', price: 4000 }],
     comming_soon: [

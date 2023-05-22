@@ -2,6 +2,7 @@ import React from 'react';
 import { AddServiceData, HouseholdSlim, User } from '../../utils/types';
 import { useAuth } from '../auth';
 import useGetUserDataQuery from '../../api/user/current';
+import { routes, settings } from '../../settings';
 
 type EditableUserData = {
   firstname: string;
@@ -156,5 +157,13 @@ export function AppProvider({ children }: { children: JSX.Element }) {
       mutate(user_uid);
     }
   }, [user_uid, isAuthenticated]);
+  React.useEffect(() => {
+    const { protocol, host, pathname } = window.location;
+    if (
+      Intl.DateTimeFormat().resolvedOptions().timeZone !== settings.timeZone &&
+      pathname !== routes.unavailable
+    )
+      location.replace(`${protocol}//${host}${routes.unavailable}`);
+  }, []);
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;
 }

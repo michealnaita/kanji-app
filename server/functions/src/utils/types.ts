@@ -73,6 +73,7 @@ export type Transaction = {
   user_uid: string;
   amount: number;
   fulfilled: boolean;
+  at: string;
 };
 
 export type PaymentRequestData = {

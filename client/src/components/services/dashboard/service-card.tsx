@@ -5,6 +5,8 @@ import { TfiAngleDown } from 'react-icons/tfi';
 import cn from 'classnames';
 import { formatPrice, getBrandLogo } from '../../../utils/utils';
 import moment from 'moment';
+import { Link } from 'react-router-dom';
+import { routes } from '../../../settings';
 
 export default function ServiceCard({
   membership,
@@ -56,9 +58,11 @@ export default function ServiceCard({
                     </div>
                   ))}
                 </div>
-                <button className="underline place-self-center">
-                  Extend subscription
-                </button>
+                <p className="underline place-self-center mt-10">
+                  <Link to={`${routes.extendSubscription}?service_id=${id}`}>
+                    Extend subscription
+                  </Link>
+                </p>
               </>
             )}
           </Disclosure.Panel>

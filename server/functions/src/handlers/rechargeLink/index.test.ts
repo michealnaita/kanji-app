@@ -76,10 +76,8 @@ describe('Generate Payment Link', () => {
     await wrapped(data, { auth });
     const txDoc = await db.doc('transactions/tx_ref').get();
     const txData = txDoc.data() as Transaction;
-    expect(txData).toEqual({
-      user_uid: 'user_uid',
-      fulfilled: false,
-      amount: 5000,
-    });
+    expect(txData.fulfilled).toEqual(false);
+    expect(txData.user_uid).toEqual('user_uid');
+    expect(txData.amount).toEqual(5000);
   });
 });

@@ -29,6 +29,10 @@ export const TEMPLATES = {
     path.join(__dirname, '../../', 'templates', 'new-request.html'),
     { encoding: 'utf8', flag: 'r' }
   ),
+  extendSubscription: fs.readFileSync(
+    path.join(__dirname, '../../', 'templates', 'extend-subscription.html'),
+    { encoding: 'utf8', flag: 'r' }
+  ),
 };
 class Email {
   _action: string = '';
@@ -92,6 +96,32 @@ export class AdminEmail extends Email {
     this._subject = 'New Subscription Request';
     this._sender = { email: 'no-reply@loscribe.com', name: 'Loscribe' };
     this._params = { NAME: username, EMAIL: email, UID: uid, SERVICE: service };
+    return this;
+  }
+  onExtendSubscription({
+    username,
+    service,
+    uid,
+    email,
+    duration,
+  }: {
+    username: string;
+    service: string;
+    uid: string;
+    email: string;
+    duration: number;
+  }) {
+    this._action = 'extend subscription';
+    this._template = TEMPLATES.extendSubscription;
+    this._subject = 'User Extened Service Subscription';
+    this._sender = { email: 'no-reply@loscribe.com', name: 'Loscribe' };
+    this._params = {
+      NAME: username,
+      EMAIL: email,
+      UID: uid,
+      SERVICE: service,
+      DURATION: duration.toString(),
+    };
     return this;
   }
 }

@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,300;0,400;0,600;0,700;1,300&display=swap');
+      * {
+        font-family: Poppins, Inter, system-ui, Avenir, Helvetica, Arial,
+          sans-serif;
+      }
+      .btn-primary {
+        background-color: #9efc27;
+        color: black;
+        width: 100%;
+        max-width: 320px;
+        padding: 16px 0;
+        border-radius: 16px;
+        border: none;
+        font-size: 16px;
+        font-weight: bold;
+      }
+      body {
+        padding: 16px;
+      }
+      .divider {
+        margin: 24px 0;
+        width: 100%;
+        height: 2px;
+        background: rgb(246, 246, 246);
+      }
+    </style>
+  </head>
+  <body>
+    <div>
+      <div style="text-align: left; margin: 24px 16px">
+        <img
+          src="https://loscribe.com/loscribe-logo.png"
+          alt="loscribe logo"
+          width="120px"
+        />
+      </div>
+
+      <b>User Extended Service Subscription</b>
+      <b style="text-align: center">User details</b>
+      <p>
+        <b>UID:</b><br />
+        {{params.UID}}
+      </p>
+      <p>
+        <b>Name:</b><br />
+        {{params.NAME}}
+      </p>
+      <p>
+        <b>Email:</b><br />
+        {{params.EMAIL}}
+      </p>
+      <p>
+        <b>Service:</b><br />
+        {{params.SERVICE}}
+      </p>
+      <p>
+        <b>Duration:</b><br />
+        {{params.DURATION}}
+      </p>
+
+      <p>Signed, <br /><b>Team Loscribe</b></p>
+      <div class="divider"></div>
+      <div style="font-size: 13px; text-align: left; color: rgb(68, 68, 68)">
+        <p>
+          You received this email beacause you have recently joined a loscribe
+          managed service
+        </p>
+        <p>Sent with care by <b>loscribe</b></p>
+        <div>
+          <img
+            src="https://loscribe.com/loscribe-logo.png"
+            alt="loscribe logo"
+            width="60px"
+          />
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

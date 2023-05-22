@@ -1,78 +1,59 @@
-import { BadRequestError, InternalServerError } from '../../utils/errors';
+import { BadRequestError } from '../../utils/errors';
 import * as functions from 'firebase-functions';
 import * as admin from 'firebase-admin';
-import Flutterwave from 'flutterwave-node-v3';
-import { Transaction, User } from '../../utils/types';
+import express, { Express } from 'express';
+import { handleTransactionFulfillment } from './utils';
 
 process.env.NODE_ENV === 'testing' && admin.initializeApp();
-const db = admin.firestore();
 
-const paymentHook = functions
-  .runWith({
-    secrets: ['FLW_PUBLIC_KEY', 'FLW_SECRET_KEY', 'APP_URL'],
-  })
-  .https.onRequest(async (req, res) => {
-    const { FLW_PUBLIC_KEY, FLW_SECRET_KEY, NODE_ENV, APP_URL } = process.env;
-    try {
-      const flw = new Flutterwave(
-        FLW_PUBLIC_KEY as string,
-        FLW_SECRET_KEY as string,
-        NODE_ENV === 'production'
-      );
-      const { tx_ref = 'null', transaction_id = 'null' } = req.query;
-      if (!(tx_ref && transaction_id))
-        throw new BadRequestError('missing-tx_ref-and-transaction_id');
+const app: Express = express();
 
-      // Check if transaction ref exists
-      const txDoc = await db.doc('transactions/' + tx_ref).get();
-      if (!txDoc.exists) throw new BadRequestError('invalid-tx_ref');
-      const {
-        user_uid,
-        amount: tx_amount,
-        fulfilled,
-      } = txDoc.data() as Transaction;
-      if (fulfilled) throw new BadRequestError('transaction-already-fulfilled');
-      const { status, data } = await flw.Transaction.verify({
-        id: transaction_id,
-      });
-      if (status !== 'success')
-        return res.redirect(APP_URL + '/recharge?status=fail');
-
-      if (data.amount && status === 'success') {
-        if (!(data.amount == tx_amount))
-          throw new InternalServerError('different-transaction-amounts');
-        const userDoc = await db.doc('users/' + user_uid).get();
-        const { current_amount, email } = userDoc.data() as User;
-        const newAmount =
-          parseFloat(current_amount as any) + parseFloat(data.amount as any);
-        await db.doc('users/' + user_uid).update({
-          current_amount: newAmount,
-        });
-        await db.doc('transactions/' + tx_ref).update({
-          fulfilled: true,
-        });
-        process.env.NODE_ENV !== 'testing' &&
-          functions.logger.log(`user top up`, {
-            user: {
-              uid: user_uid,
-              email: email,
-            },
-            amount: data.amount,
-          });
-        return res.redirect(APP_URL + '/recharge?status=success');
-      }
-      throw new InternalServerError('transaction-neither-fail-nor-success');
-    } catch (e: any) {
-      const s = new URLSearchParams();
-      e.code && s.set('code', e.code);
-      e.message && s.set('message', e.message);
-      const q = s.toString();
-      if (e instanceof BadRequestError)
-        return res.redirect(APP_URL + '/400?' + q);
-      return res.redirect(APP_URL + '/500?' + q);
+app.post('/', async (req, res) => {
+  try {
+    const { event, data } = req.body;
+    if (event === 'charge.completed') {
+      const { tx_ref, id } = data;
+      await handleTransactionFulfillment(tx_ref, id);
     }
+    res.sendStatus(200);
+  } catch (e) {
+    if (e instanceof BadRequestError) {
+      process.env.NODE_ENV !== 'testing' &&
+        functions.logger.log(`failed user top up`, {
+          message: e.message,
+        });
+      res.sendStatus(200);
+      return;
+    }
+    functions.logger.error(e);
+    res.sendStatus(500);
+  }
+});
 
-    //
-  });
+app.get('/', async (req, res) => {
+  try {
+    const { tx_ref = null, transaction_id = null } = req.query;
+    if (!(tx_ref && transaction_id))
+      throw new BadRequestError('missing-tx_ref-and-transaction_id');
+    // Check if transaction ref exists
+    const status = await handleTransactionFulfillment(
+      tx_ref as string,
+      transaction_id as string
+    );
+    if (status === 'fail')
+      return res.redirect(process.env.APP_URL + '/recharge?status=fail');
+    return res.redirect(process.env.APP_URL + '/recharge?status=success');
+  } catch (e: any) {
+    const s = new URLSearchParams();
+    e.code && s.set('code', e.code);
+    e.message && s.set('message', e.message);
+    const q = s.toString();
+    if (e instanceof BadRequestError)
+      return res.redirect(process.env.APP_URL + '/400?' + q);
+    return res.redirect(process.env.APP_URL + '/500?' + q);
+  }
+});
+
+const paymentHook = functions.https.onRequest(app);
 
 export default paymentHook;
