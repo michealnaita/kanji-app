@@ -5,15 +5,15 @@ import { toast } from 'react-toastify';
 import useSignOutMutation from '../api/auth/signout';
 import { routes } from '../settings';
 import { useNavigate } from 'react-router-dom';
-import { useApp } from '../context/app';
+import { useAuth } from '../context/auth';
 
 export default function SignOutPage() {
-  const { signOut } = useApp();
+  // const { signOut } = useAuth();
   const navigate = useNavigate();
   const { mutate, error, isError, data } = useSignOutMutation();
   React.useEffect(() => {
     if (data) {
-      signOut();
+      // signOut();
       setTimeout(() => navigate(routes.about), 1000);
     }
   }, [data]);

@@ -28,6 +28,7 @@ import AdminPage from './pages/admin';
 import ProtectedRoute from './components/shared/protected-route';
 import PendingRequestPage from './pages/request';
 import UnavailablePage from './pages/unavailable';
+import ExtendSubscriptionPage from './pages/extendSubscription';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -57,6 +58,10 @@ const router = createBrowserRouter([
   { path: '/signout', element: <ProtectedRoute page={SignOutPage} /> },
   { path: '/profile', element: <ProtectedRoute page={ProfilePage} /> },
   { path: '/admin', element: <ProtectedRoute page={AdminPage} admin /> },
+  {
+    path: '/extendSubscription',
+    element: <ProtectedRoute page={ExtendSubscriptionPage} />,
+  },
   {
     path: '/admin/requests/:uid',
     element: <ProtectedRoute page={PendingRequestPage} admin />,
