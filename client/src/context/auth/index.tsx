@@ -1,5 +1,4 @@
 import React from 'react';
-import { getAuth, onAuthStateChanged } from 'firebase/auth';
 
 type AuthState = {
   isEmailVerified: boolean;
@@ -14,37 +13,12 @@ export function useAuth() {
   return state;
 }
 export default function AuthProvider({ children }: { children: any }) {
-  const [isLoading, setLoading] = React.useState(true);
+  const [isLoading, setLoading] = React.useState(false);
   const [state, setState] = React.useState<AuthState>({
-    isEmailVerified: false,
-    isAuthenticated: false,
-    user_uid: '',
+    isEmailVerified: true,
+    isAuthenticated: true,
+    user_uid: '23egvhsjdfzvuyw35er98ow5ets8guh',
   });
-  React.useEffect(() => {
-    onAuthStateChanged(
-      getAuth(),
-      (user) => {
-        let isEmailVerified: boolean;
-        let isAuthenticated: boolean;
-        let user_uid: string;
-        if (user) {
-          isAuthenticated = true;
-          isEmailVerified = user.emailVerified;
-          user_uid = user.uid;
-          setState({
-            isEmailVerified,
-            isAuthenticated,
-            user_uid,
-          });
-        }
-        setLoading(false);
-      },
-      (e) => {
-        console.log(e);
-        setLoading(false);
-      }
-    );
-  }, []);
   return (
     <AuthContext.Provider value={state}>
       {isLoading ? (

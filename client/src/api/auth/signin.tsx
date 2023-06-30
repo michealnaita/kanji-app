@@ -1,14 +1,8 @@
 import { useMutation } from 'react-query';
-import { signInWithEmailAndPassword } from 'firebase/auth';
-import { SignInData } from '../../utils/types';
-import { auth } from '../../utils/firebase';
-import { formatErrorMessage } from '../../utils/errors';
 
-function handleSignIn({ email, password }: SignInData): Promise<boolean> {
+function handleSignIn(): Promise<boolean> {
   return new Promise((resolve, reject) => {
-    signInWithEmailAndPassword(auth, email, password)
-      .then((_) => resolve(true))
-      .catch((e) => reject(new Error(formatErrorMessage(e.code))));
+    setTimeout(() => resolve(true), 3000);
   });
 }
 export default function useSignInMutation() {

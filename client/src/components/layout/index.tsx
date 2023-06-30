@@ -37,6 +37,9 @@ export default function Layout({
       />
       <Toaster toastOptions={{ duration: 2000 }} />
       <div className="bg-skin-primary w-screen overflow-y-auto h-full  flex flex-col">
+        <p className="w-full text-red-500 text-center text-xs">
+          Please note that this application is now soley demonstrational
+        </p>
         <>
           {!hide && (
             <Header notifications={notifications} username={firstname} />
