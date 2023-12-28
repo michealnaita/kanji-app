@@ -1,29 +1,39 @@
 import { useMutation } from 'react-query';
-import { getAuth } from 'firebase/auth';
-import { httpsCallable } from 'firebase/functions';
-import { functions } from '../../utils/firebase';
-import { AddServiceData, FunctionResponse, User } from '../../utils/types';
-import { formatErrorMessage } from '../../utils/errors';
+import { AddServiceData } from '../../utils/types';
+import moment from 'moment';
 function addService(id: string): Promise<AddServiceData> {
-  const auth = getAuth().currentUser;
   return new Promise((resolve, reject) => {
-    if (auth == null) {
-      reject(new Error('You must be signed in'));
-      return;
-    }
-    const join = httpsCallable<
-      { service_id: string },
-      FunctionResponse<AddServiceData>
-    >(functions, 'joinService');
-    join({ service_id: id })
-      .then(({ data: { status, error, data } }) => {
-        if (status === 'fail') {
-          reject({ message: error!.message });
-          return;
-        }
-        resolve(data as AddServiceData);
-      })
-      .catch((e) => reject({ message: formatErrorMessage(e.code) }));
+    setTimeout(
+      () =>
+        resolve({
+          transactions: [
+            {
+              amount: 4000,
+              action: 'service-payment',
+              at: new Date().toISOString(),
+            },
+          ],
+          notifications: [
+            {
+              message:
+                'You have been charged UGX 4000 for your spotify subscription',
+              at: moment().toISOString(),
+            },
+          ],
+          current_amount: 6000,
+          services: [
+            {
+              id: 'spotify',
+              price: 4000,
+              renewal: moment().add('months', 1).toISOString(),
+              status: 'active',
+              at: moment().toISOString(),
+              membership: 'Premium',
+            },
+          ],
+        }),
+      3000
+    );
   });
 }
 export default function useAddServiceMutation() {

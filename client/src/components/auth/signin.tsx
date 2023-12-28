@@ -12,9 +12,14 @@ export default function SignInForm() {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<SignInData>();
+  } = useForm<SignInData>({
+    defaultValues: {
+      email: 'guestuser@example.com',
+      password: '1234',
+    },
+  });
   function onSubmit(data: SignInData) {
-    mutate(data);
+    mutate();
   }
   React.useEffect(() => {
     if (data) {

@@ -36,11 +36,7 @@ export default function RechargeCard({ service_id }: { service_id: string }) {
     setShow(true);
   }
   function extend() {
-    const reqData = {
-      duration,
-      service_id,
-    };
-    mutate(reqData);
+    toast('This feature has been disabled');
   }
   React.useEffect(() => {
     if (isError) toast.error((error as Error).message);

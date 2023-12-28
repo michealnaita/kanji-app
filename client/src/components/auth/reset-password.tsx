@@ -14,7 +14,7 @@ export default function SignInForm() {
     formState: { errors },
   } = useForm<{ email: string }>();
   function onSubmit(data: { email: string }) {
-    mutate(data);
+    mutate();
   }
   React.useEffect(() => {
     if (data) {

@@ -16,7 +16,7 @@ export default function RegiserForm() {
     formState: { errors },
   } = useForm<RegisterData>();
   function onSubmit(data: RegisterData) {
-    mutate(data);
+    mutate();
   }
   React.useEffect(() => {
     if (isError) toast.error((error as Error).message);

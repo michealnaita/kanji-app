@@ -1,20 +1,27 @@
 import { useMutation } from 'react-query';
-import { doc, getDoc } from 'firebase/firestore';
-import { db } from '../../utils/firebase';
 import { User } from '../../utils/types';
 
-function getUserData(uid: string): Promise<User> {
+function getUserData(): Promise<User> {
   return new Promise(async (resolve, reject) => {
     try {
-      const docRef = doc(db, 'users', uid);
-      const user = await getDoc(docRef);
-      console.log(uid);
-      console.log(user.exists());
-      if (!user.exists()) {
-        reject({ message: "user doesn't exist" });
-        return;
-      }
-      resolve(user.data() as any);
+      setTimeout(
+        () =>
+          resolve({
+            id: 'srjuiateg5034it8t5983um9w84t',
+            transactions: [],
+            current_amount: 10000,
+            notifications: [],
+            services: [],
+            firstname: 'Guest',
+            lastname: 'User',
+            phone: 256782478394,
+            email: 'guestuser@example.com',
+            households: [],
+            roles: [],
+            balance: 0,
+          }),
+        3000
+      );
     } catch (e: any) {
       reject({ message: e.message });
     }

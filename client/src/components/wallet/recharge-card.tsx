@@ -17,13 +17,7 @@ export default function RechargeCard() {
   } = useForm<{ amount: string }>();
   const { isLoading, isError, error, data, mutate } = useRechargeMutation();
   function onSubmit({ amount }: { amount: string }) {
-    const reqData = {
-      name: `${firstname} ${lastname}`,
-      amount: parseFloat(amount),
-      email,
-      phone,
-    };
-    mutate(reqData);
+    toast('This feature has been disabled');
   }
   React.useEffect(() => {
     if (isError) toast.error((error as Error).message);
